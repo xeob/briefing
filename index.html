@@ -42,11 +42,11 @@ a{color:inherit;text-decoration:none;}
 .t-ind{color:#c1660f;background:rgba(193,102,15,.13);}
 .heads{margin-top:5px;font-size:13.5px;line-height:1.85;}
 
-/* 키워드 */
-.kw{display:flex;gap:10px;align-items:baseline;margin-bottom:8px;}
-.kw-n{font-size:13px;font-weight:600;color:var(--sub);width:13px;}
+/* 키워드 (설명은 키워드 아래 줄바꿈) */
+.kw{display:flex;gap:10px;align-items:baseline;margin-bottom:9px;}
+.kw-n{font-size:13px;font-weight:600;color:var(--sub);width:13px;flex-shrink:0;}
 .kw-t{font-size:14px;font-weight:600;}
-.kw-d{font-size:12px;color:var(--muted);}
+.kw-d{font-size:12px;color:var(--muted);margin-top:2px;line-height:1.5;}
 
 /* 미국시장 */
 .sum{margin:0 0 6px;font-size:13.5px;font-weight:600;line-height:1.5;}
@@ -59,8 +59,8 @@ a{color:inherit;text-decoration:none;}
 .idx-chg{font-size:12px;font-weight:600;margin-top:3px;}
 .up{color:var(--up);} .down{color:var(--down);}
 .lbl{font-size:11px;color:var(--muted);margin-bottom:5px;}
-.chips{display:flex;flex-wrap:wrap;gap:5px;}
-.chip{font-size:11px;white-space:nowrap;background:var(--bg);border:0.5px solid var(--border);padding:2px 7px;border-radius:20px;}
+.chips{display:flex;flex-wrap:nowrap;gap:5px;overflow-x:auto;}
+.chip{font-size:11px;white-space:nowrap;background:var(--bg);border:0.5px solid var(--border);padding:2px 7px;border-radius:20px;flex-shrink:0;}
 .sector div{font-size:12.5px;line-height:1.7;}
 .mv{margin-bottom:9px;}
 .mv-h{display:flex;align-items:baseline;gap:8px;}
@@ -132,30 +132,30 @@ a{color:inherit;text-decoration:none;}
   <!-- ===== 핫한 키워드 Top 3 ===== -->
   <div class="card">
     <div class="sec"><span class="sec-ico">🔥</span><span class="sec-title">핫한 키워드 Top 3</span></div>
-    <div class="kw"><span class="kw-n">1</span><div><span class="kw-t">코스피 급락·사이드카</span><span class="kw-d"> · 美 반도체주 투매 여파로 개장과 함께 5%대 폭락, 8000선 붕괴</span></div></div>
-    <div class="kw"><span class="kw-n">2</span><div><span class="kw-t">소비자물가 3.2%</span><span class="kw-d"> · 6월 물가상승률 2년6개월 만에 최고, 고유가·환율이 주범</span></div></div>
-    <div class="kw" style="margin-bottom:0;"><span class="kw-n">3</span><div><span class="kw-t">SK하이닉스 나스닥 상장</span><span class="kw-d"> · 7/10 상장 앞두고 300억달러 자금유입 전망에 환율 시장 촉각</span></div></div>
+    <div class="kw"><span class="kw-n">1</span><div><div class="kw-t">코스피 급락·사이드카</div><div class="kw-d">美 반도체주 투매 여파로 개장과 함께 5%대 폭락, 8000선 붕괴</div></div></div>
+    <div class="kw"><span class="kw-n">2</span><div><div class="kw-t">소비자물가 3.2%</div><div class="kw-d">6월 물가상승률 2년6개월 만에 최고, 고유가·환율이 주범</div></div></div>
+    <div class="kw" style="margin-bottom:0;"><span class="kw-n">3</span><div><div class="kw-t">SK하이닉스 나스닥 상장</div><div class="kw-d">7/10 상장 앞두고 300억달러 자금유입 전망에 환율 시장 촉각</div></div></div>
   </div>
 
   <!-- ===== 전일 미국 시장 ===== -->
   <div class="card">
     <div class="sec"><span class="sec-ico">📈</span><span class="sec-title">전일 미국 시장</span><span class="sec-note">7/1(수) 마감</span></div>
     <p class="sum">반도체주 폭락에 3대 지수 동반 소폭 하락, 메타는 클라우드 사업 진출 발표로 급등.</p>
-    <p class="cmt">마이크론이 삼성전자·SK하이닉스와 함께 D램 가격 담합 혐의로 집단소송에 피소되며 공급과잉 우려까지 겹쳐 메모리·반도체株가 대거 투매, 필라델피아 반도체지수가 5%대 급락했습니다. 반면 메타는 AI 잉여 컴퓨팅 자원을 외부에 판매하는 클라우드 사업 진출을 발표하며 9% 가까이 급등, 통신서비스·금융 섹터가 지수 하단을 방어했습니다.</p>
+    <p class="cmt">마이크론이 삼성전자·SK하이닉스와 함께 D램 가격 담합 혐의로 집단소송에 피소되며 공급과잉 우려까지 겹쳐 메모리·반도체株가 대거 투매, 필라델피아 반도체지수가 6%대 급락했습니다. 반면 메타는 AI 잉여 컴퓨팅 자원을 외부에 판매하는 클라우드 사업 진출을 발표하며 9% 가까이 급등, 통신서비스·금융 섹터가 지수 하단을 방어했습니다.</p>
 
     <div class="divide"></div>
     <div class="idx-grid">
       <div class="idx"><div class="idx-name">다우</div><div class="idx-val">52,305.24</div><div class="idx-chg down">▼ −13.96 (−0.03%)</div></div>
       <div class="idx"><div class="idx-name">나스닥</div><div class="idx-val">26,040.03</div><div class="idx-chg down">▼ −173.69 (−0.66%)</div></div>
       <div class="idx"><div class="idx-name">S&amp;P 500</div><div class="idx-val">7,483.23</div><div class="idx-chg down">▼ −16.13 (−0.22%)</div></div>
-      <div class="idx"><div class="idx-name">필라델피아 반도체</div><div class="idx-val">13,478.45</div><div class="idx-chg down">▼ −768.51 (−5.39%)</div></div>
+      <div class="idx"><div class="idx-name">필라델피아 반도체</div><div class="idx-val">13,353.30</div><div class="idx-chg down">▼ −893.70 (−6.27%)</div></div>
     </div>
 
     <div class="divide"></div>
     <div class="lbl">시장 지표</div>
     <div class="chips">
       <span class="chip">美10년물 4.47%</span><span class="chip">달러인덱스 101.40</span>
-      <span class="chip">WTI $68.06</span><span class="chip">금 $4,034.70</span><span class="chip">원/달러 1,547.2</span>
+      <span class="chip">WTI $68.06</span><span class="chip">BTC $60,014</span><span class="chip">원/달러 1,552.9</span>
     </div>
 
     <div class="divide"></div>
@@ -167,13 +167,15 @@ a{color:inherit;text-decoration:none;}
 
     <div class="divide"></div>
     <div class="lbl">특징주 · 급등</div>
+    <div class="mv"><div class="mv-h"><span class="mv-n">팔란티어 (PLTR)</span><span class="mv-p up">+9.3%</span></div><div class="mv-r">엔비디아와 AI 파트너십 발표 (정부·인프라용 Nemotron 모델 탑재)<br>트럼프 대통령 지분 보유 공개, 美 육군 Foundry 공급 계약</div></div>
     <div class="mv"><div class="mv-h"><span class="mv-n">메타 플랫폼스 (META)</span><span class="mv-p up">+9.0%</span></div><div class="mv-r">클라우드 인프라 사업 진출, AI 잉여 컴퓨팅 자원 외부 판매 발표</div></div>
+    <div class="mv"><div class="mv-h"><span class="mv-n">로빈후드 (HOOD)</span><span class="mv-p up">+8.4%</span></div><div class="mv-r">6월 거래량 사상 최대<br>골드만삭스 목표가 $108→$121 상향</div></div>
     <div class="mv"><div class="mv-h"><span class="mv-n">마이크로소프트 (MSFT)</span><span class="mv-p up">+3.0%</span></div><div class="mv-r">AI 클라우드 수요 확대 기대 속 빅테크 동반 강세</div></div>
     <div class="mv" style="margin-bottom:0;"><div class="mv-h"><span class="mv-n">애플 (AAPL)</span><span class="mv-p up">+2.0%</span></div><div class="mv-r">반도체 약세 속 상대적 견조, 지수 방어주 역할</div></div>
 
     <div class="divide"></div>
     <div class="lbl">특징주 · 급락</div>
-    <div class="mv"><div class="mv-h"><span class="mv-n">마이크론 (MU)</span><span class="mv-p down">−9.0%</span></div><div class="mv-r">삼성전자·SK하이닉스와 D램 담합 집단소송 피소, 3분기 실적 서프라이즈에도 공급과잉 우려로 투매</div></div>
+    <div class="mv"><div class="mv-h"><span class="mv-n">마이크론 (MU)</span><span class="mv-p down">−9.0%</span></div><div class="mv-r">삼성전자·SK하이닉스와 D램 담합 집단소송 피소<br>3분기 실적 서프라이즈에도 공급과잉 우려로 투매</div></div>
     <div class="mv"><div class="mv-h"><span class="mv-n">캐터필러 (CAT)</span><span class="mv-p down">−7.0%</span></div><div class="mv-r">AI 데이터센터 관련 장비 수혜주 차익실현</div></div>
     <div class="mv"><div class="mv-h"><span class="mv-n">샌디스크 (SNDK)</span><span class="mv-p down">−10.9%</span></div><div class="mv-r">연초 대비 750%대 급등 이후 차익실현</div></div>
     <div class="mv"><div class="mv-h"><span class="mv-n">시게이트 테크놀로지 (STX)</span><span class="mv-p down">−6.0%</span></div><div class="mv-r">메모리·스토리지 업종 동반 투매</div></div>
