@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>경제 브리핑 · 2026.07.01</title>
+<title>경제 브리핑</title>
 <style>
 :root{
   --bg:#f6f6f4; --card:#ffffff; --text:#1a1a19; --sub:#63625d; --muted:#9a9992;
@@ -19,16 +19,20 @@ body{margin:0;background:var(--bg);color:var(--text);
   word-break:keep-all;-webkit-text-size-adjust:100%;}
 .wrap{max-width:520px;margin:0 auto;padding:20px 16px 24px;}
 a{color:inherit;text-decoration:none;}
+
 .head{padding-bottom:14px;border-bottom:1px solid var(--border);margin-bottom:18px;}
 .head-row{display:flex;justify-content:space-between;align-items:baseline;}
 .head-title{font-size:20px;font-weight:600;}
 .head-date{font-size:13px;color:var(--muted);}
 .head-sub{margin:6px 0 0;font-size:12px;color:var(--muted);}
+
 .card{background:var(--card);border:0.5px solid var(--border);border-radius:12px;padding:13px 15px;margin-bottom:12px;}
 .sec{display:flex;align-items:center;gap:7px;margin-bottom:11px;}
 .sec-ico{font-size:16px;}
 .sec-title{font-size:13px;font-weight:600;color:var(--sub);}
 .sec-note{font-size:11px;color:var(--muted);}
+
+/* 뉴스 */
 .field{margin-bottom:11px;}
 .tag{display:inline-block;font-size:11px;padding:1px 8px;border-radius:20px;}
 .t-pol{color:#d21c1c;background:rgba(210,28,28,.12);}
@@ -37,10 +41,14 @@ a{color:inherit;text-decoration:none;}
 .t-it{color:#7a4fd0;background:rgba(122,79,208,.14);}
 .t-ind{color:#c1660f;background:rgba(193,102,15,.13);}
 .heads{margin-top:5px;font-size:13.5px;line-height:1.85;}
+
+/* 키워드 */
 .kw{display:flex;gap:10px;align-items:baseline;margin-bottom:8px;}
 .kw-n{font-size:13px;font-weight:600;color:var(--sub);width:13px;}
 .kw-t{font-size:14px;font-weight:600;}
 .kw-d{font-size:12px;color:var(--muted);}
+
+/* 미국시장 */
 .sum{margin:0 0 6px;font-size:13.5px;font-weight:600;line-height:1.5;}
 .cmt{margin:0;font-size:12.5px;color:var(--sub);line-height:1.55;}
 .divide{border-top:0.5px solid var(--border);margin:11px 0;}
@@ -66,106 +74,125 @@ a{color:inherit;text-decoration:none;}
 <body>
 <div class="wrap">
 
+  <!-- ===== 헤더 ===== -->
   <div class="head">
     <div class="head-row">
       <span class="head-title">경제 브리핑</span>
-      <span class="head-date">2026.07.01 (수)</span>
+      <span class="head-date">2026.07.02 (목)</span>
     </div>
     <p class="head-sub">전일 22:00 ~ 7:00 자료를 바탕으로 제작되었습니다.</p>
   </div>
 
+  <!-- ===== 주요 뉴스 ===== -->
   <div class="card">
     <div class="sec"><span class="sec-ico">📰</span><span class="sec-title">주요 뉴스</span></div>
     <div class="field"><span class="tag t-pol">정치</span>
       <div class="heads">
-        · <a href="#">전남·광주 통합특별시 공식 출범…'문명대전환' 선언</a><br>
-        · <a href="#">안규백 국방장관, 육·해·공 사관학교 통합 검토 시사</a><br>
-        · <a href="#">국민의힘, 내일 의총서 추가 원구성 입장 결정</a>
+        · <a href="https://v.daum.net/v/20260702092017740">내홍 격화 국민의힘…"윤리위가 대표 사냥개냐" vs "당 기강 세워야"</a><br>
+        · <a href="https://v.daum.net/v/20260702092924281">정점식 "與, 선관위 유착 정당…특검 野가 추천해야"</a><br>
+        · <a href="https://www.fnnews.com/news/202606302119193643">국힘 "원구성 정상화 없이 상임위 안 받는다" 전원 사임계 제출</a><br>
+        · <a href="https://www.newspim.com/news/view/20260702000023">강훈식 비서실장 "이재명 정부 1년 성과와 과제" 특별 인터뷰</a>
       </div>
     </div>
     <div class="field"><span class="tag t-eco">경제</span>
       <div class="heads">
-        · <a href="#">원/달러 환율 1,545원대…환율 부담 지속</a><br>
-        · <a href="#">한은 기준금리 2.50% 유지…다음 금통위 7월 16일</a>
+        · <a href="https://v.daum.net/v/20260702092552072">코스피 개장 5%대 급락, 8000선 붕괴…매도 사이드카 발동</a><br>
+        · <a href="https://v.daum.net/v/20260702093105363">6월 소비자물가 3.2%↑…고유가·환율에 2년6개월來 최고</a><br>
+        · <a href="https://v.daum.net/v/20260702093017327">정부 "물가 목표 2.7~2.9%"…하반기 물가 3% 이내 총력 관리</a><br>
+        · <a href="https://v.daum.net/v/20260702092109780">SK하이닉스 나스닥 상장 코앞…관전 포인트는?</a><br>
+        · <a href="https://www.fnnews.com/news/202606301130187312">SK하이닉스 美상장 자금 300억달러 유입 전망…환율 '소방수' 되나</a>
       </div>
     </div>
     <div class="field"><span class="tag t-wor">세계</span>
       <div class="heads">
-        · <a href="#">호르무즈 해협 한국 선박 대부분 탈출…2척 잔류</a><br>
-        · <a href="#">미·이란 적대행위 중단 합의로 통항 재개</a>
+        · <a href="https://v.daum.net/v/20260702092520052">美 400여개 지역신문, 오픈AI·MS 상대 AI 무단학습 공동 법적대응</a><br>
+        · <a href="https://v.daum.net/v/20260702081030014">트럼프 "美·이란 도하 간접회담 아주 좋았다"</a><br>
+        · <a href="https://v.daum.net/v/20260702092230862">트럼프 "中 파나마운하 장악 막겠다"</a><br>
+        · <a href="https://www.hankookilbo.com/news/article/A2026062810380004782">베네수엘라 강진 사망 1,719명·실종 4.6만명…美 1.5억달러 지원 준비</a>
       </div>
     </div>
     <div class="field"><span class="tag t-it">IT</span>
       <div class="heads">
-        · <a href="#">SK하이닉스, 7월 10일 나스닥 ADR 상장 추진…약 45조 조달</a><br>
-        · <a href="#">SK하이닉스, 2026년 영업이익 200조 '역대 최대' 예고</a>
+        · <a href="https://v.daum.net/v/20260702092700122">삼성 갤럭시 점프5, KT 통해 50만원대 AI폰으로 출시</a><br>
+        · <a href="https://v.daum.net/v/20260702092630115">애플, 中 CXMT·YMTC와 메모리 공급 협상…AI발 메모리 품귀 대응</a><br>
+        · <a href="https://v.daum.net/v/20260702092902242">메타, AI 데이터센터 잉여 인프라 외부 판매…AWS·MS 클라우드에 도전</a><br>
+        · <a href="https://v.daum.net/v/20260702092202830">에이크릴, AI 데이터센터용 'GPUBASE' 상업 공급 개시</a>
       </div>
     </div>
     <div class="field" style="margin-bottom:0;"><span class="tag t-ind">산업</span>
       <div class="heads">
-        · <a href="#">삼성·SK, 서남권 반도체 클러스터 825조 투자 계획</a><br>
-        · <a href="#">반도체 슈퍼사이클…삼성·SK 합산 영업이익 200조 돌파 전망</a>
+        · <a href="https://v.daum.net/v/20260702092940285">SK바이오사이언스, 게이츠재단과 AI 백신개발 'ROTOR' 프로젝트 협력</a><br>
+        · <a href="https://v.daum.net/v/20260702092300881">UNIST·연세대, 차세대 반도체 잉크로 플렉시블 디스플레이 정밀도 향상</a><br>
+        · <a href="https://v.daum.net/v/20260702093003313">BC카드, 금융특화 AI 검색모델 KT그룹 서비스 전반 확산</a><br>
+        · <a href="https://www.hyundaimotorgroup.com/ko/news/CONT0000000000194659">현대차·기아, 안성 배터리 캠퍼스 2026년 말 준공…1.2조원 투자</a>
       </div>
     </div>
   </div>
 
+  <!-- ===== 핫한 키워드 Top 3 ===== -->
   <div class="card">
     <div class="sec"><span class="sec-ico">🔥</span><span class="sec-title">핫한 키워드 Top 3</span></div>
-    <div class="kw"><span class="kw-n">1</span><div><span class="kw-t">SK하이닉스 나스닥 상장</span><span class="kw-d"> · 7/10 상장·45조 조달에 관심 집중</span></div></div>
-    <div class="kw"><span class="kw-n">2</span><div><span class="kw-t">원/달러 환율</span><span class="kw-d"> · 1,545원대 급등, 환율 방어 주목</span></div></div>
-    <div class="kw" style="margin-bottom:0;"><span class="kw-n">3</span><div><span class="kw-t">서남권 반도체 클러스터</span><span class="kw-d"> · 삼성·SK 825조 투자 발표</span></div></div>
+    <div class="kw"><span class="kw-n">1</span><div><span class="kw-t">코스피 급락·사이드카</span><span class="kw-d"> · 美 반도체주 투매 여파로 개장과 함께 5%대 폭락, 8000선 붕괴</span></div></div>
+    <div class="kw"><span class="kw-n">2</span><div><span class="kw-t">소비자물가 3.2%</span><span class="kw-d"> · 6월 물가상승률 2년6개월 만에 최고, 고유가·환율이 주범</span></div></div>
+    <div class="kw" style="margin-bottom:0;"><span class="kw-n">3</span><div><span class="kw-t">SK하이닉스 나스닥 상장</span><span class="kw-d"> · 7/10 상장 앞두고 300억달러 자금유입 전망에 환율 시장 촉각</span></div></div>
   </div>
 
+  <!-- ===== 전일 미국 시장 ===== -->
   <div class="card">
-    <div class="sec"><span class="sec-ico">📈</span><span class="sec-title">전일 미국 시장</span><span class="sec-note">6/30 마감</span></div>
-    <p class="sum">기술·반도체 강세에 나스닥 +1.5%·반도체지수 +3.9% 급등, 3대 지수 동반 상승.</p>
-    <p class="cmt">6월 CPI가 예상을 밑돌며 금리 인하 기대 확대, AI·반도체 매수세 재유입. AMD·인텔 등 반도체주 급등, 블룸에너지 등 AI 전력주도 강세. 위험선호 회복에 방어주·금융주는 차익실현.</p>
+    <div class="sec"><span class="sec-ico">📈</span><span class="sec-title">전일 미국 시장</span><span class="sec-note">7/1(수) 마감</span></div>
+    <p class="sum">반도체주 폭락에 3대 지수 동반 소폭 하락, 메타는 클라우드 사업 진출 발표로 급등.</p>
+    <p class="cmt">마이크론이 삼성전자·SK하이닉스와 함께 D램 가격 담합 혐의로 집단소송에 피소되며 공급과잉 우려까지 겹쳐 메모리·반도체株가 대거 투매, 필라델피아 반도체지수가 5%대 급락했습니다. 반면 메타는 AI 잉여 컴퓨팅 자원을 외부에 판매하는 클라우드 사업 진출을 발표하며 9% 가까이 급등, 통신서비스·금융 섹터가 지수 하단을 방어했습니다.</p>
 
     <div class="divide"></div>
     <div class="idx-grid">
-      <div class="idx"><div class="idx-name">다우</div><div class="idx-val">52,319.20</div><div class="idx-chg up">▲ +136.46 (+0.26%)</div></div>
-      <div class="idx"><div class="idx-name">나스닥</div><div class="idx-val">26,213.72</div><div class="idx-chg up">▲ +393.58 (+1.52%)</div></div>
-      <div class="idx"><div class="idx-name">S&amp;P 500</div><div class="idx-val">7,499.36</div><div class="idx-chg up">▲ +58.93 (+0.79%)</div></div>
-      <div class="idx"><div class="idx-name">필라델피아 반도체</div><div class="idx-val">14,246.96</div><div class="idx-chg up">▲ +537.30 (+3.92%)</div></div>
+      <div class="idx"><div class="idx-name">다우</div><div class="idx-val">52,305.24</div><div class="idx-chg down">▼ −13.96 (−0.03%)</div></div>
+      <div class="idx"><div class="idx-name">나스닥</div><div class="idx-val">26,040.03</div><div class="idx-chg down">▼ −173.69 (−0.66%)</div></div>
+      <div class="idx"><div class="idx-name">S&amp;P 500</div><div class="idx-val">7,483.23</div><div class="idx-chg down">▼ −16.13 (−0.22%)</div></div>
+      <div class="idx"><div class="idx-name">필라델피아 반도체</div><div class="idx-val">13,478.45</div><div class="idx-chg down">▼ −768.51 (−5.39%)</div></div>
     </div>
 
     <div class="divide"></div>
     <div class="lbl">시장 지표</div>
     <div class="chips">
-      <span class="chip">美10년물 4.46%</span><span class="chip">달러인덱스 101.3</span>
-      <span class="chip">WTI $69.5</span><span class="chip">금 $4,010</span><span class="chip">원/달러 1,546</span>
+      <span class="chip">美10년물 4.47%</span><span class="chip">달러인덱스 101.40</span>
+      <span class="chip">WTI $68.06</span><span class="chip">금 $4,034.70</span><span class="chip">원/달러 1,547.2</span>
     </div>
 
     <div class="divide"></div>
     <div class="lbl">섹터</div>
     <div class="sector">
-      <div><span style="color:var(--muted)">강세</span> · 기술·반도체·AI 전력</div>
-      <div><span style="color:var(--muted)">약세</span> · 헬스케어·금융</div>
+      <div><span style="color:var(--muted)">강세</span> · 커뮤니케이션서비스(+2.6%), 금융(+2.0%)</div>
+      <div><span style="color:var(--muted)">약세</span> · 산업재(−2.0%), 기술(−1.7%), 유틸리티(−1.3%)</div>
     </div>
 
     <div class="divide"></div>
     <div class="lbl">특징주 · 급등</div>
-    <div class="mv"><div class="mv-h"><span class="mv-n">블룸에너지 (BE)</span><span class="mv-p up">+10.83%</span></div><div class="mv-r">브루필드 파트너십 $50억→$250억 확대, AI 전력 수요</div></div>
-    <div class="mv"><div class="mv-h"><span class="mv-n">AMD (AMD)</span><span class="mv-p up">+7.68%</span></div><div class="mv-r">AI·반도체 매수세 집중</div></div>
-    <div class="mv"><div class="mv-h"><span class="mv-n">인텔 (INTC)</span><span class="mv-p up">+6.01%</span></div><div class="mv-r">반도체 섹터 동반 강세</div></div>
-    <div class="mv"><div class="mv-h"><span class="mv-n">ASML (ASML)</span><span class="mv-p up">+5.65%</span></div><div class="mv-r">반도체 장비주 강세</div></div>
-    <div class="mv"><div class="mv-h"><span class="mv-n">샌디스크 (SNDK)</span><span class="mv-p up">+5.47%</span></div><div class="mv-r">번스타인 목표가 $1,700→$3,000 상향(NAND 업황)</div></div>
-    <div class="mv"><div class="mv-h"><span class="mv-n">어플라이드머티리얼즈 (AMAT)</span><span class="mv-p up">+3.54%</span></div><div class="mv-r">AI 칩 장비 수요·목표가 상향</div></div>
-    <div class="mv"><div class="mv-h"><span class="mv-n">TSMC (TSM)</span><span class="mv-p up">+3.02%</span></div><div class="mv-r">AI 파운드리 수요 강세·목표가 상향</div></div>
-    <div class="mv"><div class="mv-h"><span class="mv-n">애플 (AAPL)</span><span class="mv-p up">+2.70%</span></div><div class="mv-r">대형 기술주 강세</div></div>
-    <div class="mv"><div class="mv-h"><span class="mv-n">엔비디아 (NVDA)</span><span class="mv-p up">+2.63%</span></div><div class="mv-r">AI 대장주 매수세 지속</div></div>
+    <div class="mv"><div class="mv-h"><span class="mv-n">메타 플랫폼스 (META)</span><span class="mv-p up">+9.0%</span></div><div class="mv-r">클라우드 인프라 사업 진출, AI 잉여 컴퓨팅 자원 외부 판매 발표</div></div>
+    <div class="mv"><div class="mv-h"><span class="mv-n">마이크로소프트 (MSFT)</span><span class="mv-p up">+3.0%</span></div><div class="mv-r">AI 클라우드 수요 확대 기대 속 빅테크 동반 강세</div></div>
+    <div class="mv" style="margin-bottom:0;"><div class="mv-h"><span class="mv-n">애플 (AAPL)</span><span class="mv-p up">+2.0%</span></div><div class="mv-r">반도체 약세 속 상대적 견조, 지수 방어주 역할</div></div>
 
     <div class="divide"></div>
     <div class="lbl">특징주 · 급락</div>
-    <div class="mv"><div class="mv-h"><span class="mv-n">일라이릴리 (LLY)</span><span class="mv-p down">−2.48%</span></div><div class="mv-r">위험선호 회복에 방어주 차익실현</div></div>
-    <div class="mv"><div class="mv-h"><span class="mv-n">존슨앤드존슨 (JNJ)</span><span class="mv-p down">−1.76%</span></div><div class="mv-r">헬스케어 방어주 약세</div></div>
+    <div class="mv"><div class="mv-h"><span class="mv-n">마이크론 (MU)</span><span class="mv-p down">−9.0%</span></div><div class="mv-r">삼성전자·SK하이닉스와 D램 담합 집단소송 피소, 3분기 실적 서프라이즈에도 공급과잉 우려로 투매</div></div>
+    <div class="mv"><div class="mv-h"><span class="mv-n">캐터필러 (CAT)</span><span class="mv-p down">−7.0%</span></div><div class="mv-r">AI 데이터센터 관련 장비 수혜주 차익실현</div></div>
+    <div class="mv"><div class="mv-h"><span class="mv-n">샌디스크 (SNDK)</span><span class="mv-p down">−10.9%</span></div><div class="mv-r">연초 대비 750%대 급등 이후 차익실현</div></div>
+    <div class="mv"><div class="mv-h"><span class="mv-n">시게이트 테크놀로지 (STX)</span><span class="mv-p down">−6.0%</span></div><div class="mv-r">메모리·스토리지 업종 동반 투매</div></div>
+    <div class="mv"><div class="mv-h"><span class="mv-n">AMD</span><span class="mv-p down">−5.0%</span></div><div class="mv-r">반도체 업종 전반 차익실현</div></div>
+    <div class="mv"><div class="mv-h"><span class="mv-n">브로드컴 (AVGO)</span><span class="mv-p down">−2.0%</span></div><div class="mv-r">반도체 업종 조정 동반 하락</div></div>
+    <div class="mv" style="margin-bottom:0;"><div class="mv-h"><span class="mv-n">엔비디아 (NVDA)</span><span class="mv-p down">−1.0%</span></div><div class="mv-r">메타발 AI 투자 사이클 우려 속 반도체 업종 조정</div></div>
+
+    <div class="divide"></div>
+    <div class="lbl">발표된 지표</div>
+    <div class="sched">
+      · ISM 제조업 PMI(6월) 53.3, 예상 54·전월 54.0 하회 — 20개월 연속 확장세지만 둔화
+    </div>
 
     <div class="divide"></div>
     <div class="lbl">오늘 미국장 일정 (한국시간)</div>
     <div class="sched">
-      · 지표: 6월 ADP 고용 21:15 (예상 +11.9만), 6월 ISM 제조업 23:00<br>
-      · 연준: 케빈 워시 의장, ECB 신트라 포럼 패널 참석<br>
-      · 참고: 6월 고용보고서 7/2(목) 조기 발표, 7/3 미 증시 휴장
+      · 지표: 비농업고용보고서(NFP)·실업률 — 7/4 독립기념일 연휴로 조기발표, 21:30<br>
+      · 연준: 특별 일정 없음<br>
+      · 기타: 7/3(금) 조기폐장, 7/4(토) 독립기념일 휴장 예정
     </div>
   </div>
 
