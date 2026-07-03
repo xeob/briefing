@@ -40,6 +40,21 @@ for m in re.finditer(r'mv-n">[^<(]*\(([A-Z]{1,6})\)</span><span class="mv-p[^"]*
     if tk in allmv and abs(pct - allmv[tk]) > 0.15:
         issues.append(f"[특징주] {tk} 등락률 HTML {pct:+.2f}% ≠ 원본 {allmv[tk]:+.2f}%")
 
+# 2b) 시장 지표 6종 칩: HTML 값 ↔ market.json 대조 (전사 오류 검출)
+chips = re.findall(r'class="chip">([^<]+)</span>', html)
+for name, val in mk.get("indicators", {}).items():
+    hit = [c.strip() for c in chips if c.strip().startswith(name)]
+    if not hit:
+        issues.append(f"[지표] '{name}' 칩이 HTML에 없음")
+        continue
+    hv = hit[0][len(name):].strip()
+    try:
+        if abs(num(hv) - num(val)) > max(abs(num(val)) * 0.001, 0.005):
+            issues.append(f"[지표] {name} HTML '{hv}' ≠ 원본 '{val}'")
+    except Exception:
+        if hv.replace(" ", "") != str(val).replace(" ", ""):
+            issues.append(f"[지표] {name} HTML '{hv}' ≠ 원본 '{val}'")
+
 # 3) 날짜: 헤더에 오늘 날짜(현지) 포함 여부
 today = datetime.datetime.now()
 ymd = f"{today.year}.{today.month:02d}.{today.day:02d}"
@@ -56,4 +71,4 @@ if issues:
     for i in issues:
         print("  •", i)
     sys.exit(1)
-print("✅ 검증 통과 — 지수·특징주 수치가 원본과 일치, 날짜 정상")
+print("✅ 검증 통과 — 지수·시장지표·특징주 수치가 원본과 일치, 날짜 정상")

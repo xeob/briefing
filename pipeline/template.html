@@ -39,6 +39,11 @@ a{color:inherit;text-decoration:none;}
 .t-wor{color:#2f6fd0;background:rgba(47,111,208,.13);}
 .t-it{color:#7a4fd0;background:rgba(122,79,208,.14);}
 .t-ind{color:#c1660f;background:rgba(193,102,15,.13);}
+.s-ind{color:#2f6fd0;background:rgba(47,111,208,.13);}
+.s-fed{color:#7a4fd0;background:rgba(122,79,208,.14);}
+.s-earn{color:#c1660f;background:rgba(193,102,15,.13);}
+.s-ipo{color:#0a7d33;background:rgba(10,125,51,.13);}
+.s-etc{color:var(--muted);background:var(--bg);}
 .heads{margin-top:5px;font-size:13.5px;line-height:1.85;}
 
 /* 키워드 (설명은 키워드 아래 줄바꿈) */
@@ -100,7 +105,7 @@ a{color:inherit;text-decoration:none;}
       <span class="head-title">경제 브리핑</span>
       <span class="head-date">2026.07.02 (목)</span>
     </div>
-    <p class="head-sub">전일 22:00 ~ 7:00 자료를 바탕으로 제작되었습니다.</p>
+    <p class="head-sub">전일 22:00 ~ 당일 06:00 자료를 바탕으로 제작되었습니다.</p>
   </div>
 
   <!-- ===== 주요 뉴스 (매일: 5개 분야, 헤드라인 href=원문) ===== -->
@@ -198,7 +203,8 @@ a{color:inherit;text-decoration:none;}
 
     <div class="divide"></div>
     <div class="lbl">발표된 지표</div>
-    <!-- 표 형식. 결과 색: 시장에 부정적(예상 대비 악화)이면 down, 긍정적이면 up, 중립이면 색 없음 -->
+    <!-- ★ 브리핑이 다루는 미국장 세션 '당일'에 실제 발표된 지표만 넣는다(예: 7/2 세션 기준이면 7/2 발표분만). 다른 날 발표 지표 금지. 당일 발표가 없으면 이 표 대신 "· 당일 발표된 주요 지표 없음" 한 줄.
+         표 형식. 결과 색: 시장에 부정적(예상 대비 악화)이면 down, 긍정적이면 up, 중립이면 색 없음 -->
     <table class="tbl">
       <tr><th>지표</th><th>결과</th><th>예상</th></tr>
       <tr><td>지표명 (월)</td><td class="num">0.0</td><td class="num">0.0</td></tr>
@@ -213,10 +219,11 @@ a{color:inherit;text-decoration:none;}
          내용 없는 구분(예: IPO 없음)만 아래 텍스트 줄로. 대형 IPO·상장 첫날 데뷔 필수 포함 -->
     <table class="tbl" style="margin-bottom:8px;">
       <tr><th>구분</th><th>내용</th><th>일시</th><th>비고</th></tr>
-      <tr><td>지표</td><td>지표명(월)</td><td>0/0(요일) 00:00</td><td>-</td></tr>
-      <tr><td>연준</td><td>내용</td><td>0/0(요일) 00:00</td><td>-</td></tr>
-      <tr><td>실적</td><td>기업명</td><td>0/0(요일)</td><td>-</td></tr>
-      <tr><td>IPO</td><td>기업명</td><td>0/0(요일)</td><td>-</td></tr>
+      <!-- 구분은 색 태그로: 지표=s-ind, 연준=s-fed, 실적=s-earn, IPO=s-ipo, 기타=s-etc -->
+      <tr><td><span class="tag s-ind">지표</span></td><td>지표명(월)</td><td>0/0(요일) 00:00</td><td>-</td></tr>
+      <tr><td><span class="tag s-fed">연준</span></td><td>내용</td><td>0/0(요일) 00:00</td><td>-</td></tr>
+      <tr><td><span class="tag s-earn">실적</span></td><td>기업명</td><td>0/0(요일)</td><td>-</td></tr>
+      <tr><td><span class="tag s-ipo">IPO</span></td><td>기업명</td><td>0/0(요일)</td><td>-</td></tr>
     </table>
     <div class="sched">
       · (내용 없는 구분만 여기 텍스트로) 예: IPO: 오늘 대형 IPO 없음
