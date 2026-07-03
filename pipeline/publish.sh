@@ -45,7 +45,10 @@ MD=$(date +%-m/%-d)
 SUMMARY=$(tr '\n' ' ' < out/summary.txt 2>/dev/null)
 [ -z "$SUMMARY" ] && SUMMARY="오늘의 주요 뉴스와 미국 시장을 확인하세요."
 TEMPLATE_ID="${KAKAO_TEMPLATE_ID:-134931}"
-ARGS=$(MD="$MD" SUMMARY="$SUMMARY" python3 -c 'import json,os;print(json.dumps({"DATE":os.environ["MD"],"SUMMARY":os.environ["SUMMARY"]},ensure_ascii=False))')
+# WDATE=그날의 영구 아카이브 날짜(YYYY-MM-DD). 카카오 템플릿 버튼 링크를
+# https://xeob.github.io/briefing/archive/#{WDATE}.html 로 두면 카드마다 그날 자료로 고정됨.
+WDATE="$TODAY"
+ARGS=$(MD="$MD" SUMMARY="$SUMMARY" WDATE="$WDATE" python3 -c 'import json,os;print(json.dumps({"DATE":os.environ["MD"],"SUMMARY":os.environ["SUMMARY"],"WDATE":os.environ["WDATE"]},ensure_ascii=False))')
 OUT=$(curl -s -X POST "https://kapi.kakao.com/v2/api/talk/memo/send" \
   -H "Authorization: Bearer ${ACCESS}" -d "template_id=${TEMPLATE_ID}" --data-urlencode "template_args=${ARGS}")
 echo "  응답: $OUT"
