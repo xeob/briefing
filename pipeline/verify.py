@@ -94,6 +94,19 @@ for m in re.finditer(r'그 외[^<]*동반[^<]*</span></div><div class="mv-r">(.*
     if body.count("<br>") > 1:
         issues.append("[특징주] 묶음행에 <br> 과다 — 공통이유 앞 1개만 허용(종목 나열 중간 <br> 금지)")
 
+# 7) 특징주: 동반 묶음에 개별 특징주 최소 이동보다 큰 종목이 섞이면 오류(개별로 올라갔어야 함)
+iu, idn = [], []
+for m in re.finditer(r'mv-n">[^<]*\([A-Z]{1,6}\)</span><span class="mv-p (up|down)">([+\-−][\d.]+)%', html):
+    (iu if m.group(1) == "up" else idn).append(abs(num(m.group(2))))
+for m in re.finditer(r'그 외[^<]*동반[^<]*</span></div><div class="mv-r">(.*?)</div>', html):
+    body = m.group(1)
+    bu = [abs(num(x)) for x in re.findall(r'class="up">([+\-−][\d.]+)%', body)]
+    bd = [abs(num(x)) for x in re.findall(r'class="down">([+\-−][\d.]+)%', body)]
+    if iu and bu and max(bu) > min(iu) + 0.05:
+        issues.append(f"[특징주] 동반강세 묶음에 개별 급등 최소(+{min(iu):.1f}%)보다 큰 종목(+{max(bu):.1f}%) 섞임 — 개별 급등으로 올릴 것")
+    if idn and bd and max(bd) > min(idn) + 0.05:
+        issues.append(f"[특징주] 동반하락 묶음에 개별 급락 최소(−{min(idn):.1f}%)보다 큰 종목(−{max(bd):.1f}%) 섞임 — 개별 급락으로 올릴 것")
+
 if issues:
     print(f"❌ 검증 실패 {len(issues)}건 — 수정 후 재검증:")
     for i in issues:
