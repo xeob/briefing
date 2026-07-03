@@ -55,7 +55,7 @@ a{color:inherit;text-decoration:none;}
 .idx{background:var(--bg);border:0.5px solid var(--border);border-radius:10px;padding:10px 12px;}
 .idx-name{font-size:12px;color:var(--sub);margin-bottom:3px;}
 .idx-val{font-size:17px;font-weight:600;}
-.idx-chg{font-size:12px;font-weight:600;margin-top:3px;}
+.idx-chg{font-size:12px;font-weight:600;margin-top:3px;white-space:nowrap;}
 .up{color:var(--up);} .down{color:var(--down);}
 .lbl{font-size:11px;color:var(--muted);margin-bottom:5px;}
 .chips{display:flex;flex-wrap:nowrap;gap:5px;overflow-x:auto;}
@@ -73,6 +73,19 @@ a{color:inherit;text-decoration:none;}
 .tbl tr:last-child td{border-bottom:none;}
 .tbl .num{font-weight:600;}
 .foot{text-align:center;font-size:11px;color:var(--muted);margin-top:14px;}
+@media (max-width:430px){
+  .wrap{padding:16px 12px 20px;}
+  .heads{font-size:13px;}
+  .idx-val{font-size:15px;}
+  .idx-chg{font-size:10.5px;}
+  .tbl{font-size:11px;}
+  .tbl td{padding:6px 6px 6px 0;}
+  .mv-r{font-size:11.5px;}
+  .cmt{font-size:12px;}
+  .sum{font-size:13px;}
+  .sched{font-size:12px;}
+  .kw-d{font-size:11.5px;}
+}
 </style>
 </head>
 <body>
@@ -168,27 +181,28 @@ a{color:inherit;text-decoration:none;}
 
     <div class="divide"></div>
     <div class="lbl">특징주 · 급등</div>
-    <div class="mv"><div class="mv-h"><span class="mv-n">Genuine Parts (GPC)</span><span class="mv-p up">+12.92%</span></div><div class="mv-r">오릴리 오토모티브가 GPC 자동차부품 사업부에 현금 인수를 제안했다는 보도에 인수 기대감 급등</div></div>
-    <div class="mv"><div class="mv-h"><span class="mv-n">Moderna (MRNA)</span><span class="mv-p up">+10.01%</span></div><div class="mv-r">FDA 자문위, mRNA-1010 계절독감 백신 유효성·안전성 만장일치 승인 권고(8/5 최종 결정 앞둠)<br>차세대 CAR-T 파이프라인(mRNA-6007) 2027년 임상 진입 계획도 기대감 보태</div></div>
-    <div class="mv"><div class="mv-h"><span class="mv-n">Figma (FIG)</span><span class="mv-p up">+9.49%</span></div><div class="mv-r">씨티그룹이 매수 등급·목표가 $36으로 커버리지 개시, AI 신기능 출시와 맞물려 소프트웨어 업종 전반 반등에 동반 상승</div></div>
-    <div class="mv"><div class="mv-h"><span class="mv-n">Abivax (ABVX)</span><span class="mv-p up">+9.12%</span></div><div class="mv-r">궤양성 대장염 치료제 오베파짐토드 3상 유지요법 데이터에서 임상관해율 37.2% 등 우수한 효능·안전성 확인, BTIG·제프리스 목표가 상향<br>8억달러 규모 유상증자도 성공적으로 마무리</div></div>
-    <div class="mv"><div class="mv-h"><span class="mv-n">Honeywell Aerospace (HONA)</span><span class="mv-p up">+8.74%</span></div><div class="mv-r">S&amp;P500·S&amp;P100 편입(6/29) 이후 지수 추종 자금 유입 속 스핀오프 초기 주가 변동성 확대</div></div>
-    <div class="mv"><div class="mv-h"><span class="mv-n">Rivian (RIVN)</span><span class="mv-p up">+8.44%</span></div><div class="mv-r">2분기 인도량이 목표치를 상회, 2026년 연간 인도 가이던스를 6.2만~6.7만대에서 6.5만~7만대로 상향<br>AT&amp;T와 R2 5G 내장 협력 확대도 호재</div></div>
-    <div class="mv"><div class="mv-h"><span class="mv-n">Strategy (MSTR)</span><span class="mv-p up">+7.90%</span></div><div class="mv-r">신규 '디지털 크레딧 자본 프레임워크' 발표(최대 10억달러 자사주 매입·비트코인 일부 현금화 프로그램)로 재무 유연성 확대 평가<br>비트코인 520개 추가 매입, 이날 비트코인 가격도 +2.55% 동반 상승</div></div>
-    <div class="mv"><div class="mv-h"><span class="mv-n">AstraZeneca (AZN)</span><span class="mv-p up">+6.14%</span></div><div class="mv-r">엔허투, EU서 종양 불문(tumor-agnostic) 항암제로 첫 승인…유럽 시장 즉시 진입<br>MULBERRY 3상·저인산증뇨증 3상 등 파이프라인 호재 겹쳐</div></div>
-    <div class="mv"><div class="mv-h"><span class="mv-n">Apple (AAPL)</span><span class="mv-p up">+4.84%</span></div><div class="mv-r">폴더블 아이폰 생산목표를 700만~800만대에서 1000만대로 상향하는 등 신모델 5종 공격적 출시 계획 보도, 모건스탠리 "2027회계연도 2.5억대 출하 가능"</div></div>
-    <div class="mv"><div class="mv-h"><span class="mv-n">Netflix (NFLX)</span><span class="mv-p up">+4.66%</span></div><div class="mv-r">워너브러더스디스커버리 인수설 관련 우려 해소, NBC유니버설 인수설도 부인되며 M&amp;A 불확실성 해소에 반등</div></div>
+    <div class="mv"><div class="mv-h"><span class="mv-n">제뉴인파츠 (GPC)</span><span class="mv-p up">+12.92%</span></div><div class="mv-r">오릴리 오토모티브의 자동차부품 사업부 현금 인수 제안 보도</div></div>
+    <div class="mv"><div class="mv-h"><span class="mv-n">모더나 (MRNA)</span><span class="mv-p up">+10.01%</span></div><div class="mv-r">FDA 자문위, 독감 백신 mRNA-1010 만장일치 승인 권고<br>차세대 CAR-T 파이프라인 임상 계획도 기대감 보태</div></div>
+    <div class="mv"><div class="mv-h"><span class="mv-n">피그마 (FIG)</span><span class="mv-p up">+9.49%</span></div><div class="mv-r">씨티, 매수 등급·목표가 $36 커버리지 개시<br>AI 신기능 출시·소프트웨어 업종 반등 동반</div></div>
+    <div class="mv"><div class="mv-h"><span class="mv-n">아비박스 (ABVX)</span><span class="mv-p up">+9.12%</span></div><div class="mv-r">궤양성 대장염 치료제 3상 데이터 호조, 목표가 상향<br>8억달러 유상증자도 성공적으로 마무리</div></div>
+    <div class="mv"><div class="mv-h"><span class="mv-n">하니웰에어로 (HONA)</span><span class="mv-p up">+8.74%</span></div><div class="mv-r">S&amp;P500 편입 후 지수 추종 자금 유입 지속</div></div>
+    <div class="mv"><div class="mv-h"><span class="mv-n">리비안 (RIVN)</span><span class="mv-p up">+8.44%</span></div><div class="mv-r">2분기 인도량 목표 상회, 연간 가이던스 상향<br>AT&amp;T와 R2 차량 5G 협력 확대</div></div>
+    <div class="mv"><div class="mv-h"><span class="mv-n">스트래티지 (MSTR)</span><span class="mv-p up">+7.90%</span></div><div class="mv-r">자사주 매입 등 새 자본 프레임워크 발표<br>비트코인 520개 추가 매입, BTC +2.55% 동반 상승</div></div>
+    <div class="mv"><div class="mv-h"><span class="mv-n">아스트라제네카 (AZN)</span><span class="mv-p up">+6.14%</span></div><div class="mv-r">엔허투, EU 종양 불문 항암제 첫 승인<br>3상 파이프라인 호재 겹침</div></div>
+    <div class="mv"><div class="mv-h"><span class="mv-n">애플 (AAPL)</span><span class="mv-p up">+4.84%</span></div><div class="mv-r">폴더블 아이폰 생산목표 1,000만대로 상향 보도<br>모건스탠리 "2027년 2.5억대 출하 가능"</div></div>
+    <div class="mv"><div class="mv-h"><span class="mv-n">넷플릭스 (NFLX)</span><span class="mv-p up">+4.66%</span></div><div class="mv-r">워너·NBC유니버설 인수설 부인, M&amp;A 불확실성 해소</div></div>
 
     <div class="divide"></div>
     <div class="lbl">특징주 · 급락</div>
-    <div class="mv"><div class="mv-h"><span class="mv-n">Vicor (VICR)</span><span class="mv-p down">−19.21%</span></div><div class="mv-r">창업자 겸 CEO 빈치아렐리의 지속적 내부자 매도 공시가 이어지며 최근 급등분에 대한 차익실현 매물 출회</div></div>
-    <div class="mv"><div class="mv-h"><span class="mv-n">SanDisk (SNDK)</span><span class="mv-p down">−14.13%</span></div><div class="mv-r">삼성전자·SK하이닉스·마이크론이 D램 공급을 담합해 가격을 끌어올렸다는 美 캘리포니아 집단소송 제기에 메모리주 투매, 기술적 지지선 붕괴<br>최근 급등에 따른 차익실현도 가세</div></div>
-    <div class="mv"><div class="mv-h"><span class="mv-n">KLA (KLAC)</span><span class="mv-p down">−11.51%</span></div><div class="mv-r">메모리 담합 소송 여파로 고객사(메모리 반도체 업체) 투자심리가 위축되며 반도체 장비주 동반 약세</div></div>
-    <div class="mv"><div class="mv-h"><span class="mv-n">Lam Research (LRCX)</span><span class="mv-p down">−10.19%</span></div><div class="mv-r">KLA와 같은 이유로 메모리 장비 수요 둔화 우려 속 동반 급락</div></div>
-    <div class="mv"><div class="mv-h"><span class="mv-n">Marvell Technology (MRVL)</span><span class="mv-p down">−9.84%</span></div><div class="mv-r">메모리·커스텀실리콘 밸류체인 노출에 반도체 업종 전반 조정 속 동반 하락<br>외 어플라이드머티어리얼즈·마이크론·인텔·AMD·ASML·퀄컴·맥스리니어 등 반도체·메모리 관련주 동반 약세(D램 담합 소송·AI 밸류에이션 경계감에 업종 전반 투매)</div></div>
-    <div class="mv"><div class="mv-h"><span class="mv-n">Tesla (TSLA)</span><span class="mv-p down">−7.49%</span></div><div class="mv-r">2분기 인도량이 시장 예상(40.7만대)을 크게 상회한 48.0만대 기록에도 "재료 소진" 심리 우세<br>6월 고용지표 부진, EV 세액공제 종료에 따른 하반기 美 수요 둔화 우려 겹쳐</div></div>
-    <div class="mv"><div class="mv-h"><span class="mv-n">Dell Technologies (DELL)</span><span class="mv-p down">−7.27%</span></div><div class="mv-r">D램 가격 급등에 따른 서버·PC 원가 부담 우려, 최근 200%에 달했던 급등분에 대한 밸류에이션 부담도 반영</div></div>
-    <div class="mv"><div class="mv-h"><span class="mv-n">Meta Platforms (META)</span><span class="mv-p down">−4.90%</span></div><div class="mv-r">여유 AI 컴퓨팅 자원을 판매하는 클라우드 사업 진출 발표 이후, 광고 대비 낮은 마진 우려·2027년 설비투자 2000억달러 확대 전망에 차익실현 매물 출회</div></div>
+    <div class="mv"><div class="mv-h"><span class="mv-n">바이코 (VICR)</span><span class="mv-p down">−19.21%</span></div><div class="mv-r">CEO의 지속적 내부자 매도 공시에 급등분 차익실현</div></div>
+    <div class="mv"><div class="mv-h"><span class="mv-n">샌디스크 (SNDK)</span><span class="mv-p down">−14.13%</span></div><div class="mv-r">D램 담합 집단소송 제기에 메모리주 투매<br>최근 급등에 따른 차익실현도 가세</div></div>
+    <div class="mv"><div class="mv-h"><span class="mv-n">KLA (KLAC)</span><span class="mv-p down">−11.51%</span></div><div class="mv-r">담합 소송發 메모리 투자심리 위축에 장비주 동반 약세</div></div>
+    <div class="mv"><div class="mv-h"><span class="mv-n">램리서치 (LRCX)</span><span class="mv-p down">−10.19%</span></div><div class="mv-r">메모리 장비 수요 둔화 우려 속 동반 급락</div></div>
+    <div class="mv"><div class="mv-h"><span class="mv-n">테슬라 (TSLA)</span><span class="mv-p down">−7.49%</span></div><div class="mv-r">2분기 인도량 48만대로 예상(40.7만) 크게 상회에도 재료 소진<br>EV 세액공제 종료發 하반기 수요 둔화 우려 겹침</div></div>
+    <div class="mv"><div class="mv-h"><span class="mv-n">델 (DELL)</span><span class="mv-p down">−7.27%</span></div><div class="mv-r">D램 가격 급등에 서버·PC 원가 부담 우려<br>최근 급등분 밸류에이션 부담도 반영</div></div>
+    <div class="mv"><div class="mv-h"><span class="mv-n">마이크론 (MU)</span><span class="mv-p down">−5.49%</span></div><div class="mv-r">삼성전자·SK하이닉스와 함께 D램 담합 집단소송 피소 당사자</div></div>
+    <div class="mv"><div class="mv-h"><span class="mv-n">메타 플랫폼스 (META)</span><span class="mv-p down">−4.90%</span></div><div class="mv-r">클라우드 진출 발표 후 마진 우려·설비투자 확대 전망에 차익실현</div></div>
+    <div class="mv" style="margin-bottom:0;"><div class="mv-h"><span class="mv-n">그 외 반도체 동반 하락</span></div><div class="mv-r">맥스리니어 <span class="down">−17.2%</span> · 마벨 <span class="down">−9.8%</span> · AMAT <span class="down">−7.4%</span> · 인텔 <span class="down">−5.3%</span> · AMD <span class="down">−4.3%</span> · ASML <span class="down">−4.0%</span> · 퀄컴 <span class="down">−3.1%</span><br>D램 담합 소송·AI 밸류에이션 경계감에 업종 전반 투매</div></div>
 
     <div class="divide"></div>
     <div class="lbl">발표된 지표</div>
@@ -201,15 +215,19 @@ a{color:inherit;text-decoration:none;}
 
     <div class="divide"></div>
     <div class="lbl">오늘 미국장 일정 (한국시간)</div>
-    <table class="tbl" style="margin-bottom:8px;">
+    <table class="tbl" style="margin-bottom:10px;">
       <tr><th>발표될 지표</th><th>날짜</th><th>시간</th><th>특이사항</th></tr>
-      <tr><td>ISM 서비스업 PMI(6월)</td><td>7/6(월)</td><td>23:00</td><td>원래 7/3 예정, 휴장으로 순연</td></tr>
+      <tr><td>ISM 서비스업 PMI(6월)</td><td>7/6(월)</td><td>23:00</td><td>휴장으로 순연</td></tr>
+    </table>
+    <table class="tbl" style="margin-bottom:8px;">
+      <tr><th>구분</th><th>내용</th><th>일시</th><th>비고</th></tr>
+      <tr><td>연준</td><td>6월 FOMC 의사록 공개</td><td>7/9(목) 03:00</td><td>-</td></tr>
+      <tr><td>실적</td><td>펩시코</td><td>7/9(목)</td><td>어닝시즌 개막</td></tr>
+      <tr><td>실적</td><td>JP모건·씨티·웰스파고</td><td>7/14~15</td><td>대형은행</td></tr>
     </table>
     <div class="sched">
-      · 휴장: 美 증시는 독립기념일(7/4, 토요일) 대체휴장으로 오늘(7/3) 전 종목 휴장, 월요일(7/6) 재개<br>
-      · 연준: 6월 17일 FOMC 회의 의사록 공개 예정 (7/8, 한국시간 7/9 새벽 3시)<br>
-      · 실적/이벤트: 2분기 어닝시즌 개막 임박 — 7/9 펩시코, 7/14~15 JPMorgan·씨티·웰스파고 등 대형 은행 실적 발표<br>
-      · IPO: 오늘 대형 IPO 없음(美 증시 휴장). 참고: 7/1 벤딩스푼즈(나스닥, 16억달러), 라임(나스닥) 상장
+      · 휴장: 독립기념일 대체휴장으로 오늘(7/3) 휴장, 7/6(월) 재개<br>
+      · IPO: 오늘 대형 IPO 없음 (참고: 7/1 벤딩스푼즈·라임 나스닥 상장)
     </div>
   </div>
 
