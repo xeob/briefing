@@ -25,20 +25,20 @@ def cnbc_close(sym):
                             f"https://quote.cnbc.com/quote-html-webservice/restQuote/symbolType/symbol?symbols={sym}&requestMethod=itv&noform=1&partnerId=2&output=json"],
                            capture_output=True, text=True, check=True)
         q = json.loads(r.stdout)["FormattedQuoteResult"]["FormattedQuote"][0]
-        return float(str(q["last"]).replace(",", ""))
+        return float(str(q["last"]).replace(",", "").replace("%", ""))
     except Exception:
         return None
-# 지표: (라벨, 심볼, 포맷함수)
+# 지표: (라벨, 야후심볼, 포맷함수, CNBC심볼, 교차검증 허용오차)
 IND = [
-    ("美10년물", "^TNX", lambda v: f"{v:.2f}%"),
-    ("달러인덱스", "DX-Y.NYB", lambda v: f"{v:.2f}"),
-    ("원/달러", "KRW=X", lambda v: f"{v:,.1f}"),
-    ("WTI", "CL=F", lambda v: f"${v:.2f}"),
-    ("BTC", "BTC-USD", lambda v: f"${v:,.0f}"),
-    ("금", "GC=F", lambda v: f"${v:,.1f}"),
+    ("美10년물", "^TNX", lambda v: f"{v:.2f}%", "US10Y", 0.03),
+    ("달러인덱스", "DX-Y.NYB", lambda v: f"{v:.2f}", ".DXY", 0.2),
+    ("원/달러", "KRW=X", lambda v: f"{v:,.1f}", "KRW=", 3),
+    ("WTI", "CL=F", lambda v: f"${v:.2f}", "@CL.1", 0.4),
+    ("BTC", "BTC-USD", lambda v: f"${v:,.0f}", "BTC.CM=", 500),
+    ("금", "GC=F", lambda v: f"${v:,.1f}", "@GC.1", 12),
 ]
 
-out = {"generated_kst": time.strftime("%Y-%m-%d %H:%M"), "indices": {}, "indicators": {}, "errors": []}
+out = {"generated_kst": time.strftime("%Y-%m-%d %H:%M"), "indices": {}, "indicators": {}, "errors": [], "notes": []}
 
 for name, sym in INDICES:
     try:
@@ -63,10 +63,19 @@ for name, sym in INDICES:
     except Exception as e:
         out["errors"].append(f"{name}({sym}): {e}")
 
-for name, sym, fmt in IND:
+for name, sym, fmt, csym, tol in IND:
     try:
-        cl = get(sym)
-        out["indicators"][name] = fmt(cl[-1])
+        yv = get(sym)[-1]
+        cv = cnbc_close(csym)  # CNBC 2차 소스 (realtime)
+        if cv is None:
+            chosen = yv  # 2차소스 없음 → 야후 사용
+        elif abs(cv - yv) <= tol:
+            chosen = yv  # 일치
+        else:
+            # 불일치: 야후 일봉 종가가 stale일 가능성 → realtime CNBC 채택
+            chosen = cv
+            out["notes"].append(f"{name} 야후 {fmt(yv)} vs CNBC {fmt(cv)} 불일치 → CNBC(realtime) 채택")
+        out["indicators"][name] = fmt(chosen)
         time.sleep(0.1)
     except Exception as e:
         out["errors"].append(f"{name}({sym}): {e}")
@@ -77,5 +86,7 @@ print(f"지수 {len(out['indices'])} / 지표 {len(out['indicators'])} (오류 {
 for n, d in out["indices"].items():
     print(f"  {n}: {d['close']:,} ({d['chg']:+,.2f}, {d['pct']:+.2f}%)")
 print("  " + " · ".join(f"{n} {v}" for n, v in out["indicators"].items()))
+for n in out["notes"]:
+    print("  교차검증:", n)
 for e in out["errors"]:
     print("  오류:", e)

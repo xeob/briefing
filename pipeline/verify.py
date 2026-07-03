@@ -66,6 +66,34 @@ if hm and ymd not in hm.group(1):
 for e in mk.get("errors", []):
     issues.append(f"[market.py] {e}")
 
+# 5) 주요 뉴스 날짜창: 링크 URL의 날짜 토큰이 창 밖(전일 이전)이면 구뉴스로 간주
+#    창 = 전일 00:00 ~ 당일(관대). 전일보다 이전 날짜면 위반(예: 7/4 발행에 7/2·6/25 기사).
+win_start = (today - datetime.timedelta(days=1)).date()
+news_html = html.split("핫한 키워드")[0]  # 주요 뉴스 영역만
+seen = set()
+for m in re.finditer(r'href="([^"]+)"', news_html):
+    url = m.group(1)
+    dm = re.search(r'(?:^|[/A])(20\d{2})[/\-]?(\d{2})[/\-]?(\d{2})(?:\D|\d{2,}|$)', url)
+    if not dm:
+        continue
+    try:
+        d = datetime.date(int(dm.group(1)), int(dm.group(2)), int(dm.group(3)))
+    except ValueError:
+        continue
+    if not (today.date() - datetime.timedelta(days=120) <= d <= today.date()):
+        continue  # 날짜로 보기 어려운 토큰(먼 과거/미래)은 무시
+    if d < win_start and url not in seen:
+        seen.add(url)
+        issues.append(f"[뉴스] 창 밖 구뉴스 의심({d}): {url[:70]} — 전일 22:00~발행 창 기사로 교체")
+
+# 6) 특징주 묶음행: 종목명+% 결합(&nbsp;) 및 억지 <br> 검사
+for m in re.finditer(r'그 외[^<]*동반[^<]*</span></div><div class="mv-r">(.*?)</div>', html):
+    body = m.group(1)
+    if re.search(r'[가-힣A-Za-z0-9] <span class="(?:up|down)">', body):
+        issues.append("[특징주] 묶음행 종목명과 %가 &nbsp;로 결합되지 않음 — 줄바꿈이 종목명/%를 가름")
+    if body.count("<br>") > 1:
+        issues.append("[특징주] 묶음행에 <br> 과다 — 공통이유 앞 1개만 허용(종목 나열 중간 <br> 금지)")
+
 if issues:
     print(f"❌ 검증 실패 {len(issues)}건 — 수정 후 재검증:")
     for i in issues:
