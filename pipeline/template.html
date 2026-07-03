@@ -190,9 +190,10 @@ a{color:inherit;text-decoration:none;}
     <!-- 종목명은 반드시 한글 (티커 병기). 급등은 상승률 큰 순, 급락은 하락폭 큰 순.
          이유는 한 줄당 40자 이내로 간결히, 2개 이상이면 <br> 줄바꿈.
          이유 못 찾으면(7%+만 유지) 급등 "상승 이유 미확인" / 급락 "하락 이유 미확인".
-         업종 묶음은 아래처럼 별도 행으로, 각 종목 %를 색과 함께 병기:
+         업종 묶음은 아래처럼 별도 행으로, 각 종목 %를 색과 함께 병기.
+         ★ 종목명과 % 사이에는 일반 공백이 아니라 &nbsp; 를 넣어 "종목명+%"가 줄바꿈으로 갈라지지 않게 한다(줄바꿈은 종목 사이 ' · '에서만 자동으로). 종목 나열 중간에 억지 <br>를 넣지 말고 자연스럽게 흐르게 두되, 종목 나열과 '공통 이유' 사이에만 <br> 하나:
          <div class="mv"><div class="mv-h"><span class="mv-n">그 외 ○○ 동반 하락</span></div>
-           <div class="mv-r">종목A <span class="down">−0.0%</span> · 종목B <span class="down">−0.0%</span><br>업종 공통 이유</div></div> -->
+           <div class="mv-r">종목A&nbsp;<span class="down">−0.0%</span> · 종목B&nbsp;<span class="down">−0.0%</span><br>업종 공통 이유</div></div> -->
     <div class="mv"><div class="mv-h"><span class="mv-n">종목명 (TICKER)</span><span class="mv-p up">+0.00%</span></div><div class="mv-r">이유 1<br>이유 2 (있을 때만)</div></div>
     <!-- 급등 최대 10개 반복 -->
 
