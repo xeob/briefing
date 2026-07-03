@@ -29,8 +29,9 @@ def cnbc_close(sym):
     except Exception:
         return None
 # 지표: (라벨, 야후심볼, 포맷함수, CNBC심볼, 교차검증 허용오차)
+# 국채금리는 소수 3자리, CNBC(realtime)를 1차로 채택(투자닷컴과 더 근접)
 IND = [
-    ("美10년물", "^TNX", lambda v: f"{v:.2f}%", "US10Y", 0.03),
+    ("美10년물", "^TNX", lambda v: f"{v:.3f}%", "US10Y", 0.03),
     ("달러인덱스", "DX-Y.NYB", lambda v: f"{v:.2f}", ".DXY", 0.2),
     ("원/달러", "KRW=X", lambda v: f"{v:,.1f}", "KRW=", 3),
     ("WTI", "CL=F", lambda v: f"${v:.2f}", "@CL.1", 0.4),
@@ -66,15 +67,14 @@ for name, sym in INDICES:
 for name, sym, fmt, csym, tol in IND:
     try:
         yv = get(sym)[-1]
-        cv = cnbc_close(csym)  # CNBC 2차 소스 (realtime)
+        cv = cnbc_close(csym)  # CNBC realtime (투자닷컴과 근접) = 1차
         if cv is None:
-            chosen = yv  # 2차소스 없음 → 야후 사용
-        elif abs(cv - yv) <= tol:
-            chosen = yv  # 일치
+            chosen = yv  # CNBC 실패 → 야후 폴백
+            out["notes"].append(f"{name} CNBC 실패 → 야후 {fmt(yv)} 사용, 투자닷컴 웹 재확인 권장")
         else:
-            # 불일치: 야후 일봉 종가가 stale일 가능성 → realtime CNBC 채택
-            chosen = cv
-            out["notes"].append(f"{name} 야후 {fmt(yv)} vs CNBC {fmt(cv)} 불일치 → CNBC(realtime) 채택")
+            chosen = cv  # CNBC 채택
+            if abs(cv - yv) > tol:
+                out["notes"].append(f"{name} 야후 {fmt(yv)} vs CNBC {fmt(cv)} 차이 → CNBC 채택, 투자닷컴 웹 재확인 권장")
         out["indicators"][name] = fmt(chosen)
         time.sleep(0.1)
     except Exception as e:

@@ -21,7 +21,10 @@
 - **핫한 키워드 Top 3** — 기간: **실행 시점(06:00) 기준 최근 24시간** 급상승 이슈. 경제 전반 최다 검색 이슈(구글 트렌드 급상승 + 포털 경제면 '많이 본 뉴스' + 실검 집계). 급등폭·중요도·교차등장·이유명확성으로 채점. (주의: 한국은 2021년 이후 단일 공식 실시간 검색어 서비스가 없어 근사치 — 이 파트만 스크립트 검증 대상 아님.)
 - **전일 미국 시장**:
   - 지수 4종(다우·나스닥·S&P·필라 반도체): 종가 + 등락폭 + 등락률
-  - **수치 = 스크립트 1차 소스 (필수)**: `python3 market.py` 를 실행해 `out/market.json` 을 생성한다. 여기에 지수 4종(다우·나스닥·S&P·SOX 종가+등락폭+등락률)과 지표 6종(美10년물·달러인덱스·원/달러·WTI·BTC·금)이 Yahoo 일봉 종가 기반으로 들어 있다. **브리핑 수치는 이 값을 그대로 쓴다.** 요약 기사 속 수치 사용 금지(오차 실증: 7/1 SOX 기사 13,478 vs 실제 13,353). market.json 값이 상식 밖(예: 지수 하루 ±10%)이거나 오류가 있으면 그때만 investing.com historical-data로 교차확인·보정: SOX=investing.com/indices/phlx-semiconductor-historical-data, 원/달러=.../currencies/usd-krw-historical-data, BTC=.../crypto/bitcoin/historical-data. market.py 실패 시에도 investing.com으로 대체.
+  - **수치 = 스크립트 1차 + investing.com 3차 교차검증 (필수, 신뢰가 생명)**: `python3 market.py` 로 `out/market.json` 생성. 지수 4종·지표 6종이 **Yahoo + CNBC 2소스 교차검증**으로 들어 있다(국채금리는 소수 3자리, 지표는 CNBC realtime 1차 채택 — 투자닷컴과 더 근접). **市場 수치는 이 값을 기본으로 쓰되, 반드시 investing.com과 3차 교차검증한다:**
+    - 지수 4종·지표 6종 값을 investing.com에서 웹으로 확인(직접 접속이 Cloudflare로 막히면 WebSearch 스니펫/구글 캐시/모바일·amp 페이지로 값 확보). **investing.com 값이 market.json과 다르면 investing.com 값을 정답으로 보고 out/market.json 을 그 값으로 수정한 뒤 HTML을 만든다**(예: 달러인덱스는 Yahoo/CNBC가 investing과 자주 어긋남 — investing 값 채택). 오차범위 거의 0을 목표.
+    - investing.com URL: 달러인덱스=investing.com/indices/usdollar, 원/달러=.../currencies/usd-krw, WTI=.../commodities/crude-oil, 금=.../commodities/gold, BTC=.../crypto/bitcoin/btc-usd, 美10년물=.../rates-bonds/u.s.-10-year-bond-yield, SOX=.../indices/phlx-semiconductor.
+    - market.json 값이 상식 밖(지수 하루 ±10%)이면 investing 우선. market.py 완전 실패 시 investing.com으로 대체. **요약 기사 속 수치 사용 금지**(오차 실증: 7/1 SOX 기사 13,478 vs 실제 13,353).
   - 시장 지표 **6종 고정, 2행×3열 그리드(가로 스크롤 금지)**: 윗줄 美10년물·달러인덱스·원/달러 / 아랫줄 WTI·비트코인·금 (값은 out/market.json의 indicators 그대로)
   - 섹터 강세/약세: **강세는 강한 순, 약세는 약한 순**으로 나열. 색 태그(강세=초록 t-strong, 약세=빨강 t-weak) + 이유 설명은 회색 노트(sector-note)
   - **특징주(핵심!) — 확정 규칙 (2026-07-02 사용자와 합의)**: 먼저 `python3 movers.py` 실행 → `out/movers.json`의 `qualified_up`/`qualified_down`(각 최대 25, M7·메가캡 전원 + 일반 티어 |7%|+ 전원 강제 포함 — 메가캡이 많아도 큰 이동 일반주가 잘리지 않음).
