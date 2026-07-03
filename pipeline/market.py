@@ -16,6 +16,18 @@ def get(sym):
     return closes  # 마지막이 최근 종가
 
 INDICES = [("다우", "^DJI"), ("나스닥", "^IXIC"), ("S&P 500", "^GSPC"), ("필라델피아 반도체", "^SOX")]
+CNBC = {"다우": ".DJI", "나스닥": ".IXIC", "S&P 500": ".SPX", "필라델피아 반도체": ".SOX"}
+
+def cnbc_close(sym):
+    """CNBC 2차 소스 종가 (교차검증용). 실패 시 None."""
+    try:
+        r = subprocess.run(["curl", "-s", "-m", "12", "-H", "User-Agent: Mozilla/5.0",
+                            f"https://quote.cnbc.com/quote-html-webservice/restQuote/symbolType/symbol?symbols={sym}&requestMethod=itv&noform=1&partnerId=2&output=json"],
+                           capture_output=True, text=True, check=True)
+        q = json.loads(r.stdout)["FormattedQuoteResult"]["FormattedQuote"][0]
+        return float(str(q["last"]).replace(",", ""))
+    except Exception:
+        return None
 # 지표: (라벨, 심볼, 포맷함수)
 IND = [
     ("美10년물", "^TNX", lambda v: f"{v:.2f}%"),
@@ -33,8 +45,20 @@ for name, sym in INDICES:
         cl = get(sym)
         close, prev = cl[-1], cl[-2]
         chg = close - prev
-        out["indices"][name] = {"close": round(close, 2), "chg": round(chg, 2),
-                                "pct": round(chg / prev * 100, 2)}
+        rec = {"close": round(close, 2), "chg": round(chg, 2), "pct": round(chg / prev * 100, 2)}
+        # 교차검증: CNBC 2차 소스 종가와 대조
+        c2 = cnbc_close(CNBC[name])
+        if c2 is None:
+            rec["verify"] = "2차소스 없음"
+        elif abs(c2 - close) / close <= 0.002:  # 0.2% 이내 = 일치
+            rec["verify"] = "일치"
+        else:
+            rec["verify"] = f"불일치(야후 {close:,.2f} vs CNBC {c2:,.2f}) — investing.com 재확인 필요"
+            out["errors"].append(f"{name} 교차검증 불일치: {rec['verify']}")
+        # 이상치 감지
+        if abs(rec["pct"]) >= 10:
+            out["errors"].append(f"{name} 이상 변동 {rec['pct']:+.2f}% — 값 재확인 권장")
+        out["indices"][name] = rec
         time.sleep(0.1)
     except Exception as e:
         out["errors"].append(f"{name}({sym}): {e}")
