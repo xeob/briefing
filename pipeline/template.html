@@ -219,11 +219,12 @@ a{color:inherit;text-decoration:none;}
          내용 없는 구분(예: IPO 없음)만 아래 텍스트 줄로. 대형 IPO·상장 첫날 데뷔 필수 포함 -->
     <table class="tbl" style="margin-bottom:8px;">
       <tr><th>구분</th><th>내용</th><th>일시</th><th>비고</th></tr>
-      <!-- 구분은 색 태그로: 지표=s-ind, 연준=s-fed, 실적=s-earn, IPO=s-ipo, 기타=s-etc -->
-      <tr><td><span class="tag s-ind">지표</span></td><td>지표명(월)</td><td>0/0(요일) 00:00</td><td>-</td></tr>
-      <tr><td><span class="tag s-fed">연준</span></td><td>내용</td><td>0/0(요일) 00:00</td><td>-</td></tr>
-      <tr><td><span class="tag s-earn">실적</span></td><td>기업명</td><td>0/0(요일)</td><td>-</td></tr>
-      <tr><td><span class="tag s-ipo">IPO</span></td><td>기업명</td><td>0/0(요일)</td><td>-</td></tr>
+      <!-- 구분은 색 태그로: 지표=s-ind, 연준=s-fed, 실적=s-earn, IPO=s-ipo, 기타=s-etc.
+           일시는 날짜 위·시간 아래로 줄바꿈(<br>). 시간 미정이면 날짜만. -->
+      <tr><td><span class="tag s-ind">지표</span></td><td>지표명(월)</td><td>0/0 (요일)<br>00:00</td><td>-</td></tr>
+      <tr><td><span class="tag s-fed">연준</span></td><td>내용</td><td>0/0 (요일)<br>00:00</td><td>-</td></tr>
+      <tr><td><span class="tag s-earn">실적</span></td><td>기업명</td><td>0/0 (요일)</td><td>-</td></tr>
+      <tr><td><span class="tag s-ipo">IPO</span></td><td>기업명</td><td>0/0 (요일)</td><td>-</td></tr>
     </table>
     <div class="sched">
       · (내용 없는 구분만 여기 텍스트로) 예: IPO: 오늘 대형 IPO 없음
