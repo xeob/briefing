@@ -84,7 +84,7 @@ for m in re.finditer(r'href="([^"]+)"', news_html):
         continue  # 날짜로 보기 어려운 토큰(먼 과거/미래)은 무시
     if d < win_start and url not in seen:
         seen.add(url)
-        issues.append(f"[뉴스] 창 밖 구뉴스 의심({d}): {url[:70]} — 전일 22:00~발행 창 기사로 교체")
+        issues.append(f"[뉴스] 창 밖 구뉴스 의심({d}): {url[:70]} — 전일 15:20~발행 창 기사로 교체")
 
 # 6) 특징주 묶음행: 종목명+% 결합(&nbsp;) 및 억지 <br> 검사
 for m in re.finditer(r'그 외[^<]*동반[^<]*</span></div><div class="mv-r">(.*?)</div>', html):
