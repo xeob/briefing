@@ -10,7 +10,7 @@ cd "$(dirname "$0")"
 
 HTML="out/index.html"
 [ -f "$HTML" ] || { echo "ERROR: $HTML 없음 — 먼저 브리핑 생성"; exit 1; }
-TODAY=$(date +%F)
+TODAY=$(TZ=Asia/Seoul date +%F)
 
 # ★ 게시 게이트: verify.py 통과 못 하면 게시·발송을 기계적으로 중단(모델 성실성과 무관)
 echo "[검증] verify.py..."
@@ -41,7 +41,7 @@ ACCESS=$(echo "$RESP" | python3 -c "import sys,json;print(json.load(sys.stdin)['
 NEWRT=$(echo "$RESP" | python3 -c "import sys,json;print(json.load(sys.stdin).get('refresh_token',''))")
 [ -n "$NEWRT" ] && echo "  ※ 새 refresh_token 발급 — .env 갱신 권장"
 
-MD=$(date +%-m/%-d)
+MD=$(TZ=Asia/Seoul date +%-m/%-d)
 SUMMARY=$(tr '\n' ' ' < out/summary.txt 2>/dev/null)
 [ -z "$SUMMARY" ] && SUMMARY="오늘의 주요 뉴스와 미국 시장을 확인하세요."
 TEMPLATE_ID="${KAKAO_TEMPLATE_ID:-134931}"
