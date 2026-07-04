@@ -214,8 +214,36 @@ if os.path.exists("events_static.json"):
         if filled:
             out["errors"].append(f"⚠ Nasdaq 실시간 조회에 빠진 1순위를 static으로 보충: {', '.join(filled)} — 시각은 static 기준, 웹으로 재확인 권장")
         gen = datetime.date.fromisoformat(st.get("generated", "2000-01-01"))
-        if (today - gen).days > 14:
+        static_fresh = (today - gen).days <= 14
+        if not static_fresh:
             out["errors"].append(f"⚠ events_static.json 생성 {(today-gen).days}일 경과 — 로컬에서 재생성 필요")
+        # 소스 노이즈 중재: Nasdaq이 같은 지표를 인접 날짜에 중복 게재하는 사례(실측: CPI가 7/14·7/15 양쪽) —
+        # static(검증 스냅샷)이 신선하면 static 날짜와 어긋난 live 지표 항목(±4일 내)을 제거
+        if static_fresh:
+            st_dates = {}
+            for e in st.get("events", []):
+                st_dates.setdefault(e["title"], set()).add(e["date"])
+            cleaned, dropped = [], []
+            for e in out["must_include"]:
+                t, d = e.get("title"), e.get("date")
+                if e.get("cat") == "지표" and e.get("src") == "nasdaq" and t in st_dates and d not in st_dates[t]:
+                    near = any(abs((datetime.date.fromisoformat(d) - datetime.date.fromisoformat(sd)).days) <= 4
+                               for sd in st_dates[t])
+                    if near:
+                        dropped.append(f"{t} {d}")
+                        continue
+                cleaned.append(e)
+            if dropped:
+                out["must_include"] = cleaned
+                out["errors"].append(f"⚠ 소스 중복날짜 정리(static 기준 채택): {', '.join(dropped)} 제거")
+        # 완전 중복(같은 날짜·제목) 제거
+        uniq, seen2 = [], set()
+        for e in out["must_include"]:
+            k = (e.get("date"), e.get("title"))
+            if k not in seen2:
+                seen2.add(k)
+                uniq.append(e)
+        out["must_include"] = uniq
     except Exception as ex:
         out["errors"].append(f"static merge: {str(ex)[:50]}")
 
