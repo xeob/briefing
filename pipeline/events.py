@@ -1,45 +1,50 @@
 #!/usr/bin/env python3
-"""미국 주요 일정·발표지표를 실제 캘린더에서 수집 → out/events.json
-소스: Nasdaq 경제캘린더(날짜별) + Nasdaq IPO + events_manual.txt(수동).
-모델의 '날짜 추측'을 막고, 중요 이벤트 누락을 verify.py가 차단하게 하는 근거 데이터.
+"""미국 주요 일정·발표지표를 실제 캘린더에서 수집 → out/events.json  (모든 날짜·시각 = 한국시간 KST)
+소스: Nasdaq 경제캘린더(날짜별) + Nasdaq IPO + events_manual.txt(수동, KST로 기입).
+★ Nasdaq 날짜는 실측상 실제 ET 날짜보다 +1일 어긋남 → 매 실행 Forex Factory(공식 ET 날짜) 앵커와
+  대조해 오프셋을 자동 캘리브레이션한 뒤 보정하고, ET→KST로 변환해 저장한다.
+  (검증 앵커 5건: NFP·신규실업수당 실제7/2→Nasdaq7/3, ISM제조 7/1→7/2, ISM서비스 7/6→7/7, FOMC 7/8→7/9)
 
-- must_include: 반드시 미국장 주요 일정에 포함(1순위). 누락 시 verify.py가 게시 차단.
-- optional    : 자리 남으면(중요도 2순위).
-- released    : 직전 세션에 발표된 주요 지표(발표된 지표 표에 빠짐없이).
-선별 = 중요도(등급) 기반. Nasdaq은 등급이 없어 '정규화 키워드'로 1/2순위를 결정한다."""
-import json, os, subprocess, datetime
+- must_include: 1순위(반드시 일정 표에 포함 — 누락 시 verify.py가 게시 차단)
+- optional    : 2순위(자리 남으면)
+- released    : 최근 발표 지표(date=미국 세션 ET 날짜, kst=한국시간) — 발표된 지표 표에 빠짐없이"""
+import json, os, subprocess, datetime, collections
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
+try:
+    from zoneinfo import ZoneInfo
+    ET, KSTZ = ZoneInfo("America/New_York"), ZoneInfo("Asia/Seoul")
+except Exception:
+    ET = KSTZ = None
 KST = datetime.timezone(datetime.timedelta(hours=9))
 now = datetime.datetime.now(KST)
 today = now.date()
 
-# 정규화 규칙: (id, 순위(1/2), [매치 substring], [제외 substring], 한글제목, [verify 매칭 키워드])
+# 정규화: (id, 순위, [매치], [제외], 한글제목, [verify 키워드], FF제목(캘리브레이션용))
 CANON = [
-    ("CPI",     1, ["cpi", "consumer price index"], ["expectation", "cleveland", "nowcast"], "소비자물가지수(CPI)", ["CPI", "소비자물가"]),
-    ("PCE",     1, ["pce"], ["nowcast"], "PCE 물가지수", ["PCE"]),
-    ("PPI",     1, ["ppi", "producer price"], [], "생산자물가지수(PPI)", ["PPI", "생산자물가"]),
-    ("NFP",     1, ["nonfarm", "non-farm", "employment change"], ["adp", "weekly", "trends"], "고용보고서(비농업)", ["고용", "NFP", "비농업"]),
-    ("UNRATE",  1, ["unemployment rate"], [], "실업률", ["실업률"]),
-    ("FOMC",    1, ["fomc", "federal funds", "fed interest rate", "interest rate decision"], ["member"], "FOMC", ["FOMC", "의사록", "연준", "금리"]),
-    ("FEDCHAIR",1, ["powell", "fed chair", "fed chairman"], [], "연준 의장 발언", ["연준", "의장", "파월"]),
-    ("ISM_MFG", 1, ["ism manufacturing pmi"], [], "ISM 제조업 PMI", ["ISM", "제조업"]),
-    ("ISM_SVC", 1, ["ism non-manufacturing pmi", "ism services pmi"], [], "ISM 서비스업 PMI", ["ISM", "서비스업"]),
-    ("RETAIL",  1, ["retail sales"], [], "소매판매", ["소매판매"]),
-    ("GDP",     1, ["gdp"], ["gdpnow", "now"], "GDP", ["GDP", "성장률"]),
-    # 2순위
-    ("JOBLESS", 2, ["initial jobless claims"], [], "신규 실업수당청구", ["실업수당", "신규 실업"]),
-    ("ADP",     2, ["adp employment"], ["weekly"], "ADP 고용", ["ADP"]),
-    ("CONF",    2, ["consumer confidence", "cb consumer"], [], "소비자신뢰지수", ["소비자신뢰"]),
-    ("MICH",    2, ["michigan"], [], "미시간 소비심리", ["미시간", "소비심리"]),
-    ("JOLTS",   2, ["jolts"], [], "JOLTS 구인", ["JOLTS", "구인"]),
-    ("DURABLE", 2, ["durable goods"], [], "내구재 주문", ["내구재"]),
-    ("FEDSPK",  2, ["speaks"], ["chair", "powell", "chairman"], "연준 위원 발언", ["연준"]),
+    ("CPI",     1, ["cpi", "consumer price index"], ["expectation", "cleveland", "nowcast"], "소비자물가지수(CPI)", ["CPI", "소비자물가"], "cpi m/m"),
+    ("PCE",     1, ["pce"], ["nowcast"], "PCE 물가지수", ["PCE"], "core pce price index m/m"),
+    ("PPI",     1, ["ppi", "producer price"], [], "생산자물가지수(PPI)", ["PPI", "생산자물가"], "ppi m/m"),
+    ("NFP",     1, ["nonfarm", "non-farm", "employment change"], ["adp", "weekly", "trends"], "고용보고서(비농업)", ["고용", "NFP", "비농업"], "non-farm employment change"),
+    ("UNRATE",  1, ["unemployment rate"], ["u6", "u-6", "underemployment"], "실업률", ["실업률"], "unemployment rate"),
+    ("FOMC",    1, ["fomc", "federal funds", "fed interest rate", "interest rate decision"], ["member"], "FOMC", ["FOMC", "의사록", "연준", "금리"], "fomc meeting minutes"),
+    ("FEDCHAIR",1, ["powell", "fed chair", "fed chairman"], [], "연준 의장 발언", ["연준", "의장"], "fed chairman warsh speaks"),
+    ("ISM_MFG", 1, ["ism manufacturing pmi"], [], "ISM 제조업 PMI", ["ISM", "제조업"], "ism manufacturing pmi"),
+    ("ISM_SVC", 1, ["ism non-manufacturing pmi", "ism services pmi"], [], "ISM 서비스업 PMI", ["ISM", "서비스업"], "ism services pmi"),
+    ("RETAIL",  1, ["retail sales"], [], "소매판매", ["소매판매"], "core retail sales m/m"),
+    ("GDP",     1, ["gdp"], ["gdpnow", "now"], "GDP", ["GDP", "성장률"], "advance gdp q/q"),
+    ("JOBLESS", 2, ["initial jobless claims"], [], "신규 실업수당청구", ["실업수당", "신규 실업"], "unemployment claims"),
+    ("ADP",     2, ["adp employment"], ["weekly"], "ADP 고용", ["ADP"], "adp non-farm employment change"),
+    ("CONF",    2, ["consumer confidence", "cb consumer"], [], "소비자신뢰지수", ["소비자신뢰"], "cb consumer confidence"),
+    ("MICH",    2, ["michigan"], [], "미시간 소비심리", ["미시간", "소비심리"], "prelim uom consumer sentiment"),
+    ("JOLTS",   2, ["jolts"], [], "JOLTS 구인", ["JOLTS", "구인"], "jolts job openings"),
+    ("DURABLE", 2, ["durable goods"], [], "내구재 주문", ["내구재"], "core durable goods orders m/m"),
+    ("FEDSPK",  2, ["speaks"], ["chair", "powell", "chairman"], "연준 위원 발언", ["연준"], None),
 ]
 
 def classify(name):
     t = name.lower()
-    for cid, tier, inc, exc, ko, kws in CANON:
+    for cid, tier, inc, exc, ko, kws, ff in CANON:
         if any(s in t for s in inc) and not any(s in t for s in exc):
             return cid, tier, ko, kws
     return None
@@ -52,14 +57,27 @@ def curl_json(url):
 def clean(v):
     return str(v or "").replace("&nbsp;", "").strip()
 
-out = {"generated_kst": now.strftime("%Y-%m-%d %H:%M"),
-       "window": {"today": str(today)}, "must_include": [], "optional": [], "released": [], "errors": []}
+def to_kst(et_day, hhmm):
+    """ET 날짜+시각 → (KST 'YYYY-MM-DD', 'HH:MM'). 시각 없으면 ET 날짜 그대로(주간 이벤트는 날짜 동일)."""
+    if not hhmm or ":" not in hhmm:
+        return et_day.isoformat(), ""
+    try:
+        h, m = (int(x) for x in hhmm.split(":")[:2])
+    except ValueError:
+        return et_day.isoformat(), ""
+    if ET:
+        dt = datetime.datetime(et_day.year, et_day.month, et_day.day, h, m, tzinfo=ET).astimezone(KSTZ)
+    else:  # zoneinfo 없을 때 EDT 고정 +13h
+        dt = datetime.datetime(et_day.year, et_day.month, et_day.day, h, m) + datetime.timedelta(hours=13)
+    return dt.date().isoformat(), dt.strftime("%H:%M")
 
-# 1) Nasdaq 경제캘린더: 발표(직전 3일)~예고(향후 12일)를 날짜별로 수집, 정규화·중복제거
-canon_seen = {}
-for off in range(-3, 13):
-    day = today + datetime.timedelta(days=off)
-    ds = day.isoformat()
+out = {"generated_kst": now.strftime("%Y-%m-%d %H:%M"), "timezone": "KST(한국시간) — released.date만 미국 세션(ET) 날짜",
+       "must_include": [], "optional": [], "released": [], "errors": []}
+
+# 1) Nasdaq 원시 수집 (query 날짜 그대로, 이후 보정)
+raw = {}
+for off in range(-3, 14):
+    ds = (today + datetime.timedelta(days=off)).isoformat()
     try:
         d = curl_json(f"https://api.nasdaq.com/api/calendar/economicevents?date={ds}")
     except Exception as ex:
@@ -74,23 +92,58 @@ for off in range(-3, 13):
         cid, tier, ko, kws = cl
         key = (ds, cid)
         actual = clean(r.get("actual"))
-        rec = {"date": ds, "time": clean(r.get("gmt")), "title": ko, "impact": ("High" if tier == 1 else "Medium"),
-               "cat": "지표", "src": "nasdaq", "keywords": kws}
-        if actual:  # 발표됨
-            rec = {**rec, "actual": actual, "forecast": clean(r.get("consensus")), "previous": clean(r.get("previous"))}
-        # 중복: 발표값 있는 레코드를 우선 보존
-        if key not in canon_seen or (actual and "actual" not in canon_seen[key]):
-            canon_seen[key] = rec
+        rec = {"nasdaq_date": ds, "time_et": clean(r.get("gmt")), "cid": cid, "tier": tier,
+               "title": ko, "keywords": kws}
+        if actual:
+            rec.update(actual=actual, forecast=clean(r.get("consensus")), previous=clean(r.get("previous")))
+        def score(x):  # 중복 시 우선순위: 발표값 있음 > 예상치 있음
+            return (("actual" in x), bool(x.get("forecast")))
+        if key not in raw or score(rec) > score(raw[key]):
+            raw[key] = rec
 
-for (ds, cid), rec in canon_seen.items():
-    d0 = datetime.date.fromisoformat(ds)
-    tier1 = rec["impact"] == "High"
-    if "actual" in rec and today - datetime.timedelta(days=3) <= d0 <= today:
-        out["released"].append(rec)
+# 2) 캘리브레이션: Forex Factory(공식 ET 날짜) 앵커와 대조 → Nasdaq 날짜 오프셋 산출
+offset = None
+try:
+    ff = curl_json("https://nfs.faireconomy.media/ff_calendar_thisweek.json")
+    ffmap = {}
+    for e in ff:
+        if e.get("country") == "USD":
+            ffmap[e.get("title", "").strip().lower()] = e.get("date", "")[:10]
+    fftitle = {cid: t for cid, _, _, _, _, _, t in CANON if t}
+    diffs = []
+    for (ds, cid), rec in raw.items():
+        t = fftitle.get(cid)
+        if t and t in ffmap:
+            d1 = datetime.date.fromisoformat(ds)
+            d2 = datetime.date.fromisoformat(ffmap[t])
+            if abs((d1 - d2).days) <= 2:  # 같은 이벤트로 볼 수 있는 범위만
+                diffs.append((d1 - d2).days)
+    if diffs:
+        offset = collections.Counter(diffs).most_common(1)[0][0]
+        out["calibration"] = f"FF 앵커 {len(diffs)}건 → Nasdaq 오프셋 {offset:+d}일 보정"
+except Exception as ex:
+    out["errors"].append(f"calibration: {str(ex)[:50]}")
+if offset is None:
+    offset = 1  # 실측 기본값: Nasdaq = 실제 ET + 1일 (2026-07-04 앵커 5건 검증)
+    out["calibration"] = "FF 앵커 없음 → 실측 기본 오프셋 +1일 적용"
+
+# 3) 보정·KST 변환·분류
+for (ds, cid), rec in raw.items():
+    et_day = datetime.date.fromisoformat(ds) - datetime.timedelta(days=offset)
+    kst_date, kst_time = to_kst(et_day, rec["time_et"])
+    tier1 = rec["tier"] == 1
+    base = {"date": kst_date, "time": kst_time, "date_et": et_day.isoformat(),
+            "title": rec["title"], "impact": "High" if tier1 else "Medium",
+            "cat": "지표", "src": "nasdaq", "keywords": rec["keywords"]}
+    if "actual" in rec and today - datetime.timedelta(days=3) <= et_day <= today:
+        out["released"].append({**base, "date": et_day.isoformat(), "kst": f"{kst_date} {kst_time}",
+                                "actual": rec["actual"], "forecast": rec.get("forecast", ""),
+                                "previous": rec.get("previous", "")})
+    d0 = datetime.date.fromisoformat(kst_date)
     if today <= d0 <= today + datetime.timedelta(days=(12 if tier1 else 7)):
-        (out["must_include"] if tier1 else out["optional"]).append(rec)
+        (out["must_include"] if tier1 else out["optional"]).append(base)
 
-# 2) Nasdaq 대형 IPO($500M+) → optional (best-effort)
+# 4) Nasdaq 대형 IPO($500M+) → optional
 try:
     for mon in {today.strftime("%Y-%m"), (today + datetime.timedelta(days=12)).strftime("%Y-%m")}:
         d = curl_json(f"https://api.nasdaq.com/api/ipo/calendar?date={mon}")
@@ -102,12 +155,18 @@ try:
                 big = False
             if big and r.get("companyName"):
                 nm = r["companyName"].strip()
-                out["optional"].append({"date": clean(r.get("expectedPriceDate")), "time": "",
-                                        "title": f"{nm} 상장", "impact": "IPO", "cat": "IPO", "src": "nasdaq", "keywords": [nm]})
+                pd = clean(r.get("expectedPriceDate"))
+                try:  # m/d/Y → ISO
+                    mth, dy, yr = pd.split("/")
+                    pd = f"{yr}-{int(mth):02d}-{int(dy):02d}"
+                except (ValueError, AttributeError):
+                    pass
+                out["optional"].append({"date": pd, "time": "", "title": f"{nm} 상장",
+                                        "impact": "IPO", "cat": "IPO", "src": "nasdaq", "keywords": [nm]})
 except Exception as ex:
     out["errors"].append(f"nasdaq ipo: {str(ex)[:50]}")
 
-# 3) 수동 목록: in-window(향후 12일)면 must_include
+# 5) 수동 목록(KST 기입): in-window(향후 12일)면 must_include
 if os.path.exists("events_manual.txt"):
     for line in open("events_manual.txt", encoding="utf-8"):
         line = line.strip()
@@ -132,10 +191,11 @@ for k in ("must_include", "optional", "released"):
 os.makedirs("out", exist_ok=True)
 json.dump(out, open("out/events.json", "w"), ensure_ascii=False, indent=1)
 print(f"must_include {len(out['must_include'])} / optional {len(out['optional'])} / released {len(out['released'])} (오류 {len(out['errors'])}) → out/events.json")
-print("  [반드시 포함 · 1순위]")
+print(" ", out.get("calibration", ""))
+print("  [반드시 포함 · 1순위 · 한국시간]")
 for e in out["must_include"]:
     print(f"    {e['date']} {e.get('time','')} · {e['cat']} · {e['title']}")
-print("  [발표된 지표]")
+print("  [발표된 지표 · date=미국 세션일]")
 for e in out["released"]:
     print(f"    {e['date']} · {e['title']}: {e.get('actual','')} (예상 {e.get('forecast','')})")
 for er in out["errors"]:
