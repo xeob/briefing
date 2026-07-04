@@ -62,45 +62,14 @@
 
 **(B) 사람 판단 검증 — 스크립트가 못 잡는 것:** 뉴스 5분야 채움/시간창/출처 실존/중복 없음 · 키워드 근거 · 특징주 촉매의 사실 여부(팩트체크) · 촉매를 못 찾은 종목의 미확인 표기 정확 · 날조 0. 문제 있으면 재수집·수정.
 
-## 4) GitHub 게시
+## 4) 게시·발송 — `./publish.sh` 로만 (수동 git push·수동 카카오 전송 금지)
 
-```bash
-set -euo pipefail
-source .env
-git clone "https://${GH_PAT}@github.com/${GH_REPO}.git" repo
-cp out/index.html repo/index.html
-mkdir -p repo/archive
-cp out/index.html "repo/archive/$(date +%F).html"
-cd repo
-git config user.email "briefing@bot"; git config user.name "briefing-bot"
-git add .
-git commit -m "briefing $(date +%F)"
-git push
-cd ..; rm -rf repo
-```
-→ GitHub Pages가 1~2분 내 `$SITE_URL` 갱신.
-
-## 5) 카카오톡 발송 (요약 + 링크)
-
-```bash
-source .env
-# 5-1) access_token 갱신 (refresh_token 사용)
-ACCESS=$(curl -s -X POST "https://kauth.kakao.com/oauth/token" \
-  -d "grant_type=refresh_token" \
-  -d "client_id=${KAKAO_REST_KEY}" \
-  -d "client_secret=${KAKAO_CLIENT_SECRET}" \
-  -d "refresh_token=${KAKAO_REFRESH_TOKEN}" \
-  | python3 -c "import sys,json;print(json.load(sys.stdin)['access_token'])")
-
-# (참고) 응답에 새 refresh_token 이 오면 .env 의 값을 갱신할 것
-
-# 5-2) 요약 + 링크 전송 (text 200자 이내)
-TODAY=$(date +%-m/%-d)
-curl -s -X POST "https://kapi.kakao.com/v2/api/talk/memo/default/send" \
-  -H "Authorization: Bearer ${ACCESS}" \
-  --data-urlencode "template_object={\"object_type\":\"text\",\"text\":\"[경제 브리핑] ${TODAY}\n· 핵심 요약 3줄\n전체 보기 →\",\"link\":{\"web_url\":\"${SITE_URL}\",\"mobile_web_url\":\"${SITE_URL}\"}}"
-```
-→ 성공 시 `{"result_code":0}` + 카카오톡 '나와의 채팅' 도착.
+`out/index.html`(+`out/summary.txt` 카드용 요약 200자)을 만든 뒤 **반드시 `./publish.sh` 하나로** 게시·발송한다. publish.sh가 순서대로:
+1. **[게이트] `python3 verify.py`** — 실패(exit 1) 시 게시·발송을 **기계적으로 중단**. 지적 항목 수정 후 다시 ./publish.sh, "✅ 검증 통과"까지 반복. 통과 못 하면 발송하지 않는다(잘못된 브리핑보다 미발송이 낫다).
+2. **GitHub 게시** — index.html 교체 + `archive/YYYY-MM-DD.html`(KST) 추가 → main push → GitHub Pages가 1~2분 내 `$SITE_URL` 갱신.
+3. **카카오 발송** — refresh_token으로 access_token 갱신 → `talk/memo/send`(커스텀 템플릿 **134931**, `template_args={"DATE":"M/D","SUMMARY":summary.txt,"WDATE":"YYYY-MM-DD"}`). `WDATE`는 그날 아카이브 영구링크용(카드가 항상 그날 자료를 가리킴). 성공 = `{"result_code":0}`.
+- 응답에 새 refresh_token이 오면 안내가 출력됨 → briefing-secrets/.env 갱신 커밋.
+- 비밀값은 .env(로컬) 또는 briefing-secrets/.env(클라우드, `set -a; source ...; set +a`로 export).
 
 ---
 
