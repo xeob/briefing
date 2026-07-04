@@ -1,0 +1,82 @@
+{
+ "generated": "2026-07-04",
+ "offset_used": 1,
+ "coverage_days": 45,
+ "events": [
+  {
+   "date": "2026-07-06",
+   "time": "23:00",
+   "title": "ISM 서비스업 PMI",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "ISM",
+    "서비스업"
+   ]
+  },
+  {
+   "date": "2026-07-09",
+   "time": "03:00",
+   "title": "FOMC",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "FOMC",
+    "의사록",
+    "연준",
+    "금리"
+   ]
+  },
+  {
+   "date": "2026-07-14",
+   "time": "21:30",
+   "title": "소비자물가지수(CPI)",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "CPI",
+    "소비자물가"
+   ]
+  },
+  {
+   "date": "2026-07-15",
+   "time": "21:30",
+   "title": "생산자물가지수(PPI)",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "PPI",
+    "생산자물가"
+   ]
+  },
+  {
+   "date": "2026-07-16",
+   "time": "21:30",
+   "title": "소매판매",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "소매판매"
+   ]
+  },
+  {
+   "date": "2026-07-30",
+   "time": "03:00",
+   "title": "FOMC",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "FOMC",
+    "의사록",
+    "연준",
+    "금리"
+   ]
+  }
+ ]
+}

@@ -49,10 +49,19 @@ def classify(name):
             return cid, tier, ko, kws
     return None
 
-def curl_json(url):
-    r = subprocess.run(["curl", "-s", "-m", "12", "-H", "User-Agent: Mozilla/5.0",
-                        "-H", "Accept: application/json", url], capture_output=True, text=True)
-    return json.loads(r.stdout)
+def curl_json(url, retries=3):
+    """재시도 포함(클라우드에서 Nasdaq이 연속 호출 제한으로 간헐 실패한 사례 — 2026-07-04 CPI 누락 사고)"""
+    import time as _t
+    last = None
+    for i in range(retries):
+        try:
+            r = subprocess.run(["curl", "-s", "-m", "12", "-H", "User-Agent: Mozilla/5.0",
+                                "-H", "Accept: application/json", url], capture_output=True, text=True)
+            return json.loads(r.stdout)
+        except Exception as ex:
+            last = ex
+            _t.sleep(1 + i)
+    raise last
 
 def clean(v):
     return str(v or "").replace("&nbsp;", "").strip()
@@ -74,10 +83,12 @@ def to_kst(et_day, hhmm):
 out = {"generated_kst": now.strftime("%Y-%m-%d %H:%M"), "timezone": "KST(한국시간) — released.date만 미국 세션(ET) 날짜",
        "must_include": [], "optional": [], "released": [], "errors": []}
 
-# 1) Nasdaq 원시 수집 (query 날짜 그대로, 이후 보정)
+# 1) Nasdaq 원시 수집 (query 날짜 그대로, 이후 보정) — 호출 간격으로 제한 회피
+import time as _time
 raw = {}
 for off in range(-3, 14):
     ds = (today + datetime.timedelta(days=off)).isoformat()
+    _time.sleep(0.3)
     try:
         d = curl_json(f"https://api.nasdaq.com/api/calendar/economicevents?date={ds}")
     except Exception as ex:
@@ -184,6 +195,29 @@ if os.path.exists("events_manual.txt"):
             out["must_include"].append({"date": p[0], "time": "", "title": p[2], "impact": "수동",
                                         "cat": p[1], "src": "manual", "keywords": kws,
                                         "note": p[4] if len(p) > 4 else ""})
+
+# 6) 정적 폴백 병합 (events_static.json — 로컬에서 미리 생성한 1순위 일정, KST 보정 완료본):
+#    클라우드에서 Nasdaq 일부 날짜 조회가 실패해도 CPI·FOMC 같은 핵심 일정이 비지 않게 보장.
+if os.path.exists("events_static.json"):
+    try:
+        st = json.load(open("events_static.json"))
+        have = {(e["date"], e["title"]) for e in out["must_include"]}
+        filled = []
+        for e in st.get("events", []):
+            try:
+                d0 = datetime.date.fromisoformat(e["date"])
+            except (ValueError, KeyError):
+                continue
+            if today <= d0 <= today + datetime.timedelta(days=12) and (e["date"], e["title"]) not in have:
+                out["must_include"].append(e)
+                filled.append(f"{e['date']} {e['title']}")
+        if filled:
+            out["errors"].append(f"⚠ Nasdaq 실시간 조회에 빠진 1순위를 static으로 보충: {', '.join(filled)} — 시각은 static 기준, 웹으로 재확인 권장")
+        gen = datetime.date.fromisoformat(st.get("generated", "2000-01-01"))
+        if (today - gen).days > 14:
+            out["errors"].append(f"⚠ events_static.json 생성 {(today-gen).days}일 경과 — 로컬에서 재생성 필요")
+    except Exception as ex:
+        out["errors"].append(f"static merge: {str(ex)[:50]}")
 
 for k in ("must_include", "optional", "released"):
     out[k].sort(key=lambda x: (x["date"], x.get("time", "")))
