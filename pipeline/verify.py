@@ -104,6 +104,14 @@ for m in re.finditer(r'mv-n">(그 외[^<]*동반[^<]*)</span>', html):
     if hits:
         issues.append(f"[특징주] 묶음 라벨 '{label.strip()}'에 금지어({','.join(hits)}) — 실제 업종명(반도체·은행·방산 등)으로만 묶을 것")
 
+# 7b) 묶음행 실속(앵커) 검사: 각 묶음행에는 |5%| 이상 종목이 3개 이상 있어야 함(성립 조건 ⓑ)
+for m in re.finditer(r'mv-n">(그 외[^<]*동반[^<]*)</span></div><div class="mv-r">(.*?)</div>', html):
+    label, body = m.group(1).strip(), m.group(2)
+    pcts = [abs(num(x)) for x in re.findall(r'class="(?:up|down)">([+\-−][\d.]+)%', body)]
+    big = sum(1 for p in pcts if p >= 5)
+    if pcts and big < 3:
+        issues.append(f"[특징주] 묶음 '{label}'의 |5%|+ 종목이 {big}개(<3) — 성립 조건 미달, 묶음 해체(멤버는 섹터 파트·감사기록으로) 또는 재구성")
+
 # 8) 일정 1순위 누락 차단: events.json의 must_include가 미국장 주요 일정 표에 있는지(키워드 매칭)
 try:
     ev = json.load(open("out/events.json"))
