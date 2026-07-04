@@ -2,7 +2,9 @@
 """특징주 후보 수집 + 자격(티어별 황금 등락률) 판정 → out/movers.json
 
 깔때기:
-  수집  = Yahoo 스크리너 day_gainers/losers (시총 $10B+) ∪ watchlist.txt 전수
+  수집  = Yahoo 스크리너 day_gainers/losers (시총 $10B+) ∪ CORE_SCAN(M7+주요 메가캡, 코드 내장) 상시 감시
+          — 스크리너는 등락률 상위 100만 잡으므로, M7 +2%대처럼 '작지만 자격 있는' 대형주 이동은
+            CORE_SCAN이 보장한다 (구 watchlist.txt는 폐지, 2026-07-04)
   자격  = M7 ±2% / 메가캡($200B+) ±3% / 그 외 ±4%
   출력  = qualified_up / qualified_down (우선순위: 티어 → |등락률|), 각 최대 25
   시총  = 스크리너 값 우선, 없으면 CNBC 조회(mktcapView), 그것도 실패하면 MEGA_HINT
@@ -17,7 +19,9 @@ M7 = {"AAPL", "MSFT", "NVDA", "GOOGL", "AMZN", "META", "TSLA"}
 # 시총 데이터가 없는(워치리스트 단독 조회) 종목의 메가캡 판정 힌트 — 스크리너에 잡히면 실시총이 우선
 MEGA_HINT = {"AVGO", "TSM", "ASML", "LLY", "JPM", "V", "UNH", "XOM", "WMT", "MA", "ORCL",
              "NFLX", "COST", "PG", "JNJ", "HD", "BAC", "MU", "PLTR", "AMD", "KLAC", "SNDK",
-             "AMAT", "LRCX", "QCOM", "TXN", "INTC", "CRM", "KO", "CVX", "MRK", "GS", "CAT"}
+             "AMAT", "LRCX", "QCOM", "TXN", "INTC", "CRM", "KO", "CVX", "MRK", "GS", "CAT",
+             "IBM", "ABBV", "PEP", "TMO", "CSCO", "WFC", "MS", "DIS", "ABT", "GE", "LIN",
+             "ADBE", "NOW", "PM", "RTX", "AXP", "ARM", "COIN", "UBER", "ISRG", "BA"}
 
 def get(url):
     r = subprocess.run(["curl", "-s", "-m", "15", "-H", "User-Agent: Mozilla/5.0", url],
@@ -37,17 +41,8 @@ def cnbc_cap_b(sym):
     except Exception:
         return None
 
-# 워치리스트: [그룹] 헤더 파싱 (그룹은 커버리지 용도)
-groups, cur = {}, None
-for line in open("watchlist.txt"):
-    line = line.strip()
-    if not line or line.startswith("#"):
-        continue
-    if line.startswith("[") and line.endswith("]"):
-        cur = line[1:-1]
-        continue
-    for s in line.split():
-        groups[s] = cur
+# CORE_SCAN: 스크리너와 무관하게 매일 반드시 확인하는 대형주 (M7 + 주요 메가캡·한국 관심 대형)
+CORE_SCAN = M7 | MEGA_HINT
 
 out, errors = {}, []
 
@@ -63,11 +58,11 @@ for scr in ("day_gainers", "day_losers"):
             vr = round(vol / avg, 2) if vol and avg else None
             out[q["symbol"]] = {"symbol": q["symbol"], "name": q.get("shortName"),
                                 "pct": round(pct, 2), "mktcap_b": round(cap / 1e9, 1),
-                                "vol_ratio": vr, "group": groups.get(q["symbol"]), "src": scr}
+                                "vol_ratio": vr, "src": scr}
     except Exception as e:
         errors.append(f"screener {scr}: {e}")
 
-for s in groups:
+for s in sorted(CORE_SCAN):
     if s in out:
         continue
     try:
@@ -86,7 +81,7 @@ for s in groups:
             continue
         out[s] = {"symbol": s, "name": r["meta"].get("shortName") or s,
                   "pct": round(pct, 2), "mktcap_b": cnbc_cap_b(s), "vol_ratio": None,
-                  "group": groups.get(s), "src": "watchlist"}
+                  "src": "core"}
         time.sleep(0.15)
     except Exception as e:
         errors.append(f"chart {s}: {e}")

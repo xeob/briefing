@@ -275,6 +275,31 @@ if os.path.exists("events_static.json"):
     except Exception as ex:
         out["errors"].append(f"static merge: {str(ex)[:50]}")
 
+# 7) 정적 캘린더 자동 재갱신: 라이브 조회가 전부 성공한 날은 static을 오늘 데이터로 재생성
+#    (수동 2주 재생성 불필요 — publish.sh가 갱신본을 저장소에 함께 push해 다음 날 클론에 반영)
+query_errs = [e for e in out["errors"] if e.startswith("nasdaq econ")]
+if not query_errs:
+    try:
+        old = json.load(open("events_static.json")) if os.path.exists("events_static.json") else {"events": []}
+        horizon = (today + datetime.timedelta(days=13)).isoformat()
+        keep_far = [e for e in old.get("events", []) if e.get("date", "") > horizon]  # 창 밖(예: 3주 뒤 FOMC) 보존
+        near = [{"date": e["date"], "time": e.get("time", ""), "title": e["title"], "impact": "High",
+                 "cat": "지표", "src": "static", "keywords": e.get("keywords", [])}
+                for e in out["must_include"] if e.get("src") in ("nasdaq", "static") and e.get("cat") == "지표"]
+        seen3, evs = set(), []
+        for e in near + keep_far:
+            k = (e["date"], e["title"])
+            if k not in seen3:
+                seen3.add(k)
+                evs.append(e)
+        evs.sort(key=lambda x: (x["date"], x.get("time", "")))
+        json.dump({"generated": str(today), "offset_used": offset, "coverage_days": 13,
+                   "auto_refreshed": True, "events": evs},
+                  open("events_static.json", "w"), ensure_ascii=False, indent=1)
+        out["static_refresh"] = f"자동 갱신 완료 ({len(evs)}건)"
+    except Exception as ex:
+        out["errors"].append(f"static refresh: {str(ex)[:50]}")
+
 for k in ("must_include", "optional", "released"):
     out[k].sort(key=lambda x: (x["date"], x.get("time", "")))
 

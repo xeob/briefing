@@ -25,6 +25,8 @@ git clone --depth 1 "https://${GH_PAT}@github.com/${GH_REPO}.git" "$TMP/repo" 2>
 cp "$HTML" "$TMP/repo/index.html"
 mkdir -p "$TMP/repo/archive"
 cp "$HTML" "$TMP/repo/archive/${TODAY}.html"
+# events.py가 자동 갱신한 정적 캘린더를 함께 반영(다음 실행의 클론에 최신본 전달)
+[ -f events_static.json ] && cp events_static.json "$TMP/repo/pipeline/events_static.json" 2>/dev/null || true
 git -C "$TMP/repo" config user.email "briefing@bot"
 git -C "$TMP/repo" config user.name "briefing-bot"
 git -C "$TMP/repo" add -A
@@ -39,7 +41,23 @@ RESP=$(curl -s -X POST "https://kauth.kakao.com/oauth/token" \
   -d "client_secret=${KAKAO_CLIENT_SECRET}" -d "refresh_token=${KAKAO_REFRESH_TOKEN}")
 ACCESS=$(echo "$RESP" | python3 -c "import sys,json;print(json.load(sys.stdin)['access_token'])")
 NEWRT=$(echo "$RESP" | python3 -c "import sys,json;print(json.load(sys.stdin).get('refresh_token',''))")
-[ -n "$NEWRT" ] && echo "  ※ 새 refresh_token 발급 — .env 갱신 권장"
+# 새 refresh_token 자동 영속화: 카카오는 만료 1개월 전부터 갱신 호출 시 새 토큰을 주므로,
+# 매일 실행 + 아래 자동 저장이 유지되는 한 토큰은 영구 슬라이딩 갱신됨(수동 재인증 불필요)
+if [ -n "$NEWRT" ]; then
+  for f in .env ../../briefing-secrets/.env ../briefing-secrets/.env ../../../briefing-secrets/.env; do
+    if [ -f "$f" ] && grep -q "^KAKAO_REFRESH_TOKEN=" "$f"; then
+      sed -i.bak "s|^KAKAO_REFRESH_TOKEN=.*|KAKAO_REFRESH_TOKEN=${NEWRT}|" "$f" && rm -f "$f.bak"
+      echo "  ✓ 새 refresh_token 자동 저장: $f"
+      d=$(dirname "$f")
+      if [ -d "$d/.git" ]; then
+        (cd "$d" && git add .env && git commit -m "chore: kakao refresh_token 자동 갱신" >/dev/null 2>&1 \
+          && git push >/dev/null 2>&1 && echo "  ✓ briefing-secrets push 완료") \
+          || echo "  ⚠ secrets push 실패 — 보고에 명시하고 수동 커밋 필요"
+      fi
+      break
+    fi
+  done
+fi
 
 MD=$(TZ=Asia/Seoul date +%-m/%-d)
 SUMMARY=$(tr '\n' ' ' < out/summary.txt 2>/dev/null)
