@@ -4,9 +4,11 @@
 깔때기:
   수집  = Yahoo 스크리너 day_gainers/losers (시총 $10B+) ∪ watchlist.txt 전수
   자격  = M7 ±2% / 메가캡($200B+) ±3% / 그 외 ±4%
-  출력  = qualified_up / qualified_down (우선순위: M7·메가캡 → |등락률|), 각 최대 15
-이후(생성 단계): 각 종목 이유를 철저히 조사 → 못 찾으면 7% 미만 제외·7% 이상은
-"상승/하락 이유 미확인" 유지 → 최종 10+10 → 화면 표시는 |등락률| 큰 순."""
+  출력  = qualified_up / qualified_down (우선순위: 티어 → |등락률|), 각 최대 25
+  시총  = 스크리너 값 우선, 없으면 CNBC 조회(mktcapView), 그것도 실패하면 MEGA_HINT
+이후(생성 단계, RUN.md 4단계): 2차 재료 게이트(A/B급 통과·C급 제외·$50B 이하 A급만·
+재료 없으면 7%+라도 제외, M7·메가캡 면제) → 3차 등락률순 top10+M7·메가캡 예외 →
+4차 동반 묶음(같은 실제 업종 |5%|+ 5개 이상). 화면 표시는 |등락률| 큰 순."""
 import json, time, os, subprocess
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
@@ -21,6 +23,19 @@ def get(url):
     r = subprocess.run(["curl", "-s", "-m", "15", "-H", "User-Agent: Mozilla/5.0", url],
                        capture_output=True, text=True, check=True)
     return json.loads(r.stdout)
+
+def cnbc_cap_b(sym):
+    """CNBC에서 시총($B) 조회 — 워치리스트 단독 종목의 시총 공백 보완. 실패 시 None."""
+    try:
+        d = get(f"https://quote.cnbc.com/quote-html-webservice/restQuote/symbolType/symbol?symbols={sym}&requestMethod=itv&noform=1&partnerId=2&fund=1&output=json")
+        v = str(d["FormattedQuoteResult"]["FormattedQuote"][0].get("mktcapView", "")).strip()
+        if not v:
+            return None
+        unit = v[-1].upper()
+        num = float(v[:-1].replace(",", ""))
+        return round({"T": num * 1000, "B": num, "M": num / 1000}.get(unit, 0), 1) or None
+    except Exception:
+        return None
 
 # 워치리스트: [그룹] 헤더 파싱 (그룹은 커버리지 용도)
 groups, cur = {}, None
@@ -70,7 +85,7 @@ for s in groups:
         if abs(pct) < 2.0:
             continue
         out[s] = {"symbol": s, "name": r["meta"].get("shortName") or s,
-                  "pct": round(pct, 2), "mktcap_b": None, "vol_ratio": None,
+                  "pct": round(pct, 2), "mktcap_b": cnbc_cap_b(s), "vol_ratio": None,
                   "group": groups.get(s), "src": "watchlist"}
         time.sleep(0.15)
     except Exception as e:
