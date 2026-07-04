@@ -27,6 +27,7 @@ CANON = [
     ("PPI",     1, ["ppi", "producer price"], [], "생산자물가지수(PPI)", ["PPI", "생산자물가"], "ppi m/m"),
     ("NFP",     1, ["nonfarm", "non-farm", "employment change"], ["adp", "weekly", "trends"], "고용보고서(비농업)", ["고용", "NFP", "비농업"], "non-farm employment change"),
     ("UNRATE",  1, ["unemployment rate"], ["u6", "u-6", "underemployment"], "실업률", ["실업률"], "unemployment rate"),
+    ("AHE",     1, ["average hourly earnings"], [], "시간당 평균임금", ["시간당", "임금"], "average hourly earnings m/m"),
     ("FOMC",    1, ["fomc", "federal funds", "fed interest rate", "interest rate decision"], ["member"], "FOMC", ["FOMC", "의사록", "연준", "금리"], "fomc meeting minutes"),
     ("FEDCHAIR",1, ["powell", "fed chair", "fed chairman"], [], "연준 의장 발언", ["연준", "의장"], "fed chairman warsh speaks"),
     ("ISM_MFG", 1, ["ism manufacturing pmi"], [], "ISM 제조업 PMI", ["ISM", "제조업"], "ism manufacturing pmi"),
@@ -39,8 +40,28 @@ CANON = [
     ("MICH",    2, ["michigan"], [], "미시간 소비심리", ["미시간", "소비심리"], "prelim uom consumer sentiment"),
     ("JOLTS",   2, ["jolts"], [], "JOLTS 구인", ["JOLTS", "구인"], "jolts job openings"),
     ("DURABLE", 2, ["durable goods"], [], "내구재 주문", ["내구재"], "core durable goods orders m/m"),
+    ("HOUSING", 2, ["housing starts", "building permits"], [], "주택착공·건축허가", ["주택착공", "건축허가"], "housing starts"),
+    ("EXHOME",  2, ["existing home sales"], [], "기존주택판매", ["기존주택"], "existing home sales"),
+    ("NEWHOME", 2, ["new home sales"], [], "신규주택판매", ["신규주택"], "new home sales"),
+    ("INDPROD", 2, ["industrial production"], [], "산업생산", ["산업생산"], "industrial production m/m"),
     ("FEDSPK",  2, ["speaks"], ["chair", "powell", "chairman"], "연준 위원 발언", ["연준"], None),
 ]
+
+# 연준 인사 영→한 (발언자 이름 표기용; 미등록은 영문 성 그대로)
+FED_KO = {"powell": "파월", "warsh": "워시", "williams": "윌리엄스", "waller": "월러",
+          "jefferson": "제퍼슨", "barr": "바", "bowman": "보먼", "cook": "쿡", "kugler": "쿠글러",
+          "goolsbee": "굴스비", "musalem": "무살렘", "schmid": "슈미드", "logan": "로건",
+          "kashkari": "카슈카리", "daly": "데일리", "bostic": "보스틱", "collins": "콜린스",
+          "harker": "하커", "hammack": "해맥"}
+
+def fed_name(event_name):
+    """'Fed Waller Speaks' / 'FOMC Member Williams Speaks' → 한글 이름"""
+    words = [w.strip(".,") for w in event_name.split()]
+    for i, w in enumerate(words):
+        if w.lower().startswith("speak") and i > 0:
+            nm = words[i - 1]
+            return FED_KO.get(nm.lower(), nm)
+    return ""
 
 def classify(name):
     t = name.lower()
@@ -97,10 +118,17 @@ for off in range(-3, 14):
     for r in (d.get("data") or {}).get("rows") or []:
         if "United States" not in str(r.get("country", "")):
             continue
-        cl = classify(str(r.get("eventName", "")))
+        ename = str(r.get("eventName", ""))
+        cl = classify(ename)
         if not cl:
             continue
         cid, tier, ko, kws = cl
+        if cid in ("FEDSPK", "FEDCHAIR"):  # 발언자 이름 표기 + 발언자별 구분
+            nm = fed_name(ename)
+            if nm:
+                ko = f"연준 의장 {nm} 발언" if cid == "FEDCHAIR" else f"연준 {nm} 발언"
+                kws = ["연준", nm]
+                cid = f"{cid}:{nm}"
         key = (ds, cid)
         actual = clean(r.get("actual"))
         rec = {"nasdaq_date": ds, "time_et": clean(r.get("gmt")), "cid": cid, "tier": tier,
