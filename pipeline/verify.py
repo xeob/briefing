@@ -107,6 +107,18 @@ for m in re.finditer(r'그 외[^<]*동반[^<]*</span></div><div class="mv-r">(.*
     if idn and bd and max(bd) > min(idn) + 0.05:
         issues.append(f"[특징주] 동반하락 묶음에 개별 급락 최소(−{min(idn):.1f}%)보다 큰 종목(−{max(bd):.1f}%) 섞임 — 개별 급락으로 올릴 것")
 
+# 8) 일정 1순위 누락 차단: events.json의 must_include가 미국장 주요 일정 표에 있는지(키워드 매칭)
+try:
+    ev = json.load(open("out/events.json"))
+except Exception:
+    ev = None
+if ev:
+    sm = re.search(r'미국장 주요 일정.*?</table>', html, re.S)
+    sched = sm.group(0) if sm else html
+    for e in ev.get("must_include", []):
+        if not any(kw and kw in sched for kw in e.get("keywords", [])):
+            issues.append(f"[일정] 1순위 '{e['title']}'({e['date']}) 누락 — 미국장 주요 일정에 반드시 포함(events.json)")
+
 if issues:
     print(f"❌ 검증 실패 {len(issues)}건 — 수정 후 재검증:")
     for i in issues:
