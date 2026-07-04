@@ -94,7 +94,9 @@ for m in re.finditer(r'그 외[^<]*동반[^<]*</span></div><div class="mv-r">(.*
     if body.count("<br>") > 1:
         issues.append("[특징주] 묶음행에 <br> 과다 — 공통이유 앞 1개만 허용(종목 나열 중간 <br> 금지)")
 
-# 7) 특징주: 동반 묶음에 개별 특징주 최소 이동보다 큰 종목이 섞이면 오류(개별로 올라갔어야 함)
+# 7) 특징주: 개별 자리가 남는데(<10) |7%|+ 종목이 동반 묶음에 있으면 오류.
+#    근거: 7%+는 촉매 못 찾아도 "이유 미확인"으로 개별 유지 자격 → 자리가 남으면 개별로 승격해야 함.
+#    반대로 7% 미만(촉매 없으면 개별 기준 미달 가능)이거나 개별 10이 꽉 찼으면 편집 판단 존중 — 차단 안 함.
 iu, idn = [], []
 for m in re.finditer(r'mv-n">[^<]*\([A-Z]{1,6}\)</span><span class="mv-p (up|down)">([+\-−][\d.]+)%', html):
     (iu if m.group(1) == "up" else idn).append(abs(num(m.group(2))))
@@ -102,10 +104,10 @@ for m in re.finditer(r'그 외[^<]*동반[^<]*</span></div><div class="mv-r">(.*
     body = m.group(1)
     bu = [abs(num(x)) for x in re.findall(r'class="up">([+\-−][\d.]+)%', body)]
     bd = [abs(num(x)) for x in re.findall(r'class="down">([+\-−][\d.]+)%', body)]
-    if iu and bu and max(bu) > min(iu) + 0.05:
-        issues.append(f"[특징주] 동반강세 묶음에 개별 급등 최소(+{min(iu):.1f}%)보다 큰 종목(+{max(bu):.1f}%) 섞임 — 개별 급등으로 올릴 것")
-    if idn and bd and max(bd) > min(idn) + 0.05:
-        issues.append(f"[특징주] 동반하락 묶음에 개별 급락 최소(−{min(idn):.1f}%)보다 큰 종목(−{max(bd):.1f}%) 섞임 — 개별 급락으로 올릴 것")
+    if bu and len(iu) < 10 and max(bu) >= 7:
+        issues.append(f"[특징주] 개별 급등 {len(iu)}개로 자리가 남는데 동반강세 묶음에 +{max(bu):.1f}% 종목 — 7%+는 개별 자격(이유 미확인 가능), 개별로 승격할 것")
+    if bd and len(idn) < 10 and max(bd) >= 7:
+        issues.append(f"[특징주] 개별 급락 {len(idn)}개로 자리가 남는데 동반하락 묶음에 −{max(bd):.1f}% 종목 — 7%+는 개별 자격(이유 미확인 가능), 개별로 승격할 것")
 
 # 8) 일정 1순위 누락 차단: events.json의 must_include가 미국장 주요 일정 표에 있는지(키워드 매칭)
 try:
