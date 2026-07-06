@@ -1,21 +1,9 @@
 {
- "generated": "2026-07-06",
+ "generated": "2026-07-07",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
  "events": [
-  {
-   "date": "2026-07-06",
-   "time": "23:00",
-   "title": "ISM 서비스업 PMI",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "ISM",
-    "서비스업"
-   ]
-  },
   {
    "date": "2026-07-09",
    "time": "03:00",
