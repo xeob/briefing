@@ -181,7 +181,7 @@ cd $TMP/r && git add -A && git commit -m restore && git push
 - **전일 미국 시장**:
   - 지수 4종(다우·나스닥·S&P·필라 반도체): 종가 + 등락폭 + 등락률
   - **수치 = 스크립트 2소스 교차검증 (방안 A, 신뢰가 생명)**: `python3 market.py` 로 `out/market.json` 생성. 지수 4종·지표 6종이 **Yahoo + CNBC 2소스 교차검증**(국채금리 3자리, 지표는 CNBC realtime 1차). **두 독립 소스가 일치하면 그게 확정값 — market.json 값을 그대로 쓴다.** 달러인덱스처럼 investing.com과 소수 둘째 자리에서 미세하게 달라도 **2소스 합의값을 유지**한다(investing.com은 Cloudflare로 스크립트 불가라 강제 참조 대상 아님). market.json의 errors·notes에 불일치·이상치가 있을 때만 웹으로 재확인. market.json 값이 상식 밖(지수 하루 ±10%)이거나 스크립트 완전 실패 시에만 웹 대체. **요약 기사 속 수치 사용 금지**(오차 실증: 7/1 SOX 기사 13,478 vs 실제 13,353).
-  - **일정·발표지표 데이터 = `python3 events.py` (→ out/events.json)**: 실제 캘린더(Nasdaq 경제캘린더 + IPO + events_manual.txt)에서 수집. **모델이 날짜를 추측하지 말고 이 값을 쓴다.** 구조: `must_include`(1순위·반드시 일정 표에 포함 — 누락 시 verify.py가 게시 차단), `optional`(2순위·자리 남으면), `released`(직전 세션 발표지표: 지표명·actual·forecast). 미국 관련이 아닌 특수 이벤트(한국 상장 등)는 events_manual.txt에 수동 추가.
+  - **일정·발표지표 데이터 = `python3 events.py` (→ out/events.json)**: 실제 캘린더(Nasdaq 경제캘린더 + IPO + events_manual.txt)에서 수집. **모델이 날짜를 추측하지 말고 이 값을 쓴다.** 구조: `must_include`(1순위·반드시 일정 표에 포함 — 누락 시 verify.py가 게시 차단), `optional`(2순위·자리 남으면), `released`(직전 세션 발표지표: 지표명·actual·forecast), `passed`(생성 시각 기준 이미 지난 일정 — 표에서 제외됨, 시장 서술용). 미국 관련이 아닌 특수 이벤트(한국 상장 등)는 events_manual.txt에 수동 추가.
   - 시장 지표 **6종 고정, 2행×3열 그리드(가로 스크롤 금지)**: 윗줄 美10년물·달러인덱스·원/달러 / 아랫줄 WTI·비트코인·금 (값은 out/market.json의 indicators 그대로)
   - 섹터 강세/약세: **강세는 강한 순, 약세는 약한 순**으로 나열. 색 태그(강세=초록 t-strong, 약세=빨강 t-weak) + 이유 설명은 회색 노트(sector-note)
   - **특징주(핵심!) — 확정 규칙 (2026-07-02 사용자와 합의)**: 먼저 `python3 movers.py` 실행 → `out/movers.json`의 `qualified_up`/`qualified_down`(각 최대 25, M7·메가캡 전원 + 일반 티어 |7%|+ 전원 강제 포함 — 메가캡이 많아도 큰 이동 일반주가 잘리지 않음).
@@ -207,6 +207,7 @@ cd $TMP/r && git add -A && git commit -m restore && git push
       - **1순위 = 무조건 포함(상한 없음·절대 누락 금지)** = **out/events.json의 `must_include` 전부** + 판단 기준 "이 일정이 시장(지수·환율·금리·유가·업종)을 움직일 수 있는가 → 그렇다면 목록에 없어도 포함". 핵심 지표(CPI·PCE·NFP·FOMC·GDP·소매판매·ISM·PPI), 정책·거시(관세/무역·중앙은행·OPEC+·국채입찰·쿼드위칭·부채한도), 대형·한국 IPO(SK하이닉스 ADR), 어닝 개막 대형은행, 대형 M&A·규제. **must_include는 12행을 넘겨서라도 전부 넣는다**(verify.py가 누락 시 게시 차단). FOMC·대형은행 개막·초대형 IPO는 1주 밖이어도 "예고" 허용.
       - **2순위 = 기본 포함(중요 정보로 취급)**: events.json `optional`(Medium 지표·대형 IPO 등). 1순위 다 넣은 뒤 2순위도 넣는다 — 표가 길어져도(정보손실 최소화 우선) 포함하고, 정말 넘칠 때만 그 안에서 최저우선(예: 중복성 연준위원 발언)만 컷.
     - **실적 대상 = 아래 셋을 개별 포함(상한 없음)**: ① **M7**(애플·MS·아마존·구글·메타·엔비디아·테슬라) ② **메가캡($200B+)** ③ **경기 가늠자 화이트리스트(시총 작아도 경기 신호라 포함)** — 소비=리바이스·나이키·룰루레몬·스타벅스·맥도날드, 물류·항공=페덱스·UPS·델타·유나이티드, 산업=캐터필러·디어, 반도체(한국 관심)=마이크론·ASML·TSMC, 미디어=넷플릭스 등. 해당 종목이 in-window 실적 발표 시 **개별 행**으로 (역할 설명이 필요하면 내용 칸에 짧은 꼬리표 — 예: "리바이스 (LEVI) — 소비 가늠자"). **실적 상한 없음 — 몰리는 날은 12행 넘겨도 전부 개별 게재(요약 '그 외 다수'로 뭉개지 말 것).** 화이트리스트 밖 소형·비주력 실적만 제외. (화이트리스트는 상황 따라 RUN.md에서 갱신.)
+    - **이미 지난 일정 제외(생성 시각 기준)**: 일정 표에는 **브리핑 만드는 시각 이후(미래) 일정만** 넣는다. 생성 시각에 이미 지난 일정(밤사이 발표된 FOMC 의사록·연준 발언 등 — events.json `passed`에 분리됨)은 **표에 넣지 않는다**(1순위여도 지났으면 제외). 단 **시장을 움직인 중요한 지난 일정은 「미국 시장」 섹션의 원인 해설(2~3줄)에서 다루거나**(우선), 표 아래 회색 `.sched` 설명글에 **내용만** 적는다(일정 행 아님). verify.py가 표에 지난 시각 일정이 있으면 게시 차단.
     - **누락 금지(엄수)**: **1순위·대상 실적(M7·메가캡·화이트리스트)·2순위를 행 수 아끼려고 빼지 말 것 — 정보손실 최소화가 행 수보다 우선.** 형식(색태그 등)을 바꿔 재작성할 때도 기존 자격 행 삭제 금지.
     - **특이사항 줄(표 아래 회색 `.sched`)**: 휴장으로 인한 순연·일정 변경·1주 밖 "예고"·내용 없는 구분("IPO: 오늘 대형 IPO 없음") 등 **변동·특수 상황만** 여기에 기재 (예: "· ISM 서비스업 PMI: 7/3 휴장으로 7/6로 순연"). 화제성 IPO의 상장 첫날 결과는 다음 날 특징주에도 반영.
   - **모바일 가독성(아이폰 기준 ~390px)**: 템플릿에 미디어쿼리 적용됨. 생성 시 텍스트 규칙 — 특징주 이유·키워드 설명은 **한 줄당 40자 이내**로 간결히, 뉴스 헤드라인은 35자 내외로 다듬기, '·'로 긴 나열을 만들지 않기(3개 이하 권장)
@@ -473,14 +474,15 @@ a{color:inherit;text-decoration:none;}
       <!-- 3열(비고 없음). 구분 색 태그: 지표=s-ind, 연준=s-fed, 실적=s-earn, IPO=s-ipo, 기타=s-etc.
            일시는 날짜·요일·시간을 한 줄로(예: 7/14 (화) 21:30), 시간 미정이면 날짜만.
            연준 발언은 반드시 발언자 이름 표기: "연준 월러 발언" / "연준 의장 워시 발언" (events.json title 그대로).
-           내용 칸엔 짧은 꼬리표만 허용(예: "JP모건 등 대형은행 — 어닝 개막"). -->
+           내용 칸엔 짧은 꼬리표만 허용(예: "JP모건 등 대형은행 — 어닝 개막").
+           ★ 생성 시각 기준 이미 지난 일정(밤사이 FOMC 의사록·연준 발언 등, events.json passed)은 이 표에 넣지 말 것 — 시장을 움직인 지난 일정은 위 '미국 시장' 해설에서 다루거나(우선) 아래 .sched 설명글로 내용만 기재. -->
       <tr><td><span class="tag s-ind">지표</span></td><td>지표명(월)</td><td>0/0 (요일) 00:00</td></tr>
       <tr><td><span class="tag s-fed">연준</span></td><td>연준 ○○ 발언</td><td>0/0 (요일) 00:00</td></tr>
       <tr><td><span class="tag s-earn">실적</span></td><td>기업명 (TICKER)</td><td>0/0 (요일)</td></tr>
       <tr><td><span class="tag s-ipo">IPO</span></td><td>기업명 상장</td><td>0/0 (요일)</td></tr>
     </table>
     <div class="sched">
-      <!-- 특이사항 줄(회색): 휴장 순연·일정 변경·1주 밖 "예고"·내용 없는 구분 등 -->
+      <!-- 특이사항 줄(회색): 휴장 순연·일정 변경·1주 밖 "예고"·내용 없는 구분·이미 지난 중요 일정 내용(일정 행 아님) 등 -->
       · 예: ISM 서비스업 PMI: 7/3 휴장으로 7/6로 순연<br>
       · 예: 대형은행 실적 개막(7/14~)은 다음 주 — 예고
     </div>
@@ -736,7 +738,8 @@ for r in q_down:
 
 - must_include: 1순위(반드시 일정 표에 포함 — 누락 시 verify.py가 게시 차단)
 - optional    : 2순위(자리 남으면)
-- released    : 최근 발표 지표(date=미국 세션 ET 날짜, kst=한국시간) — 발표된 지표 표에 빠짐없이"""
+- released    : 최근 발표 지표(date=미국 세션 ET 날짜, kst=한국시간) — 발표된 지표 표에 빠짐없이
+- passed      : 생성 시각 기준 이미 지난 일정(밤사이 FOMC 의사록·연준 발언 등) — 일정 표에서 제외, '미국 시장' 서술용"""
 import json, os, subprocess, datetime, collections
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
@@ -831,7 +834,7 @@ def to_kst(et_day, hhmm):
     return dt.date().isoformat(), dt.strftime("%H:%M")
 
 out = {"generated_kst": now.strftime("%Y-%m-%d %H:%M"), "timezone": "KST(한국시간) — released.date만 미국 세션(ET) 날짜",
-       "must_include": [], "optional": [], "released": [], "errors": []}
+       "must_include": [], "optional": [], "released": [], "passed": [], "errors": []}
 
 # 1) Nasdaq 원시 수집 (query 날짜 그대로, 이후 보정) — 호출 간격으로 제한 회피
 import time as _time
@@ -1004,6 +1007,25 @@ if os.path.exists("events_static.json"):
     except Exception as ex:
         out["errors"].append(f"static merge: {str(ex)[:50]}")
 
+# 6.5) 생성 시각 기준 이미 지난 일정은 일정 표에서 제외 → passed 로 이동.
+#      밤사이 발표된 FOMC 의사록·연준 발언 등: 표엔 넣지 않고, 시장에 영향 준 것은 모델이 '미국 시장' 서술에 활용.
+#      (시각이 명시된 일정만 판정 — 시각 미상 주간·종일 이벤트는 지난 것으로 보지 않고 그대로 둔다.)
+def is_past(e):
+    t = e.get("time", "")
+    if not t or ":" not in t:
+        return False
+    try:
+        d0 = datetime.date.fromisoformat(e["date"])
+        h, m = (int(x) for x in t.split(":")[:2])
+    except (ValueError, KeyError):
+        return False
+    return datetime.datetime(d0.year, d0.month, d0.day, h, m, tzinfo=KST) < now
+for bucket in ("must_include", "optional"):
+    keep = []
+    for e in out[bucket]:
+        (out["passed"] if is_past(e) else keep).append(e)
+    out[bucket] = keep
+
 # 7) 정적 캘린더 자동 재갱신: 라이브 조회가 전부 성공한 날은 static을 오늘 데이터로 재생성
 #    (수동 2주 재생성 불필요 — publish.sh가 갱신본을 저장소에 함께 push해 다음 날 클론에 반영)
 query_errs = [e for e in out["errors"] if e.startswith("nasdaq econ")]
@@ -1029,7 +1051,7 @@ if not query_errs:
     except Exception as ex:
         out["errors"].append(f"static refresh: {str(ex)[:50]}")
 
-for k in ("must_include", "optional", "released"):
+for k in ("must_include", "optional", "released", "passed"):
     out[k].sort(key=lambda x: (x["date"], x.get("time", "")))
 
 os.makedirs("out", exist_ok=True)
@@ -1042,6 +1064,10 @@ for e in out["must_include"]:
 print("  [발표된 지표 · date=미국 세션일]")
 for e in out["released"]:
     print(f"    {e['date']} · {e['title']}: {e.get('actual','')} (예상 {e.get('forecast','')})")
+if out["passed"]:
+    print("  [지난 일정(표 제외) · 시장 서술용]")
+    for e in out["passed"]:
+        print(f"    {e['date']} {e.get('time','')} · {e['title']}")
 for er in out["errors"]:
     print("  오류:", er)
 ````
@@ -1174,6 +1200,32 @@ if ev:
     for e in ev.get("must_include", []):
         if not any(kw and kw in sched for kw in e.get("keywords", [])):
             issues.append(f"[일정] 1순위 '{e['title']}'({e['date']}) 누락 — 미국장 주요 일정에 반드시 포함(events.json)")
+
+# 9) 일정 표에 '이미 지난 시각' 일정이 있으면 차단 (생성 시각 기준)
+#    예: 7/9 03:00 FOMC 의사록은 06:30 생성 시점엔 지난 일정 → 표에서 빼고 '미국 시장' 섹션/회색 설명글로.
+#    events.py가 passed로 분리하지만, 모델이 표에 되살리는 것도 기계 차단. (표 아래 .sched 설명글은 검사 범위 밖)
+now2 = datetime.datetime.now()
+sm2 = re.search(r'미국장 주요 일정.*?</table>', html, re.S)
+if sm2:
+    for row in re.finditer(r'<tr>.*?</tr>', sm2.group(0), re.S):
+        cells = re.findall(r'<td[^>]*>(.*?)</td>', row.group(0), re.S)
+        if not cells:
+            continue  # 헤더행(th)·빈행
+        when = re.sub(r'<[^>]+>', '', cells[-1]).strip()  # 일시 셀
+        dm2 = re.search(r'(\d{1,2})/(\d{1,2})', when)
+        tm2 = re.search(r'(\d{1,2}):(\d{2})', when)
+        if not (dm2 and tm2):
+            continue  # 시각 없는(날짜만) 일정은 지난 것으로 보지 않음
+        try:
+            ev_dt = datetime.datetime(now2.year, int(dm2.group(1)), int(dm2.group(2)),
+                                      int(tm2.group(1)), int(tm2.group(2)))
+        except ValueError:
+            continue
+        if ev_dt - now2 < datetime.timedelta(days=-30):
+            continue  # 연말→연초 경계: 30일+ 과거면 내년 일정으로 간주(오탐 방지)
+        if ev_dt < now2:
+            issues.append(f"[일정] 이미 지난 일정이 표에 있음: '{when}' — 생성 시각({now2:%m/%d %H:%M}) 이전. "
+                          "표에서 빼고 필요 시 '미국 시장' 섹션/회색 설명글로 다룰 것")
 
 if issues:
     print(f"❌ 검증 실패 {len(issues)}건 — 수정 후 재검증:")
@@ -1487,4 +1539,4 @@ for e in events:
 남길 것과 걷어낼 것이 헷갈리면 **걷어내지 말고 사용자에게 묻는다.**
 ````
 
-_부록 수록 시각: 2026-07-07 11:06 KST — 파일 변경 시 '복구 매뉴얼 갱신해줘'로 재수록_
+_부록 수록 시각: 2026-07-09 07:39 KST — 파일 변경 시 '복구 매뉴얼 갱신해줘'로 재수록_

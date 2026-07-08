@@ -124,6 +124,32 @@ if ev:
         if not any(kw and kw in sched for kw in e.get("keywords", [])):
             issues.append(f"[일정] 1순위 '{e['title']}'({e['date']}) 누락 — 미국장 주요 일정에 반드시 포함(events.json)")
 
+# 9) 일정 표에 '이미 지난 시각' 일정이 있으면 차단 (생성 시각 기준)
+#    예: 7/9 03:00 FOMC 의사록은 06:30 생성 시점엔 지난 일정 → 표에서 빼고 '미국 시장' 섹션/회색 설명글로.
+#    events.py가 passed로 분리하지만, 모델이 표에 되살리는 것도 기계 차단. (표 아래 .sched 설명글은 검사 범위 밖)
+now2 = datetime.datetime.now()
+sm2 = re.search(r'미국장 주요 일정.*?</table>', html, re.S)
+if sm2:
+    for row in re.finditer(r'<tr>.*?</tr>', sm2.group(0), re.S):
+        cells = re.findall(r'<td[^>]*>(.*?)</td>', row.group(0), re.S)
+        if not cells:
+            continue  # 헤더행(th)·빈행
+        when = re.sub(r'<[^>]+>', '', cells[-1]).strip()  # 일시 셀
+        dm2 = re.search(r'(\d{1,2})/(\d{1,2})', when)
+        tm2 = re.search(r'(\d{1,2}):(\d{2})', when)
+        if not (dm2 and tm2):
+            continue  # 시각 없는(날짜만) 일정은 지난 것으로 보지 않음
+        try:
+            ev_dt = datetime.datetime(now2.year, int(dm2.group(1)), int(dm2.group(2)),
+                                      int(tm2.group(1)), int(tm2.group(2)))
+        except ValueError:
+            continue
+        if ev_dt - now2 < datetime.timedelta(days=-30):
+            continue  # 연말→연초 경계: 30일+ 과거면 내년 일정으로 간주(오탐 방지)
+        if ev_dt < now2:
+            issues.append(f"[일정] 이미 지난 일정이 표에 있음: '{when}' — 생성 시각({now2:%m/%d %H:%M}) 이전. "
+                          "표에서 빼고 필요 시 '미국 시장' 섹션/회색 설명글로 다룰 것")
+
 if issues:
     print(f"❌ 검증 실패 {len(issues)}건 — 수정 후 재검증:")
     for i in issues:

@@ -7,7 +7,8 @@
 
 - must_include: 1순위(반드시 일정 표에 포함 — 누락 시 verify.py가 게시 차단)
 - optional    : 2순위(자리 남으면)
-- released    : 최근 발표 지표(date=미국 세션 ET 날짜, kst=한국시간) — 발표된 지표 표에 빠짐없이"""
+- released    : 최근 발표 지표(date=미국 세션 ET 날짜, kst=한국시간) — 발표된 지표 표에 빠짐없이
+- passed      : 생성 시각 기준 이미 지난 일정(밤사이 FOMC 의사록·연준 발언 등) — 일정 표에서 제외, '미국 시장' 서술용"""
 import json, os, subprocess, datetime, collections
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
@@ -102,7 +103,7 @@ def to_kst(et_day, hhmm):
     return dt.date().isoformat(), dt.strftime("%H:%M")
 
 out = {"generated_kst": now.strftime("%Y-%m-%d %H:%M"), "timezone": "KST(한국시간) — released.date만 미국 세션(ET) 날짜",
-       "must_include": [], "optional": [], "released": [], "errors": []}
+       "must_include": [], "optional": [], "released": [], "passed": [], "errors": []}
 
 # 1) Nasdaq 원시 수집 (query 날짜 그대로, 이후 보정) — 호출 간격으로 제한 회피
 import time as _time
@@ -275,6 +276,25 @@ if os.path.exists("events_static.json"):
     except Exception as ex:
         out["errors"].append(f"static merge: {str(ex)[:50]}")
 
+# 6.5) 생성 시각 기준 이미 지난 일정은 일정 표에서 제외 → passed 로 이동.
+#      밤사이 발표된 FOMC 의사록·연준 발언 등: 표엔 넣지 않고, 시장에 영향 준 것은 모델이 '미국 시장' 서술에 활용.
+#      (시각이 명시된 일정만 판정 — 시각 미상 주간·종일 이벤트는 지난 것으로 보지 않고 그대로 둔다.)
+def is_past(e):
+    t = e.get("time", "")
+    if not t or ":" not in t:
+        return False
+    try:
+        d0 = datetime.date.fromisoformat(e["date"])
+        h, m = (int(x) for x in t.split(":")[:2])
+    except (ValueError, KeyError):
+        return False
+    return datetime.datetime(d0.year, d0.month, d0.day, h, m, tzinfo=KST) < now
+for bucket in ("must_include", "optional"):
+    keep = []
+    for e in out[bucket]:
+        (out["passed"] if is_past(e) else keep).append(e)
+    out[bucket] = keep
+
 # 7) 정적 캘린더 자동 재갱신: 라이브 조회가 전부 성공한 날은 static을 오늘 데이터로 재생성
 #    (수동 2주 재생성 불필요 — publish.sh가 갱신본을 저장소에 함께 push해 다음 날 클론에 반영)
 query_errs = [e for e in out["errors"] if e.startswith("nasdaq econ")]
@@ -300,7 +320,7 @@ if not query_errs:
     except Exception as ex:
         out["errors"].append(f"static refresh: {str(ex)[:50]}")
 
-for k in ("must_include", "optional", "released"):
+for k in ("must_include", "optional", "released", "passed"):
     out[k].sort(key=lambda x: (x["date"], x.get("time", "")))
 
 os.makedirs("out", exist_ok=True)
@@ -313,5 +333,9 @@ for e in out["must_include"]:
 print("  [발표된 지표 · date=미국 세션일]")
 for e in out["released"]:
     print(f"    {e['date']} · {e['title']}: {e.get('actual','')} (예상 {e.get('forecast','')})")
+if out["passed"]:
+    print("  [지난 일정(표 제외) · 시장 서술용]")
+    for e in out["passed"]:
+        print(f"    {e['date']} {e.get('time','')} · {e['title']}")
 for er in out["errors"]:
     print("  오류:", er)
