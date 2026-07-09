@@ -1,23 +1,9 @@
 {
- "generated": "2026-07-09",
+ "generated": "2026-07-10",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
  "events": [
-  {
-   "date": "2026-07-09",
-   "time": "03:00",
-   "title": "FOMC",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "FOMC",
-    "의사록",
-    "연준",
-    "금리"
-   ]
-  },
   {
    "date": "2026-07-14",
    "time": "21:30",
