@@ -223,7 +223,8 @@ a{color:inherit;text-decoration:none;}
            일시는 날짜·요일·시간을 한 줄로(예: 7/14 (화) 21:30), 시간 미정이면 날짜만.
            연준 발언은 반드시 발언자 이름 표기: "연준 월러 발언" / "연준 의장 워시 발언" (events.json title 그대로).
            내용 칸엔 짧은 꼬리표만 허용(예: "JP모건 등 대형은행 — 어닝 개막").
-           ★ 생성 시각 기준 이미 지난 일정(밤사이 FOMC 의사록·연준 발언 등, events.json passed)은 이 표에 넣지 말 것 — 시장을 움직인 지난 일정은 위 '미국 시장' 해설에서 다루거나(우선) 아래 .sched 설명글로 내용만 기재. -->
+           ★ 연준 발언(의장·위원)은 미래면 항상 개별 행 — 요약·묶음·회색 글로 뭉개지 말 것(events.py must_include·verify 강제).
+           ★ 생성 시각 기준 이미 지난 일정(밤사이 FOMC 의사록 등, events.json passed)만 이 표에서 뺄 것 — 시장을 움직인 지난 일정은 위 '미국 시장' 해설에서 다루거나(우선) 아래 .sched 설명글로 내용만 기재. -->
       <tr><td><span class="tag s-ind">지표</span></td><td>지표명(월)</td><td>0/0 (요일) 00:00</td></tr>
       <tr><td><span class="tag s-fed">연준</span></td><td>연준 ○○ 발언</td><td>0/0 (요일) 00:00</td></tr>
       <tr><td><span class="tag s-earn">실적</span></td><td>기업명 (TICKER)</td><td>0/0 (요일)</td></tr>

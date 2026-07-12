@@ -205,9 +205,10 @@ cd $TMP/r && git add -A && git commit -m restore && git push
   - 미국장 주요 일정(한국시간) — 섹션 제목도 이 이름 사용: **통합 표 1개, 3열(구분/내용/일시) — 비고 칸 없음**. 구분 셀 색 태그: 지표=`tag s-ind`(파랑)·연준=`tag s-fed`(보라)·실적=`tag s-earn`(주황)·IPO=`tag s-ipo`(초록)·기타=`tag s-etc`(회색). 날짜순 정렬, 오늘 일정은 일시에 "오늘(0/0)". **일시는 날짜·요일·시간 한 줄**(`7/14 (화) 21:30`, 시간 미정이면 날짜만). **연준 발언은 발언자 이름 표기**("연준 월러 발언"·"연준 의장 워시 발언" — events.json title 그대로). 내용 칸엔 짧은 꼬리표만 허용(예: "JP모건 등 대형은행 — 어닝 개막"). **표 목표 8~12행(비어닝시즌 기준). 단 1순위(지표·IPO)와 대상 실적(아래)이 많은 날은 12행을 넘겨서라도 전부 개별 게재 — 정보손실 최소화가 우선.** 잘리는 건 화이트리스트 밖 소형 실적·저우선 2순위뿐.
     - **★ 포함 우선순위 (반드시 이 순서로 채운다)**:
       - **1순위 = 무조건 포함(상한 없음·절대 누락 금지)** = **out/events.json의 `must_include` 전부** + 판단 기준 "이 일정이 시장(지수·환율·금리·유가·업종)을 움직일 수 있는가 → 그렇다면 목록에 없어도 포함". 핵심 지표(CPI·PCE·NFP·FOMC·GDP·소매판매·ISM·PPI), 정책·거시(관세/무역·중앙은행·OPEC+·국채입찰·쿼드위칭·부채한도), 대형·한국 IPO(SK하이닉스 ADR), 어닝 개막 대형은행, 대형 M&A·규제. **must_include는 12행을 넘겨서라도 전부 넣는다**(verify.py가 누락 시 게시 차단). FOMC·대형은행 개막·초대형 IPO는 1주 밖이어도 "예고" 허용.
-      - **2순위 = 기본 포함(중요 정보로 취급)**: events.json `optional`(Medium 지표·대형 IPO 등). 1순위 다 넣은 뒤 2순위도 넣는다 — 표가 길어져도(정보손실 최소화 우선) 포함하고, 정말 넘칠 때만 그 안에서 최저우선(예: 중복성 연준위원 발언)만 컷.
+      - **2순위 = 기본 포함(중요 정보로 취급)**: events.json `optional`(Medium 지표·대형 IPO 등). 1순위 다 넣은 뒤 2순위도 넣는다 — 표가 길어져도(정보손실 최소화 우선) 포함하고, 정말 넘칠 때만 그 안에서 최저우선(예: 중복·저우선 2순위 지표)만 컷.
+      - **연준 발언은 항상 개별 행 (의장·위원 구분 없이)**: 미래 연준 발언은 events.py가 `must_include`에 넣어 verify가 표 포함을 강제한다 — **요약·묶음·회색 글로 뭉개지 말고 발언자·시각마다 개별 행.** 연준 위원 발언도 2순위라며 컷하지 말 것. (이미 지난 발언만 아래 '이미 지난 일정 제외' 규칙대로 회색 글.)
     - **실적 대상 = 아래 셋을 개별 포함(상한 없음)**: ① **M7**(애플·MS·아마존·구글·메타·엔비디아·테슬라) ② **메가캡($200B+)** ③ **경기 가늠자 화이트리스트(시총 작아도 경기 신호라 포함)** — 소비=리바이스·나이키·룰루레몬·스타벅스·맥도날드, 물류·항공=페덱스·UPS·델타·유나이티드, 산업=캐터필러·디어, 반도체(한국 관심)=마이크론·ASML·TSMC, 미디어=넷플릭스 등. 해당 종목이 in-window 실적 발표 시 **개별 행**으로 (역할 설명이 필요하면 내용 칸에 짧은 꼬리표 — 예: "리바이스 (LEVI) — 소비 가늠자"). **실적 상한 없음 — 몰리는 날은 12행 넘겨도 전부 개별 게재(요약 '그 외 다수'로 뭉개지 말 것).** 화이트리스트 밖 소형·비주력 실적만 제외. (화이트리스트는 상황 따라 RUN.md에서 갱신.)
-    - **이미 지난 일정 제외(생성 시각 기준)**: 일정 표에는 **브리핑 만드는 시각 이후(미래) 일정만** 넣는다. 생성 시각에 이미 지난 일정(밤사이 발표된 FOMC 의사록·연준 발언 등 — events.json `passed`에 분리됨)은 **표에 넣지 않는다**(1순위여도 지났으면 제외). 단 **시장을 움직인 중요한 지난 일정은 「미국 시장」 섹션의 원인 해설(2~3줄)에서 다루거나**(우선), 표 아래 회색 `.sched` 설명글에 **내용만** 적는다(일정 행 아님). verify.py가 표에 지난 시각 일정이 있으면 게시 차단.
+    - **이미 지난 일정 제외(생성 시각 기준)**: 일정 표에는 **브리핑 만드는 시각 이후(미래) 일정만** 넣는다. 생성 시각에 이미 지난 일정(밤사이 이미 끝난 FOMC 의사록 등 — events.json `passed`에 분리됨)은 **표에 넣지 않는다**(1순위·연준 발언이라도 지났으면 제외). 단 **시장을 움직인 중요한 지난 일정은 「미국 시장」 섹션의 원인 해설(2~3줄)에서 다루거나**(우선), 표 아래 회색 `.sched` 설명글에 **내용만** 적는다(일정 행 아님). verify.py가 표에 지난 시각 일정이 있으면 게시 차단.
     - **누락 금지(엄수)**: **1순위·대상 실적(M7·메가캡·화이트리스트)·2순위를 행 수 아끼려고 빼지 말 것 — 정보손실 최소화가 행 수보다 우선.** 형식(색태그 등)을 바꿔 재작성할 때도 기존 자격 행 삭제 금지.
     - **특이사항 줄(표 아래 회색 `.sched`)**: 휴장으로 인한 순연·일정 변경·1주 밖 "예고"·내용 없는 구분("IPO: 오늘 대형 IPO 없음") 등 **변동·특수 상황만** 여기에 기재 (예: "· ISM 서비스업 PMI: 7/3 휴장으로 7/6로 순연"). 화제성 IPO의 상장 첫날 결과는 다음 날 특징주에도 반영.
   - **모바일 가독성(아이폰 기준 ~390px)**: 템플릿에 미디어쿼리 적용됨. 생성 시 텍스트 규칙 — 특징주 이유·키워드 설명은 **한 줄당 40자 이내**로 간결히, 뉴스 헤드라인은 35자 내외로 다듬기, '·'로 긴 나열을 만들지 않기(3개 이하 권장)
@@ -474,7 +475,8 @@ a{color:inherit;text-decoration:none;}
            일시는 날짜·요일·시간을 한 줄로(예: 7/14 (화) 21:30), 시간 미정이면 날짜만.
            연준 발언은 반드시 발언자 이름 표기: "연준 월러 발언" / "연준 의장 워시 발언" (events.json title 그대로).
            내용 칸엔 짧은 꼬리표만 허용(예: "JP모건 등 대형은행 — 어닝 개막").
-           ★ 생성 시각 기준 이미 지난 일정(밤사이 FOMC 의사록·연준 발언 등, events.json passed)은 이 표에 넣지 말 것 — 시장을 움직인 지난 일정은 위 '미국 시장' 해설에서 다루거나(우선) 아래 .sched 설명글로 내용만 기재. -->
+           ★ 연준 발언(의장·위원)은 미래면 항상 개별 행 — 요약·묶음·회색 글로 뭉개지 말 것(events.py must_include·verify 강제).
+           ★ 생성 시각 기준 이미 지난 일정(밤사이 FOMC 의사록 등, events.json passed)만 이 표에서 뺄 것 — 시장을 움직인 지난 일정은 위 '미국 시장' 해설에서 다루거나(우선) 아래 .sched 설명글로 내용만 기재. -->
       <tr><td><span class="tag s-ind">지표</span></td><td>지표명(월)</td><td>0/0 (요일) 00:00</td></tr>
       <tr><td><span class="tag s-fed">연준</span></td><td>연준 ○○ 발언</td><td>0/0 (요일) 00:00</td></tr>
       <tr><td><span class="tag s-earn">실적</span></td><td>기업명 (TICKER)</td><td>0/0 (요일)</td></tr>
@@ -738,7 +740,7 @@ for r in q_down:
 - must_include: 1순위(반드시 일정 표에 포함 — 누락 시 verify.py가 게시 차단)
 - optional    : 2순위(자리 남으면)
 - released    : 최근 발표 지표(date=미국 세션 ET 날짜, kst=한국시간) — 발표된 지표 표에 빠짐없이
-- passed      : 생성 시각 기준 이미 지난 일정(밤사이 FOMC 의사록·연준 발언 등) — 일정 표에서 제외, '미국 시장' 서술용"""
+- passed      : 생성 시각 기준 이미 지난 일정(밤사이 이미 끝난 FOMC 의사록 등) — 일정 표에서 제외, '미국 시장' 서술용"""
 import json, os, subprocess, datetime, collections
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
@@ -858,7 +860,7 @@ for off in range(-3, 14):
             nm = fed_name(ename)
             if nm:
                 ko = f"연준 의장 {nm} 발언" if cid == "FEDCHAIR" else f"연준 {nm} 발언"
-                kws = ["연준", nm]
+                kws = [nm]  # 발언자 이름으로 verify가 개별 강제(연준 발언 항상 표 게재)
                 cid = f"{cid}:{nm}"
         key = (ds, cid)
         actual = clean(r.get("actual"))
@@ -902,6 +904,9 @@ for (ds, cid), rec in raw.items():
     et_day = datetime.date.fromisoformat(ds) - datetime.timedelta(days=offset)
     kst_date, kst_time = to_kst(et_day, rec["time_et"])
     tier1 = rec["tier"] == 1
+    # 연준 발언(의장·위원 모두)은 항상 일정 표에 개별 게재 → must_include(verify가 강제).
+    # 이미 지난 발언은 뒤의 is_past 필터가 passed로 분리하므로 must_include엔 미래분만 남는다.
+    always = tier1 or str(cid).startswith(("FEDCHAIR", "FEDSPK"))
     base = {"date": kst_date, "time": kst_time, "date_et": et_day.isoformat(),
             "title": rec["title"], "impact": "High" if tier1 else "Medium",
             "cat": "지표", "src": "nasdaq", "keywords": rec["keywords"]}
@@ -910,8 +915,8 @@ for (ds, cid), rec in raw.items():
                                 "actual": rec["actual"], "forecast": rec.get("forecast", ""),
                                 "previous": rec.get("previous", "")})
     d0 = datetime.date.fromisoformat(kst_date)
-    if today <= d0 <= today + datetime.timedelta(days=(12 if tier1 else 7)):
-        (out["must_include"] if tier1 else out["optional"]).append(base)
+    if today <= d0 <= today + datetime.timedelta(days=(12 if always else 7)):
+        (out["must_include"] if always else out["optional"]).append(base)
 
 # 4) Nasdaq 대형 IPO($500M+) → optional
 try:
@@ -1007,7 +1012,7 @@ if os.path.exists("events_static.json"):
         out["errors"].append(f"static merge: {str(ex)[:50]}")
 
 # 6.5) 생성 시각 기준 이미 지난 일정은 일정 표에서 제외 → passed 로 이동.
-#      밤사이 발표된 FOMC 의사록·연준 발언 등: 표엔 넣지 않고, 시장에 영향 준 것은 모델이 '미국 시장' 서술에 활용.
+#      밤사이 이미 끝난 FOMC 의사록 등: 표엔 넣지 않고, 시장에 영향 준 것은 모델이 '미국 시장' 서술에 활용.
 #      (시각이 명시된 일정만 판정 — 시각 미상 주간·종일 이벤트는 지난 것으로 보지 않고 그대로 둔다.)
 def is_past(e):
     t = e.get("time", "")
@@ -1538,4 +1543,4 @@ for e in events:
 남길 것과 걷어낼 것이 헷갈리면 **걷어내지 말고 사용자에게 묻는다.**
 ````
 
-_부록 수록 시각: 2026-07-09 07:55 KST — 파일 변경 시 '복구 매뉴얼 갱신해줘'로 재수록_
+_부록 수록 시각: 2026-07-12 12:35 KST — 파일 변경 시 '복구 매뉴얼 갱신해줘'로 재수록_

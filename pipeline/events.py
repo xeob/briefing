@@ -8,7 +8,7 @@
 - must_include: 1순위(반드시 일정 표에 포함 — 누락 시 verify.py가 게시 차단)
 - optional    : 2순위(자리 남으면)
 - released    : 최근 발표 지표(date=미국 세션 ET 날짜, kst=한국시간) — 발표된 지표 표에 빠짐없이
-- passed      : 생성 시각 기준 이미 지난 일정(밤사이 FOMC 의사록·연준 발언 등) — 일정 표에서 제외, '미국 시장' 서술용"""
+- passed      : 생성 시각 기준 이미 지난 일정(밤사이 이미 끝난 FOMC 의사록 등) — 일정 표에서 제외, '미국 시장' 서술용"""
 import json, os, subprocess, datetime, collections
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
@@ -128,7 +128,7 @@ for off in range(-3, 14):
             nm = fed_name(ename)
             if nm:
                 ko = f"연준 의장 {nm} 발언" if cid == "FEDCHAIR" else f"연준 {nm} 발언"
-                kws = ["연준", nm]
+                kws = [nm]  # 발언자 이름으로 verify가 개별 강제(연준 발언 항상 표 게재)
                 cid = f"{cid}:{nm}"
         key = (ds, cid)
         actual = clean(r.get("actual"))
@@ -172,6 +172,9 @@ for (ds, cid), rec in raw.items():
     et_day = datetime.date.fromisoformat(ds) - datetime.timedelta(days=offset)
     kst_date, kst_time = to_kst(et_day, rec["time_et"])
     tier1 = rec["tier"] == 1
+    # 연준 발언(의장·위원 모두)은 항상 일정 표에 개별 게재 → must_include(verify가 강제).
+    # 이미 지난 발언은 뒤의 is_past 필터가 passed로 분리하므로 must_include엔 미래분만 남는다.
+    always = tier1 or str(cid).startswith(("FEDCHAIR", "FEDSPK"))
     base = {"date": kst_date, "time": kst_time, "date_et": et_day.isoformat(),
             "title": rec["title"], "impact": "High" if tier1 else "Medium",
             "cat": "지표", "src": "nasdaq", "keywords": rec["keywords"]}
@@ -180,8 +183,8 @@ for (ds, cid), rec in raw.items():
                                 "actual": rec["actual"], "forecast": rec.get("forecast", ""),
                                 "previous": rec.get("previous", "")})
     d0 = datetime.date.fromisoformat(kst_date)
-    if today <= d0 <= today + datetime.timedelta(days=(12 if tier1 else 7)):
-        (out["must_include"] if tier1 else out["optional"]).append(base)
+    if today <= d0 <= today + datetime.timedelta(days=(12 if always else 7)):
+        (out["must_include"] if always else out["optional"]).append(base)
 
 # 4) Nasdaq 대형 IPO($500M+) → optional
 try:
@@ -277,7 +280,7 @@ if os.path.exists("events_static.json"):
         out["errors"].append(f"static merge: {str(ex)[:50]}")
 
 # 6.5) 생성 시각 기준 이미 지난 일정은 일정 표에서 제외 → passed 로 이동.
-#      밤사이 발표된 FOMC 의사록·연준 발언 등: 표엔 넣지 않고, 시장에 영향 준 것은 모델이 '미국 시장' 서술에 활용.
+#      밤사이 이미 끝난 FOMC 의사록 등: 표엔 넣지 않고, 시장에 영향 준 것은 모델이 '미국 시장' 서술에 활용.
 #      (시각이 명시된 일정만 판정 — 시각 미상 주간·종일 이벤트는 지난 것으로 보지 않고 그대로 둔다.)
 def is_past(e):
     t = e.get("time", "")
