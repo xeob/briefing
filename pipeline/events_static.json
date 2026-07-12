@@ -1,9 +1,31 @@
 {
- "generated": "2026-07-12",
+ "generated": "2026-07-13",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
  "events": [
+  {
+   "date": "2026-07-13",
+   "time": "18:25",
+   "title": "연준 보먼 발언",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "보먼"
+   ]
+  },
+  {
+   "date": "2026-07-14",
+   "time": "01:30",
+   "title": "연준 월러 발언",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "월러"
+   ]
+  },
   {
    "date": "2026-07-14",
    "time": "21:30",
@@ -14,6 +36,39 @@
    "keywords": [
     "CPI",
     "소비자물가"
+   ]
+  },
+  {
+   "date": "2026-07-15",
+   "time": "02:00",
+   "title": "연준 굴스비 발언",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "굴스비"
+   ]
+  },
+  {
+   "date": "2026-07-15",
+   "time": "02:30",
+   "title": "연준 쿡 발언",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "쿡"
+   ]
+  },
+  {
+   "date": "2026-07-15",
+   "time": "03:55",
+   "title": "연준 보먼 발언",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "보먼"
    ]
   },
   {
@@ -29,6 +84,28 @@
    ]
   },
   {
+   "date": "2026-07-15",
+   "time": "21:45",
+   "title": "연준 윌리엄스 발언",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "윌리엄스"
+   ]
+  },
+  {
+   "date": "2026-07-16",
+   "time": "02:00",
+   "title": "연준 쿡 발언",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "쿡"
+   ]
+  },
+  {
    "date": "2026-07-16",
    "time": "21:30",
    "title": "소매판매",
@@ -37,6 +114,39 @@
    "src": "static",
    "keywords": [
     "소매판매"
+   ]
+  },
+  {
+   "date": "2026-07-17",
+   "time": "01:30",
+   "title": "연준 로건 발언",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "로건"
+   ]
+  },
+  {
+   "date": "2026-07-17",
+   "time": "02:25",
+   "title": "연준 슈미드 발언",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "슈미드"
+   ]
+  },
+  {
+   "date": "2026-07-17",
+   "time": "08:00",
+   "title": "연준 제퍼슨 발언",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "제퍼슨"
    ]
   },
   {
