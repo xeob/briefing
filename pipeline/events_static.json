@@ -1,31 +1,9 @@
 {
- "generated": "2026-07-13",
+ "generated": "2026-07-14",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
  "events": [
-  {
-   "date": "2026-07-13",
-   "time": "18:25",
-   "title": "연준 보먼 발언",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "보먼"
-   ]
-  },
-  {
-   "date": "2026-07-14",
-   "time": "01:30",
-   "title": "연준 월러 발언",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "월러"
-   ]
-  },
   {
    "date": "2026-07-14",
    "time": "21:30",
