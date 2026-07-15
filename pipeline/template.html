@@ -205,10 +205,15 @@ a{color:inherit;text-decoration:none;}
     <div class="divide"></div>
     <div class="lbl">발표된 지표</div>
     <!-- ★ 브리핑이 다루는 미국장 세션 '당일'에 실제 발표된 지표만 넣는다(예: 7/2 세션 기준이면 7/2 발표분만). 다른 날 발표 지표 금지. 당일 발표가 없으면 이 표 대신 "· 당일 발표된 주요 지표 없음" 한 줄.
-         표 형식. 결과 색: 시장에 부정적(예상 대비 악화)이면 down, 긍정적이면 up, 중립이면 색 없음 -->
+         표 형식. 결과 색: 시장에 부정적(예상 대비 악화)이면 down, 긍정적이면 up, 중립이면 색 없음
+         ★ 기준 병기: events.json released 각 항목의 basis를 지표명에 함께 — "소비자물가지수 (6월, 전년비)".
+           전년비·전월비가 둘 다 오면 둘 다 개별 행(전년비 먼저, 헤드라인 다음 근원).
+           basis가 빈 항목(실업률·ISM·신규 실업수당 등)은 기준 없이 지표명만 — 고유 형태(수준·건수·지수) 그대로. -->
     <table class="tbl">
       <tr><th>지표</th><th>결과</th><th>예상</th></tr>
-      <tr><td>지표명 (월)</td><td class="num">0.0</td><td class="num">0.0</td></tr>
+      <tr><td>소비자물가지수 (6월, 전년비)</td><td class="num"><span class="up">3.5%</span></td><td class="num">3.8%</td></tr>
+      <tr><td>소비자물가지수 (6월, 전월비)</td><td class="num"><span class="up">−0.4%</span></td><td class="num">−0.1%</td></tr>
+      <tr><td>실업률 (6월)</td><td class="num">4.2%</td><td class="num">4.3%</td></tr>
     </table>
 
     <div class="divide"></div>

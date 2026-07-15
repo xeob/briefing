@@ -167,6 +167,8 @@ v2.0 · 2026-07-05 · 저장소·루틴 배포 상태와 1:1 일치 · **복구 
 - **소스 = events.json `released`** — 그 세션(ET) 발표분 빠짐없이, actual·forecast 값 그대로.
 - **등록부**: 🔴High 12 = CPI(코어)·PCE(코어)·PPI·비농업고용·실업률·시간당임금·FOMC·연준의장발언·ISM제조·ISM서비스·소매판매·GDP / 🟡Medium 11 = 신규실업수당·ADP·CB소비자신뢰·미시간심리·JOLTS·내구재·연준위원발언·주택착공/건축허가·기존주택판매·신규주택판매·산업생산 / ⚪Low 제외 = 공장주문·도매재고·무역수지·모기지·원유재고·GDPNow·U-6·지역연은지수.
 - `.tbl` 3열(지표/결과/예상). 색: 긍정 서프라이즈 초록·부정 빨강·부합 무색. 없으면 "· 당일 발표된 주요 지표 없음".
+- **★ 기준(전년비/전월비) 병기**: released 각 항목의 `basis`를 지표명에 — `소비자물가지수 (6월, 전년비)`. **전년비·전월비 둘 다 오면 둘 다 개별 행**(전년비 먼저, 헤드라인 다음 근원 — events.py가 그 순서로 정렬해 줌). `basis`가 빈 항목(실업률·ISM·수당 등)은 **기준 없이 고유 형태 그대로**(수준·건수·지수).
+- **변형 식별 원리**: Nasdaq은 전월비·전년비 행 **이름이 똑같아**(둘 다 "CPI") 자체 구분 불가 → **FF의 라벨된 예상치 ↔ Nasdaq consensus 대조**로 확정. 같은 지표에 행이 2개 이상이면 라벨 필수, **확정 못 하면 추측 없이 생략 + 오류 보고**(그날 표에서 빠지면 웹 확인). FF는 이번 주 파일만 주므로 라벨을 `events_static.json`의 `ff_variants`에 21일 캐시(주 경계·FF 장애 대비).
 
 ### 5.10 미국장 주요 일정 (한국시간)
 - **3열(구분/내용/일시) — 비고 없음.** 일시 한 줄 `7/14 (화) 21:30`(미정이면 날짜만). 날짜순, 오늘은 "오늘(0/0)". 구분 색태그 `s-ind`(파랑)/`s-fed`(보라)/`s-earn`(주황)/`s-ipo`(초록)/`s-etc`(회색).
@@ -198,7 +200,7 @@ v2.0 · 2026-07-05 · 저장소·루틴 배포 상태와 1:1 일치 · **복구 
 ### 6.3 events.py → out/events.json
 - Nasdaq 경제캘린더 오늘−3~+13일(재시도 3·간격 0.3s) + IPO($500M+) + events_manual.txt.
 - 장치: FF 앵커 **오프셋 자동 캘리브레이션**(Nasdaq=ET+1일 실측) → ET→KST 변환(zoneinfo) → CANON 정규화(등록부·U-6 제외·예상치 보유 행 우선) → 연준 발언자 한글 이름(19명 매핑) → 중복 날짜 static 중재 → **static 자동 재갱신**(무오류일 때, 창 밖 보존 — publish가 push).
-- 스키마: `{generated_kst, timezone, must_include:[{date(KST),time,title,impact,cat,src,keywords}], optional:[...], released:[{date(ET 세션일),kst,title,actual,forecast,previous}], errors, calibration, static_refresh}`.
+- 스키마: `{generated_kst, timezone, must_include:[{date(KST),time,title,impact,cat,src,keywords}], optional:[...], released:[{date(ET 세션일),kst,time,title,**basis**("전년비"/"전월비"/""),actual,forecast,previous}], **passed**:[생성 시각에 이미 지난 일정 — 표 제외, 시장 서술용], errors, calibration, static_refresh}`. events_static.json에는 `ff_variants`(변형 라벨 21일 캐시)도 보존.
 
 ### 6.4 events_manual.txt (KST 기입)
 `YYYY-MM-DD | 구분 | 제목 | 키워드,쉼표 | 비고` — in-window(12일)면 must_include 강제(verify 차단 대상). 지난 날짜 자동 무시.
@@ -328,6 +330,7 @@ v2.0 · 2026-07-05 · 저장소·루틴 배포 상태와 1:1 일치 · **복구 
 | 규칙 무시 발송 | publish.sh 단일 경로 + verify 물리 게이트 |
 | 밤사이 끝난 FOMC 의사록(7/9 03:00)이 일정 표에 실림 | events.py `passed` 분리 + verify #10 차단 + 지난 중요 일정은 '미국 시장' 해설/회색 설명글로 |
 | 연준 위원 발언이 어떤 날은 표·어떤 날은 회색 요약(2순위 재량으로 들쭉날쭉, 7/11 vs 7/12) | 연준 발언 전부 must_include化(events.py) → verify가 개별 강제, 항상 개별 행 |
+| **근원 CPI(0.0%)가 헤드라인 CPI로 오라벨돼 released에 전달**(CANON이 "core" 미제외) + Nasdaq이 전월비·전년비를 같은 이름으로 줘 **임의 1건만 생존** — 모델이 웹 리서치로 덮어써서 겨우 정상 발행(7/15) | CANON에 core·지수·n.s.a 제외 + **FF 라벨↔consensus 대조로 변형 확정** + 전년비·전월비 각각 별도 항목(`basis`) + 확정 불가 시 생략·오류 |
 
 ---
 
