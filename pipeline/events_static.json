@@ -1,54 +1,9 @@
 {
- "generated": "2026-07-14",
+ "generated": "2026-07-15",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
  "events": [
-  {
-   "date": "2026-07-14",
-   "time": "21:30",
-   "title": "소비자물가지수(CPI)",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "CPI",
-    "소비자물가"
-   ]
-  },
-  {
-   "date": "2026-07-15",
-   "time": "02:00",
-   "title": "연준 굴스비 발언",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "굴스비"
-   ]
-  },
-  {
-   "date": "2026-07-15",
-   "time": "02:30",
-   "title": "연준 쿡 발언",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "쿡"
-   ]
-  },
-  {
-   "date": "2026-07-15",
-   "time": "03:55",
-   "title": "연준 보먼 발언",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "보먼"
-   ]
-  },
   {
    "date": "2026-07-15",
    "time": "21:30",
