@@ -3,6 +3,40 @@
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
+ "ff_variants": {
+  "2026-07-14|core cpi": {
+   "0.2": "m/m",
+   "2.8": "y/y"
+  },
+  "2026-07-14|cpi": {
+   "-0.1": "m/m",
+   "3.8": "y/y"
+  },
+  "2026-07-15|core ppi": {
+   "0.3": "m/m"
+  },
+  "2026-07-15|ppi": {
+   "0.0": "m/m"
+  },
+  "2026-07-16|core retail sales": {
+   "0.0": "m/m"
+  },
+  "2026-07-16|retail sales": {
+   "0.2": "m/m"
+  },
+  "2026-07-16|business inventories": {
+   "0.3": "m/m"
+  },
+  "2026-07-16|pending home sales": {
+   "-0.5": "m/m"
+  },
+  "2026-07-17|import prices": {
+   "-0.7": "m/m"
+  },
+  "2026-07-17|industrial production": {
+   "0.2": "m/m"
+  }
+ },
  "events": [
   {
    "date": "2026-07-15",
