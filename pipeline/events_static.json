@@ -1,5 +1,5 @@
 {
- "generated": "2026-07-17",
+ "generated": "2026-07-18",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
@@ -39,25 +39,17 @@
  },
  "events": [
   {
-   "date": "2026-07-17",
-   "time": "08:00",
-   "title": "연준 제퍼슨 발언",
+   "date": "2026-07-30",
+   "time": "03:00",
+   "title": "FOMC",
    "impact": "High",
    "cat": "지표",
    "src": "static",
    "keywords": [
-    "제퍼슨"
-   ]
-  },
-  {
-   "date": "2026-07-17",
-   "time": "10:00",
-   "title": "연준 Trump 발언",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "Trump"
+    "FOMC",
+    "의사록",
+    "연준",
+    "금리"
    ]
   }
  ]
