@@ -1,5 +1,5 @@
 {
- "generated": "2026-07-18",
+ "generated": "2026-07-19",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
@@ -50,6 +50,29 @@
     "의사록",
     "연준",
     "금리"
+   ]
+  },
+  {
+   "date": "2026-07-30",
+   "time": "21:30",
+   "title": "PCE 물가지수",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "PCE"
+   ]
+  },
+  {
+   "date": "2026-07-30",
+   "time": "21:30",
+   "title": "GDP",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "GDP",
+    "성장률"
    ]
   }
  ]
