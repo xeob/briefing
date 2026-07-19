@@ -1,5 +1,5 @@
 {
- "generated": "2026-07-19",
+ "generated": "2026-07-20",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
@@ -35,6 +35,9 @@
   },
   "2026-07-17|industrial production": {
    "0.2": "m/m"
+  },
+  "2026-07-20|cb leading index": {
+   "-0.1": "m/m"
   }
  },
  "events": [
