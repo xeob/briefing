@@ -1,5 +1,5 @@
 {
- "generated": "2026-07-21",
+ "generated": "2026-07-22",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
@@ -76,6 +76,18 @@
    "keywords": [
     "GDP",
     "성장률"
+   ]
+  },
+  {
+   "date": "2026-08-03",
+   "time": "23:00",
+   "title": "ISM 제조업 PMI",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "ISM",
+    "제조업"
    ]
   }
  ]
