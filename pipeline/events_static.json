@@ -1,5 +1,5 @@
 {
- "generated": "2026-07-23",
+ "generated": "2026-07-24",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
@@ -88,6 +88,18 @@
    "keywords": [
     "ISM",
     "제조업"
+   ]
+  },
+  {
+   "date": "2026-08-05",
+   "time": "23:00",
+   "title": "ISM 서비스업 PMI",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "ISM",
+    "서비스업"
    ]
   }
  ]
