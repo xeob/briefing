@@ -1,5 +1,5 @@
 {
- "generated": "2026-07-24",
+ "generated": "2026-07-25",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
@@ -100,6 +100,19 @@
    "keywords": [
     "ISM",
     "서비스업"
+   ]
+  },
+  {
+   "date": "2026-08-06",
+   "time": "21:30",
+   "title": "고용보고서(비농업)",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "고용",
+    "NFP",
+    "비농업"
    ]
   }
  ]
