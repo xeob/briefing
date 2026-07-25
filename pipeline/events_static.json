@@ -1,5 +1,5 @@
 {
- "generated": "2026-07-25",
+ "generated": "2026-07-26",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
@@ -113,6 +113,29 @@
     "고용",
     "NFP",
     "비농업"
+   ]
+  },
+  {
+   "date": "2026-08-07",
+   "time": "21:30",
+   "title": "시간당 평균임금",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "시간당",
+    "임금"
+   ]
+  },
+  {
+   "date": "2026-08-07",
+   "time": "21:30",
+   "title": "실업률",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "실업률"
    ]
   }
  ]
