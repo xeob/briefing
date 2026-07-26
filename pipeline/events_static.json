@@ -1,5 +1,5 @@
 {
- "generated": "2026-07-26",
+ "generated": "2026-07-27",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
@@ -38,6 +38,39 @@
   },
   "2026-07-20|cb leading index": {
    "-0.1": "m/m"
+  },
+  "2026-07-27|core durable goods orders": {
+   "0.9": "m/m"
+  },
+  "2026-07-27|durable goods orders": {
+   "1.6": "m/m"
+  },
+  "2026-07-28|prelim wholesale inventories": {
+   "0.2": "m/m"
+  },
+  "2026-07-28|hpi": {
+   "0.2": "m/m"
+  },
+  "2026-07-28|s&p/cs composite-20 hpi": {
+   "0.8": "y/y"
+  },
+  "2026-07-30|advance gdp": {
+   "2.3": "q/q"
+  },
+  "2026-07-30|core pce price index": {
+   "0.1": "m/m"
+  },
+  "2026-07-30|advance gdp price index": {
+   "3.7": "q/q"
+  },
+  "2026-07-30|personal income": {
+   "0.3": "m/m"
+  },
+  "2026-07-30|personal spending": {
+   "0.4": "m/m"
+  },
+  "2026-07-31|employment cost index": {
+   "0.8": "q/q"
   }
  },
  "events": [
