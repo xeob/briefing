@@ -34,9 +34,10 @@ v2.0 · 2026-07-05 · 저장소·루틴 배포 상태와 1:1 일치 · **복구 
 ### 1.4 실행 인프라
 | 항목 | 값 |
 |---|---|
-| 루틴 이름 / ID | "Market Briefing" / trig_01FucA5Xkkzyn9ZJfkhttMeM |
+| 루틴 이름 / ID | "Daily Briefing" / trig_01FucA5Xkkzyn9ZJfkhttMeM |
 | 스케줄 | cron `30 21 * * *` UTC = **매일 06:30 KST** (지터 ~2분) |
-| 모델 | **claude-fable-5** (실행 20~40분 → 카톡 도착 보통 07:00 전후) |
+| 모델 | **claude-opus-4-8** (실행 20~40분 → 카톡 도착 보통 07:00 전후) |
+| 2차 루틴(실적 컨콜) | "Earnings Call Brief" · cron `30 23 * * *` UTC = **매일 08:30 KST** · `publish_calls.sh` · 다룰 컨콜 없으면 **발송 안 함** |
 | 환경 | env_01PB33HNQi33RBpK3eYeXi23 (네트워크 개방) |
 | 소스 | xeob/briefing(공개) + xeob/briefing-secrets(비공개) 자동 클론 |
 | 게시 | https://xeob.github.io/briefing/ · 아카이브 /briefing/archive/YYYY-MM-DD.html |
@@ -54,9 +55,12 @@ v2.0 · 2026-07-05 · 저장소·루틴 배포 상태와 1:1 일치 · **복구 
 | events.py | 미국 일정·발표지표 실제 캘린더 → out/events.json (+static 자동 재갱신) |
 | events_static.json | 1순위 일정 백업 스냅샷 (자동 갱신) |
 | events_manual.txt | 수동 등록 일정 (한국 관련 — 유일한 상시 수동 파일) |
+| earnings.py | 그 세션 실적 발표 화이트리스트 로스터+컨센서스 → out/earnings.json (수치는 리서치) |
 | gen_static.py | static 수동 재생성 도구 (비상용) |
-| verify.py | 기계 검증 게이트 (9종) |
+| verify.py | 기계 검증 게이트 (11종) |
 | publish.sh | 게시+발송 단일 경로 (verify 내장) |
+| calls_template.html | 08:30 실적 컨콜 페이지 원형 |
+| publish_calls.sh | 컨콜 페이지 게시+카톡 2차 발송 (빈 내용이면 중단) |
 | .env / briefing-secrets/.env | 비밀값 6종 — **채팅·로그·공개 커밋 노출 절대 금지** |
 
 비밀값 키: `GH_PAT` `GH_REPO` `SITE_URL` `KAKAO_REST_KEY` `KAKAO_CLIENT_SECRET` `KAKAO_REFRESH_TOKEN` (+선택 `KAKAO_TEMPLATE_ID`)
@@ -170,6 +174,12 @@ v2.0 · 2026-07-05 · 저장소·루틴 배포 상태와 1:1 일치 · **복구 
 - **★ 기준(전년비/전월비) 병기**: released 각 항목의 `basis`를 지표명에 — `소비자물가지수 (6월, 전년비)`. **전년비·전월비 둘 다 오면 둘 다 개별 행**(전년비 먼저, 헤드라인 다음 근원 — events.py가 그 순서로 정렬해 줌). `basis`가 빈 항목(실업률·ISM·수당 등)은 **기준 없이 고유 형태 그대로**(수준·건수·지수).
 - **변형 식별 원리**: Nasdaq은 전월비·전년비 행 **이름이 똑같아**(둘 다 "CPI") 자체 구분 불가 → **FF의 라벨된 예상치 ↔ Nasdaq consensus 대조**로 확정. 같은 지표에 행이 2개 이상이면 라벨 필수, **확정 못 하면 추측 없이 생략 + 오류 보고**(그날 표에서 빠지면 웹 확인). FF는 이번 주 파일만 주므로 라벨을 `events_static.json`의 `ff_variants`에 21일 캐시(주 경계·FF 장애 대비).
 
+### 5.9b 실적 발표 (발표된 지표 아래)
+- **소스 = `earnings.py` → out/earnings.json**. `must_cover`(그 세션 발표 화이트리스트 = M7·반도체·메가캡$200B+·가늠자) **전부 개별 게재 — 누락 시 verify #11 차단**. 없으면 섹션 통째 생략.
+- **표기**: `한글명 (티커)` + 서프라이즈 색. 본문 = **매출 · EPS(예상 병기) · 가이던스**. **EPS는 조정(Non-GAAP, 언론 기준)이되 "조정" 라벨은 붙이지 않음.** 영업이익 제외.
+- **심화(`deep` = M7·반도체)**: 둘째 줄에 컨퍼런스콜·특이사항(FCF 적자 전환·capex 가이던스 등). 06:30엔 컨콜 진행 중이라 없으면 생략 → 08:30 컨콜 브리핑이 담당.
+- **⚠ 수치는 반드시 웹 리서치 2소스** — API가 실적 actual을 **T+1에야** 채워 당일 값이 없다(실측: 7/27 전량 ↔ 7/28·7/29 0건). `eps_actual_gaap`은 **GAAP**이라 언론 조정치와 다름(TSLA 0.04 vs 0.33) → **표시에 쓰지 말 것.** earnings.json에서 그대로 쓰는 값은 **로스터·`eps_forecast`뿐.**
+
 ### 5.10 미국장 주요 일정 (한국시간)
 - **3열(구분/내용/일시) — 비고 없음.** 일시 한 줄 `7/14 (화) 21:30`(미정이면 날짜만). 날짜순, 오늘은 "오늘(0/0)". 구분 색태그 `s-ind`(파랑)/`s-fed`(보라)/`s-earn`(주황)/`s-ipo`(초록)/`s-etc`(회색).
 - **연준 발언 = 발언자 이름** "연준 월러 발언"·"연준 의장 워시 발언" (events.py title 그대로). **미래 연준 발언(의장·위원)은 항상 개별 행 — 요약·컷 금지, events.py가 must_include化해 verify가 강제**(이미 지난 발언만 회색 글). 내용 칸 짧은 꼬리표 허용("리바이스 (LEVI) — 소비 가늠자").
@@ -222,6 +232,7 @@ v2.0 · 2026-07-05 · 저장소·루틴 배포 상태와 1:1 일치 · **복구 
 | 8 | 묶음행 앵커 | \|5%\|+ 3개 미만 차단 |
 | 9 | 일정 1순위 누락 | must_include 키워드 부재 시 차단 |
 | 10 | 일정 지난 시각 포함 | 표에 생성 시각 이전 일정 있으면 차단(밤사이 FOMC 의사록 등) |
+| 11 | 실적 발표 누락 | earnings.json must_cover 종목이 본문에 없으면 차단 |
 | + | market.py 오류 전달 | |
 
 ### 7.2 verify 실패 메시지 해석 (실행 보고에서 보일 때)

@@ -150,6 +150,19 @@ if sm2:
             issues.append(f"[일정] 이미 지난 일정이 표에 있음: '{when}' — 생성 시각({now2:%m/%d %H:%M}) 이전. "
                           "표에서 빼고 필요 시 '미국 시장' 섹션/회색 설명글로 다룰 것")
 
+# 11) 실적 발표 누락 차단: earnings.json must_cover(그 세션 발표 화이트리스트)가 본문에 있는지(티커 매칭)
+#     수치 자체는 API가 T+1이라 대조 불가 — 여기서 막는 건 '누락'(리바이스 실적행 사고와 같은 계열).
+try:
+    ea = json.load(open("out/earnings.json"))
+except Exception:
+    ea = None
+if ea:
+    for e in ea.get("must_cover", []):
+        sym = e.get("symbol", "")
+        if sym and f"({sym})" not in html:
+            issues.append(f"[실적] '{e.get('name_ko', sym)} ({sym})' 누락 — {ea.get('session_et')} 세션 발표 "
+                          f"{e.get('tier')} 종목은 실적 발표 섹션에 반드시 포함(earnings.json must_cover)")
+
 if issues:
     print(f"❌ 검증 실패 {len(issues)}건 — 수정 후 재검증:")
     for i in issues:

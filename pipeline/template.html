@@ -217,6 +217,19 @@ a{color:inherit;text-decoration:none;}
     </table>
 
     <div class="divide"></div>
+    <div class="lbl">실적 발표</div>
+    <!-- ★ out/earnings.json 의 must_cover(그 세션 발표 화이트리스트) 전부 — 누락 시 verify 차단.
+         수치는 웹 리서치 2소스로 확인(API는 T+1이라 당일 값이 없다). EPS는 언론 기준 = 조정(Non-GAAP), 기준 라벨은 붙이지 않는다.
+         한 종목 = mv 블록 1개. 헤더 = 한글명 (티커) + 예상 대비 서프라이즈 색(up/down).
+         본문 1줄차: 매출·EPS(예상 병기)·가이던스. 40자 넘으면 <br>로 끊기.
+         본문 2줄차(M7·반도체만 = earnings.json deep): 컨퍼런스콜·특이사항 — 실적 외 시장이 주목한 것
+           (예: FCF 적자 전환·capex 가이던스 상향·수요 코멘트). 없으면 생략, 날조 금지.
+         발표 없으면 이 섹션(제목 포함) 통째로 생략. -->
+    <div class="mv"><div class="mv-h"><span class="mv-n">테슬라 (TSLA)</span><span class="mv-p down">EPS 하회</span></div>
+      <div class="mv-r">매출 $28.2B · EPS $0.33 (예상 $0.53)<br>FCF −$10.9억 적자 전환(capex +142%) · 연 capex 가이던스 $25B+ 상향</div></div>
+    <!-- must_cover 종목 수만큼 반복 -->
+
+    <div class="divide"></div>
     <div class="lbl">미국장 주요 일정 (한국시간)</div>
     <!-- 통합 표 1개(지표·연준·실적·IPO 모두 행으로; 열·색태그·일시 형식은 아래 주석 참조).
          날짜순 정렬, 오늘 일정은 일시에 "오늘(0/0)" 표기.

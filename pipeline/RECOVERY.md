@@ -202,6 +202,10 @@ cd $TMP/r && git add -A && git commit -m restore && git push
     - 완결성 자가검증: qualified 목록과 페이지 대조, 큰 이동 누락 없는지 확인
     - 스크립트 실패 시(fallback): stockanalysis.com/markets/gainers·losers WebFetch로 대체
   - 발표된 지표: **out/events.json의 `released`에서 그 미국장 세션 날짜에 발표된 지표를 빠짐없이** (지표명·actual·forecast 값 그대로, 다른 날 금지). **포함 대상 = 등록부(events.py CANON)의 High+Medium만** — High: CPI·PCE·PPI·비농업고용·실업률·시간당임금·FOMC·연준의장발언·ISM제조업·ISM서비스업·소매판매·GDP / Medium: 신규실업수당·ADP·CB소비자신뢰·미시간심리·JOLTS·내구재·연준위원발언·주택착공/건축허가·기존주택판매·신규주택판매·산업생산. **Low(공장주문·도매재고·무역수지·모기지·원유재고·GDPNow·U-6·지역연은지수 등)는 제외.** released의 해당 세션 날짜 항목은 전부 표에(매 실행 일관성). 당일 발표가 없으면 표 대신 "· 당일 발표된 주요 지표 없음" 한 줄. **표 형식**(지표/결과/예상 3열). **★ 기준(전년비/전월비) 병기 — released 각 항목의 `basis`를 지표명에 함께 적는다**: `소비자물가지수 (6월, 전년비)` · `소비자물가지수 (6월, 전월비)`. **전년비·전월비가 둘 다 오면 둘 다 개별 행으로(전년비 먼저, 헤드라인 다음 근원).** `basis`가 빈 항목(실업률·ISM·신규 실업수당 등 변형 없는 지표)은 **기준 없이 지표명만**(고유 형태 그대로 — 수준·건수·지수). **값·기준을 모델이 추측·환산하지 말 것 — released 값 그대로.** 결과 색: **예상 대비 시장에 긍정적 서프라이즈면 up(초록), 부정적이면 down(빨강), 부합·중립이면 무색** (예: 물가 예상 상회=빨강, 실업수당청구 예상 하회=초록)
+  - **실적 발표(그 세션 발표 결과) — `python3 earnings.py` (→ out/earnings.json)**: 발표된 지표 아래 새 섹션. **`must_cover` 전부 개별 게재(누락 시 verify 차단)**, 없으면 섹션 통째 생략.
+    - **⚠ 수치는 반드시 웹 리서치 2소스로 확인** — Nasdaq은 실적 actual을 **T+1에야** 채워 당일 값이 없고(실측), `eps_actual_gaap`은 **GAAP**이라 언론 조정치와 다르다(TSLA GAAP 0.04 vs 조정 0.33). **earnings.json에서 그대로 쓰는 값은 로스터·`eps_forecast`(컨센서스)뿐.**
+    - **표기**: `한글명 (티커)` + 예상 대비 서프라이즈 색(상회 up·하회 down). 본문 = **매출 · EPS(예상 병기) · 가이던스**. **EPS는 언론 기준 = 조정(Non-GAAP), "조정" 라벨은 붙이지 않는다.** 영업이익은 넣지 않음(미국 기업 보도 관행상 EPS·매출·가이던스 중심).
+    - **심화(= `deep` = M7·반도체)**: 위 수치에 더해 **컨퍼런스콜 발언·특이사항**을 둘째 줄에 (예: FCF 적자 전환·capex 가이던스 상향·수요 코멘트). **06:30 시점엔 컨콜이 진행 중이라 안 잡히면 생략** — 보도자료·8-K에 이미 나온 사실만. 못 찾으면 **날조 금지**, 그날 08:30 컨콜 브리핑에서 다룬다.
   - 미국장 주요 일정(한국시간) — 섹션 제목도 이 이름 사용: **통합 표 1개, 3열(구분/내용/일시) — 비고 칸 없음**. 구분 셀 색 태그: 지표=`tag s-ind`(파랑)·연준=`tag s-fed`(보라)·실적=`tag s-earn`(주황)·IPO=`tag s-ipo`(초록)·기타=`tag s-etc`(회색). 날짜순 정렬, 오늘 일정은 일시에 "오늘(0/0)". **일시는 날짜·요일·시간 한 줄**(`7/14 (화) 21:30`, 시간 미정이면 날짜만). **연준 발언은 발언자 이름 표기**("연준 월러 발언"·"연준 의장 워시 발언" — events.json title 그대로). 내용 칸엔 짧은 꼬리표만 허용(예: "JP모건 등 대형은행 — 어닝 개막"). **표 목표 8~12행(비어닝시즌 기준). 단 1순위(지표·IPO)와 대상 실적(아래)이 많은 날은 12행을 넘겨서라도 전부 개별 게재 — 정보손실 최소화가 우선.** 잘리는 건 화이트리스트 밖 소형 실적·저우선 2순위뿐.
     - **★ 포함 우선순위 (반드시 이 순서로 채운다)**:
       - **1순위 = 무조건 포함(상한 없음·절대 누락 금지)** = **out/events.json의 `must_include` 전부** + 판단 기준 "이 일정이 시장(지수·환율·금리·유가·업종)을 움직일 수 있는가 → 그렇다면 목록에 없어도 포함". 핵심 지표(CPI·PCE·NFP·FOMC·GDP·소매판매·ISM·PPI), 정책·거시(관세/무역·중앙은행·OPEC+·국채입찰·쿼드위칭·부채한도), 대형·한국 IPO(SK하이닉스 ADR), 어닝 개막 대형은행, 대형 M&A·규제. **must_include는 12행을 넘겨서라도 전부 넣는다**(verify.py가 누락 시 게시 차단). FOMC·대형은행 개막·초대형 IPO는 1주 밖이어도 "예고" 허용.
@@ -467,6 +471,19 @@ a{color:inherit;text-decoration:none;}
       <tr><td>소비자물가지수 (6월, 전월비)</td><td class="num"><span class="up">−0.4%</span></td><td class="num">−0.1%</td></tr>
       <tr><td>실업률 (6월)</td><td class="num">4.2%</td><td class="num">4.3%</td></tr>
     </table>
+
+    <div class="divide"></div>
+    <div class="lbl">실적 발표</div>
+    <!-- ★ out/earnings.json 의 must_cover(그 세션 발표 화이트리스트) 전부 — 누락 시 verify 차단.
+         수치는 웹 리서치 2소스로 확인(API는 T+1이라 당일 값이 없다). EPS는 언론 기준 = 조정(Non-GAAP), 기준 라벨은 붙이지 않는다.
+         한 종목 = mv 블록 1개. 헤더 = 한글명 (티커) + 예상 대비 서프라이즈 색(up/down).
+         본문 1줄차: 매출·EPS(예상 병기)·가이던스. 40자 넘으면 <br>로 끊기.
+         본문 2줄차(M7·반도체만 = earnings.json deep): 컨퍼런스콜·특이사항 — 실적 외 시장이 주목한 것
+           (예: FCF 적자 전환·capex 가이던스 상향·수요 코멘트). 없으면 생략, 날조 금지.
+         발표 없으면 이 섹션(제목 포함) 통째로 생략. -->
+    <div class="mv"><div class="mv-h"><span class="mv-n">테슬라 (TSLA)</span><span class="mv-p down">EPS 하회</span></div>
+      <div class="mv-r">매출 $28.2B · EPS $0.33 (예상 $0.53)<br>FCF −$10.9억 적자 전환(capex +142%) · 연 capex 가이던스 $25B+ 상향</div></div>
+    <!-- must_cover 종목 수만큼 반복 -->
 
     <div class="divide"></div>
     <div class="lbl">미국장 주요 일정 (한국시간)</div>
@@ -1310,6 +1327,19 @@ if sm2:
             issues.append(f"[일정] 이미 지난 일정이 표에 있음: '{when}' — 생성 시각({now2:%m/%d %H:%M}) 이전. "
                           "표에서 빼고 필요 시 '미국 시장' 섹션/회색 설명글로 다룰 것")
 
+# 11) 실적 발표 누락 차단: earnings.json must_cover(그 세션 발표 화이트리스트)가 본문에 있는지(티커 매칭)
+#     수치 자체는 API가 T+1이라 대조 불가 — 여기서 막는 건 '누락'(리바이스 실적행 사고와 같은 계열).
+try:
+    ea = json.load(open("out/earnings.json"))
+except Exception:
+    ea = None
+if ea:
+    for e in ea.get("must_cover", []):
+        sym = e.get("symbol", "")
+        if sym and f"({sym})" not in html:
+            issues.append(f"[실적] '{e.get('name_ko', sym)} ({sym})' 누락 — {ea.get('session_et')} 세션 발표 "
+                          f"{e.get('tier')} 종목은 실적 발표 섹션에 반드시 포함(earnings.json must_cover)")
+
 if issues:
     print(f"❌ 검증 실패 {len(issues)}건 — 수정 후 재검증:")
     for i in issues:
@@ -1586,6 +1616,307 @@ for e in events:
 }
 ````
 
+### 8.earnings.py
+> 그 세션 실적 발표 로스터. 아래를 `earnings.py`로 저장.
+
+````python
+#!/usr/bin/env python3
+"""실적 발표 로스터 — 브리핑이 다루는 미국 세션에 실적을 낸 '화이트리스트' 종목 + 컨센서스 → out/earnings.json
+
+★ 실측 제약(2026-07-29 확인): Nasdaq은 실적 actual(EPS)을 T+1에야 채운다.
+  (7/22~7/27 전량 채움 ↔ 7/28·7/29 0건 — 발표 8시간 뒤에도 없음)
+  또 Nasdaq EPS는 GAAP이라 언론이 쓰는 조정(Non-GAAP) EPS와 다르다(TSLA GAAP 0.04 vs 조정 0.33).
+  조정 EPS·매출·가이던스는 회사 보도자료(8-K EX-99.1) 고유 값이라 무료 API로 당일 확정이 불가능하다.
+  → 이 스크립트는 **결정론적으로 확정 가능한 것만** 제공한다:
+     ① 누가 발표했는가(로스터 — verify가 누락 차단)  ② EPS 컨센서스  ③ 시총·분기·발표시점
+     실제 수치(매출·조정 EPS·가이던스·특이사항)는 모델이 2소스 웹 리서치로 채운다(RUN.md).
+
+출력: must_cover(반드시 브리핑에 실릴 종목) / deep(컨콜·특이사항 심화 대상: M7·반도체) / errors"""
+import json, os, subprocess, datetime
+
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
+KST = datetime.timezone(datetime.timedelta(hours=9))
+now = datetime.datetime.now(KST)
+today = now.date()
+
+M7 = {"AAPL", "MSFT", "NVDA", "GOOGL", "GOOG", "AMZN", "META", "TSLA"}
+# 반도체(한국 시장 관심 — 컨콜·특이사항 심화 대상)
+SEMI = {"NVDA", "AVGO", "TSM", "ASML", "AMD", "INTC", "QCOM", "TXN", "MU", "AMAT",
+        "LRCX", "KLAC", "ADI", "ARM", "NXPI", "MRVL", "SMCI", "STX", "WDC", "MPWR"}
+# 경기 가늠자(시총 작아도 경기 신호라 포함 — RUN.md 화이트리스트와 동일)
+GAUGE = {"LEVI", "NKE", "LULU", "SBUX", "MCD", "FDX", "UPS", "DAL", "UAL", "CAT", "DE", "NFLX"}
+MEGA_CAP_B = 200  # 메가캡 기준 $200B+
+
+KO = {"AAPL": "애플", "MSFT": "마이크로소프트", "NVDA": "엔비디아", "GOOGL": "알파벳", "GOOG": "알파벳",
+      "AMZN": "아마존", "META": "메타", "TSLA": "테슬라", "AVGO": "브로드컴", "TSM": "TSMC",
+      "ASML": "ASML", "AMD": "AMD", "INTC": "인텔", "QCOM": "퀄컴", "TXN": "텍사스인스트루먼트",
+      "MU": "마이크론", "AMAT": "어플라이드머티어리얼즈", "LRCX": "램리서치", "KLAC": "KLA",
+      "ADI": "아나로그디바이스", "ARM": "ARM", "MRVL": "마벨", "SMCI": "슈퍼마이크로",
+      "NXPI": "NXP반도체", "MPWR": "모놀리식파워", "INTU": "인튜이트", "AMGN": "암젠",
+      "STX": "씨게이트", "WDC": "웨스턴디지털", "NFLX": "넷플릭스", "LEVI": "리바이스",
+      "NKE": "나이키", "LULU": "룰루레몬", "SBUX": "스타벅스", "MCD": "맥도날드", "FDX": "페덱스",
+      "UPS": "UPS", "DAL": "델타항공", "UAL": "유나이티드항공", "CAT": "캐터필러", "DE": "디어",
+      "JPM": "JP모건", "V": "비자", "MA": "마스터카드", "UNH": "유나이티드헬스", "XOM": "엑슨모빌",
+      "WMT": "월마트", "ORCL": "오라클", "LLY": "일라이릴리", "KO": "코카콜라", "PEP": "펩시코",
+      "BAC": "뱅크오브아메리카", "WFC": "웰스파고", "GS": "골드만삭스", "MS": "모건스탠리",
+      "C": "씨티그룹", "IBM": "IBM", "NOW": "서비스나우", "BA": "보잉", "DIS": "디즈니",
+      "PG": "P&G", "JNJ": "존슨앤드존슨", "ABBV": "애브비", "MRK": "머크", "PFE": "화이자",
+      "CVX": "셰브론", "COST": "코스트코", "HD": "홈디포", "CRM": "세일즈포스", "ADBE": "어도비",
+      "PM": "필립모리스", "RTX": "RTX", "AXP": "아메리칸익스프레스", "GE": "GE에어로스페이스",
+      "LIN": "린데", "ISRG": "인튜이티브서지컬", "UBER": "우버", "COIN": "코인베이스",
+      "SPGI": "S&P글로벌", "GLW": "코닝", "GSK": "GSK", "TMO": "써모피셔", "ABT": "애보트",
+      "CSCO": "시스코", "T": "AT&T", "VZ": "버라이즌", "NEE": "넥스트에라"}
+
+
+def curl_json(url, retries=3):
+    import time as _t
+    last = None
+    for i in range(retries):
+        try:
+            r = subprocess.run(["curl", "-s", "-m", "12", "-H", "User-Agent: Mozilla/5.0",
+                                "-H", "Accept: application/json", url], capture_output=True, text=True)
+            return json.loads(r.stdout)
+        except Exception as ex:
+            last = ex
+            _t.sleep(1 + i)
+    raise last
+
+
+def cap_b(s):
+    """'$954,441,967,092' → 954.4 (십억 달러)"""
+    try:
+        return float(str(s or "").replace("$", "").replace(",", "").strip()) / 1e9
+    except ValueError:
+        return 0.0
+
+
+def clean(v):
+    return str(v or "").replace("&nbsp;", "").strip()
+
+
+# 브리핑이 다루는 미국 세션(ET) = 전일. 주말이면 직전 평일로.
+# (Nasdaq 실적 캘린더는 경제지표와 달리 날짜 오프셋이 없다 — TSLA 실제 7/22 발표 ↔ 캘린더 7/22 확인)
+session = today - datetime.timedelta(days=1)
+while session.weekday() >= 5:
+    session -= datetime.timedelta(days=1)
+
+out = {"generated_kst": now.strftime("%Y-%m-%d %H:%M"), "session_et": session.isoformat(),
+       "note": ("must_cover = 이 세션에 실적을 낸 화이트리스트 종목(브리핑 '실적 발표' 섹션에 반드시). "
+                "actual 수치는 API가 T+1에야 채우므로 매출·조정 EPS·가이던스는 2소스 리서치로 채운다."),
+       "must_cover": [], "deep": [], "errors": []}
+
+try:
+    d = curl_json(f"https://api.nasdaq.com/api/calendar/earnings?date={session.isoformat()}")
+    rows = (d.get("data") or {}).get("rows") or []
+except Exception as ex:
+    rows = []
+    out["errors"].append(f"nasdaq earnings {session}: {str(ex)[:60]}")
+
+for r in rows:
+    sym = clean(r.get("symbol")).upper()
+    if not sym:
+        continue
+    cb = cap_b(r.get("marketCap"))
+    is_m7, is_semi, is_gauge = sym in M7, sym in SEMI, sym in GAUGE
+    is_mega = cb >= MEGA_CAP_B
+    if not (is_m7 or is_semi or is_gauge or is_mega):
+        continue  # 화이트리스트 밖 소형·비주력 실적은 제외(RUN.md 실적 대상과 동일)
+    tier = "M7" if is_m7 else ("반도체" if is_semi else ("메가캡" if is_mega else "가늠자"))
+    rec = {"symbol": sym, "name_ko": KO.get(sym, clean(r.get("name"))), "name_en": clean(r.get("name")),
+           "cap_b": round(cb, 1), "tier": tier,
+           "eps_forecast": clean(r.get("epsForecast")),   # 컨센서스(결정론) — 발표 전에도 제공됨
+           "eps_actual_gaap": clean(r.get("eps")),        # GAAP·T+1 반영. 조정 EPS와 다름 → 표시용 아님
+           "fiscal_q": clean(r.get("fiscalQuarterEnding")), "timing": clean(r.get("time")),
+           "deep": is_m7 or is_semi}                      # 컨콜·특이사항 심화 대상
+    out["must_cover"].append(rec)
+    if rec["deep"]:
+        out["deep"].append(sym)
+
+out["must_cover"].sort(key=lambda x: (-x["cap_b"], x["symbol"]))
+os.makedirs("out", exist_ok=True)
+json.dump(out, open("out/earnings.json", "w"), ensure_ascii=False, indent=1)
+
+print(f"세션 {session} 실적 · 대상 {len(out['must_cover'])}건 (심화 {len(out['deep'])}) → out/earnings.json")
+for e in out["must_cover"]:
+    print(f"   {e['symbol']:6} {e['name_ko']:12} {e['tier']:5} 시총 ${e['cap_b']:.0f}B "
+          f"· EPS 예상 {e['eps_forecast'] or '—'}{'  [심화]' if e['deep'] else ''}")
+if not out["must_cover"]:
+    print("   (이 세션 화이트리스트 실적 없음 — 실적 섹션 생략)")
+for er in out["errors"]:
+    print("  오류:", er)
+````
+
+### 8.calls_template.html
+> 08:30 실적 컨콜 페이지 원형. 아래를 `calls_template.html`로 저장.
+
+````html
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>실적 컨퍼런스콜</title>
+<style>
+:root{
+  --bg:#f6f6f4; --card:#ffffff; --text:#1a1a19; --sub:#63625d; --muted:#9a9992;
+  --border:#e6e5e1; --up:#0a7d33; --down:#d21c1c; --accent:#2f6fd0;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#181817; --card:#242422; --text:#f0efec; --sub:#a7a6a0; --muted:#77766f;
+    --border:#38372f; --up:#3fb950; --down:#f5564a; --accent:#5a9bf0; }
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+  word-break:keep-all;-webkit-text-size-adjust:100%;}
+.wrap{max-width:520px;margin:0 auto;padding:20px 16px 24px;}
+a{color:inherit;text-decoration:none;}
+.head{padding-bottom:14px;border-bottom:1px solid var(--border);margin-bottom:18px;}
+.head-row{display:flex;justify-content:space-between;align-items:baseline;}
+.head-title{font-size:20px;font-weight:600;}
+.head-date{font-size:13px;color:var(--muted);}
+.head-sub{margin:6px 0 0;font-size:12px;color:var(--muted);}
+.card{background:var(--card);border:0.5px solid var(--border);border-radius:12px;padding:13px 15px;margin-bottom:12px;}
+.sec{display:flex;align-items:center;gap:7px;margin-bottom:11px;}
+.sec-title{font-size:13px;font-weight:600;color:var(--sub);}
+.sec-note{font-size:11px;color:var(--muted);}
+.tag{display:inline-block;font-size:11px;padding:1px 8px;border-radius:20px;}
+.s-earn{color:#c1660f;background:rgba(193,102,15,.13);}
+.s-fed{color:#7a4fd0;background:rgba(122,79,208,.14);}
+.divide{height:1px;background:var(--border);margin:12px 0;}
+.lbl{font-size:11px;color:var(--muted);margin-bottom:5px;}
+.mv{margin-bottom:13px;}
+.mv-h{display:flex;align-items:baseline;gap:8px;}
+.mv-n{font-size:14px;font-weight:600;}
+.mv-p{font-size:13px;font-weight:600;}
+.mv-r{font-size:12px;color:var(--sub);line-height:1.55;margin-top:3px;}
+.up{color:var(--up);} .down{color:var(--down);}
+.note{font-size:12px;color:var(--sub);line-height:1.7;}
+.foot{margin-top:16px;text-align:center;font-size:11px;color:var(--muted);}
+@media (max-width:390px){ .head-title{font-size:18px;} .mv-n{font-size:13px;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ===== 헤더 (매일: 날짜) ===== -->
+  <div class="head">
+    <div class="head-row">
+      <div class="head-title">실적 컨퍼런스콜</div>
+      <div class="head-date">2026.00.00 (요일)</div>
+    </div>
+    <p class="head-sub">간밤 실적 발표 · 컨퍼런스콜 주요 내용</p>
+  </div>
+
+  <!-- ===== 종목별 컨콜 (earnings.json must_cover 중 컨콜 내용이 확인된 종목) ===== -->
+  <div class="card">
+    <div class="sec"><span class="sec-title">주요 발언 · 특이사항</span><span class="sec-note">한국시간 기준</span></div>
+    <!-- ★ 한 종목 = mv 블록 1개. 아침 브리핑에 이미 실은 '수치'를 반복하지 말고,
+           컨퍼런스콜에서 나온 발언·해설·특이사항 위주로 쓴다.
+         mv-h : 한글명 (티커) + 필요 시 시간외 주가 반응(up/down)
+         mv-r : 컨콜 핵심 2~4줄. 각 줄 40자 이내, 줄바꿈은 <br>.
+                 - 경영진 발언(수요·가격·공급·AI capex 등)
+                 - 가이던스 코멘트(다음 분기·연간)
+                 - 특이사항(FCF·마진·일회성·규제·소송 등)
+         ★ 사실만. 확인 못 한 내용은 쓰지 말 것(날조 금지). 출처는 컨콜 트랜스크립트·보도자료·주요 언론 2소스.
+         ★ M7·반도체를 우선하되, 시장이 크게 반응한 종목은 포함. -->
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">테슬라 (TSLA)</span><span class="mv-p down">시간외 −0.0%</span></div>
+      <div class="mv-r">머스크: "AI·로보틱스 투자로 FCF 적자는 연말까지 지속"<br>연간 capex 가이던스 $25B+ 재확인 · 로보택시 확대 일정 언급<br>4분기 마진 개선 기대 코멘트</div>
+    </div>
+    <!-- 컨콜 확인된 종목 수만큼 반복 -->
+  </div>
+
+  <!-- ===== 오늘 밤 예정 (선택) ===== -->
+  <div class="card">
+    <div class="sec"><span class="sec-title">오늘 밤 실적 예정</span></div>
+    <div class="note">
+      <!-- 그날 장 마감 후 발표 예정인 화이트리스트 종목 한 줄(없으면 이 카드 생략) -->
+      · 예: 애플 (AAPL) · 아마존 (AMZN) — 한국시간 내일 새벽
+    </div>
+  </div>
+
+  <div class="foot">경제 브리핑 · 실적 컨퍼런스콜</div>
+</div>
+</body>
+</html>
+````
+
+### 8.publish_calls.sh
+> 컨콜 2차 발송 스크립트. 아래를 `publish_calls.sh`로 저장 후 `chmod +x`.
+
+````bash
+#!/usr/bin/env bash
+# 실적 컨퍼런스콜 브리핑 — 08:30 KST 2차 발송. out/calls.html 을 만든 뒤 실행.
+# 아침 브리핑(index.html)은 건드리지 않고 archive/<날짜>-calls.html 만 추가한다.
+# 카카오는 기존 템플릿(134931)을 그대로 재사용 — WDATE에 "-calls"를 붙여 버튼 링크가 컨콜 페이지로 간다.
+set -euo pipefail
+cd "$(dirname "$0")"
+
+[ -f .env ] && { set -a; source .env; set +a; }
+: "${GH_PAT:?GH_PAT 필요}"; : "${GH_REPO:?GH_REPO 필요}"; : "${SITE_URL:?SITE_URL 필요}"
+: "${KAKAO_REST_KEY:?}"; : "${KAKAO_CLIENT_SECRET:?}"; : "${KAKAO_REFRESH_TOKEN:?}"
+
+HTML="out/calls.html"
+[ -f "$HTML" ] || { echo "ERROR: $HTML 없음 — 먼저 컨콜 브리핑 생성"; exit 1; }
+TODAY=$(TZ=Asia/Seoul date +%F)
+
+# 게이트: 내용 없는 껍데기 발송 방지(다룰 컨콜이 없으면 아예 발송하지 않는다)
+if ! grep -q 'class="mv-n"' "$HTML"; then
+  echo "❌ 컨콜 항목이 없음 → 발송 중단(빈 카드 금지). 다룰 실적이 없으면 실행 자체를 생략할 것."
+  exit 1
+fi
+if ! grep -q "$(TZ=Asia/Seoul date +%Y.%m.%d)" "$HTML"; then
+  echo "❌ 헤더 날짜가 오늘이 아님 → 재탕 의심, 발송 중단."
+  exit 1
+fi
+
+echo "[1/2] GitHub 게시(아카이브만)..."
+TMP=$(mktemp -d)
+git clone --depth 1 "https://${GH_PAT}@github.com/${GH_REPO}.git" "$TMP/repo" 2>/dev/null
+mkdir -p "$TMP/repo/archive"
+cp "$HTML" "$TMP/repo/archive/${TODAY}-calls.html"
+git -C "$TMP/repo" config user.email "briefing@bot"
+git -C "$TMP/repo" config user.name "briefing-bot"
+git -C "$TMP/repo" add -A
+git -C "$TMP/repo" commit -m "calls ${TODAY}" >/dev/null 2>&1 || echo "  (변경 없음)"
+git -C "$TMP/repo" push >/dev/null 2>&1
+rm -rf "$TMP"
+echo "  게시 완료 → ${SITE_URL}archive/${TODAY}-calls.html"
+
+echo "[2/2] 카카오 발송..."
+RESP=$(curl -s -X POST "https://kauth.kakao.com/oauth/token" \
+  -d "grant_type=refresh_token" -d "client_id=${KAKAO_REST_KEY}" \
+  -d "client_secret=${KAKAO_CLIENT_SECRET}" -d "refresh_token=${KAKAO_REFRESH_TOKEN}")
+ACCESS=$(echo "$RESP" | python3 -c "import sys,json;print(json.load(sys.stdin)['access_token'])")
+NEWRT=$(echo "$RESP" | python3 -c "import sys,json;print(json.load(sys.stdin).get('refresh_token',''))")
+if [ -n "$NEWRT" ]; then
+  for f in .env ../../briefing-secrets/.env ../briefing-secrets/.env ../../../briefing-secrets/.env; do
+    if [ -f "$f" ] && grep -q "^KAKAO_REFRESH_TOKEN=" "$f"; then
+      sed -i.bak "s|^KAKAO_REFRESH_TOKEN=.*|KAKAO_REFRESH_TOKEN=${NEWRT}|" "$f" && rm -f "$f.bak"
+      echo "  ✓ 새 refresh_token 자동 저장: $f"
+      d=$(dirname "$f")
+      if [ -d "$d/.git" ]; then
+        (cd "$d" && git add .env && git commit -m "chore: kakao refresh_token 자동 갱신" >/dev/null 2>&1 \
+          && git push >/dev/null 2>&1 && echo "  ✓ briefing-secrets push 완료") \
+          || echo "  ⚠ secrets push 실패 — 보고에 명시하고 수동 커밋 필요"
+      fi
+      break
+    fi
+  done
+fi
+
+MD=$(TZ=Asia/Seoul date +%-m/%-d)
+SUMMARY=$(tr '\n' ' ' < out/calls_summary.txt 2>/dev/null)
+[ -z "$SUMMARY" ] && SUMMARY="간밤 실적 컨퍼런스콜 주요 내용을 확인하세요."
+TEMPLATE_ID="${KAKAO_TEMPLATE_ID:-134931}"
+ARGS=$(MD="${MD} 실적 컨콜" SUMMARY="$SUMMARY" WDATE="${TODAY}-calls" python3 -c 'import json,os;print(json.dumps({"DATE":os.environ["MD"],"SUMMARY":os.environ["SUMMARY"],"WDATE":os.environ["WDATE"]},ensure_ascii=False))')
+OUT=$(curl -s -X POST "https://kapi.kakao.com/v2/api/talk/memo/send" \
+  -H "Authorization: Bearer ${ACCESS}" -d "template_id=${TEMPLATE_ID}" --data-urlencode "template_args=${ARGS}")
+echo "  응답: $OUT"
+echo "완료."
+````
+
 ### 8.EDITING.md
 > 개발 전용 가드레일(런타임 무관 — 루틴은 읽지 않음). 아래를 `EDITING.md`로 저장.
 
@@ -1622,4 +1953,4 @@ for e in events:
 남길 것과 걷어낼 것이 헷갈리면 **걷어내지 말고 사용자에게 묻는다.**
 ````
 
-_부록 수록 시각: 2026-07-15 10:11 KST — 파일 변경 시 '복구 매뉴얼 갱신해줘'로 재수록_
+_부록 수록 시각: 2026-07-29 13:36 KST — 파일 변경 시 '복구 매뉴얼 갱신해줘'로 재수록_
