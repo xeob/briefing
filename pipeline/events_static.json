@@ -1,5 +1,5 @@
 {
- "generated": "2026-07-30",
+ "generated": "2026-07-31",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
@@ -81,29 +81,6 @@
  },
  "events": [
   {
-   "date": "2026-07-30",
-   "time": "21:30",
-   "title": "PCE 물가지수",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "PCE"
-   ]
-  },
-  {
-   "date": "2026-07-30",
-   "time": "21:30",
-   "title": "GDP",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "GDP",
-    "성장률"
-   ]
-  },
-  {
    "date": "2026-08-03",
    "time": "23:00",
    "title": "ISM 제조업 PMI",
@@ -161,6 +138,18 @@
    "src": "static",
    "keywords": [
     "실업률"
+   ]
+  },
+  {
+   "date": "2026-08-12",
+   "time": "21:30",
+   "title": "소비자물가지수(CPI)",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "CPI",
+    "소비자물가"
    ]
   }
  ]
