@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>실적 컨퍼런스콜</title>
+<style>
+:root{
+  --bg:#f6f6f4; --card:#ffffff; --text:#1a1a19; --sub:#63625d; --muted:#9a9992;
+  --border:#e6e5e1; --up:#0a7d33; --down:#d21c1c; --accent:#2f6fd0;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#181817; --card:#242422; --text:#f0efec; --sub:#a7a6a0; --muted:#77766f;
+    --border:#38372f; --up:#3fb950; --down:#f5564a; --accent:#5a9bf0; }
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+  word-break:keep-all;-webkit-text-size-adjust:100%;}
+.wrap{max-width:520px;margin:0 auto;padding:20px 16px 24px;}
+a{color:inherit;text-decoration:none;}
+.head{padding-bottom:14px;border-bottom:1px solid var(--border);margin-bottom:18px;}
+.head-row{display:flex;justify-content:space-between;align-items:baseline;}
+.head-title{font-size:20px;font-weight:600;}
+.head-date{font-size:13px;color:var(--muted);}
+.head-sub{margin:6px 0 0;font-size:12px;color:var(--muted);}
+.card{background:var(--card);border:0.5px solid var(--border);border-radius:12px;padding:13px 15px;margin-bottom:12px;}
+.sec{display:flex;align-items:center;gap:7px;margin-bottom:11px;}
+.sec-title{font-size:13px;font-weight:600;color:var(--sub);}
+.sec-note{font-size:11px;color:var(--muted);}
+.tag{display:inline-block;font-size:11px;padding:1px 8px;border-radius:20px;}
+.s-earn{color:#c1660f;background:rgba(193,102,15,.13);}
+.s-fed{color:#7a4fd0;background:rgba(122,79,208,.14);}
+.divide{height:1px;background:var(--border);margin:12px 0;}
+.lbl{font-size:11px;color:var(--muted);margin-bottom:5px;}
+.mv{margin-bottom:13px;}
+.mv-h{display:flex;align-items:baseline;gap:8px;}
+.mv-n{font-size:14px;font-weight:600;}
+.mv-p{font-size:13px;font-weight:600;}
+.mv-r{font-size:12px;color:var(--sub);line-height:1.55;margin-top:3px;}
+.up{color:var(--up);} .down{color:var(--down);}
+.note{font-size:12px;color:var(--sub);line-height:1.7;}
+.foot{margin-top:16px;text-align:center;font-size:11px;color:var(--muted);}
+@media (max-width:390px){ .head-title{font-size:18px;} .mv-n{font-size:13px;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ===== 헤더 (매일: 날짜) ===== -->
+  <div class="head">
+    <div class="head-row">
+      <div class="head-title">실적 컨퍼런스콜</div>
+      <div class="head-date">2026.08.01 (토)</div>
+    </div>
+    <p class="head-sub">간밤 실적 발표 · 컨퍼런스콜 주요 내용</p>
+  </div>
+
+  <!-- ===== 종목별 컨콜 (earnings.json must_cover 중 컨콜 내용 2소스 확인 종목) ===== -->
+  <div class="card">
+    <div class="sec"><span class="sec-title">주요 발언 · 특이사항</span><span class="sec-note">한국시간 기준</span></div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">엑슨모빌 (XOM)</span></div>
+      <div class="mv-r">중동 사태로 상류 생산 약 10% 일시 감소<br>우즈 CEO "가용 정제능력 역대 최저…마진 강세 지속"<br>가이아나 원가회수 2년 조기…"2030 FCF, 2025의 2배"<br>퍼미안 생산 사상최대 180만 boe/d</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">셰브론 (CVX)</span></div>
+      <div class="mv-r">헤스 시너지 15억달러…목표 50% 상회·6개월 조기<br>구조적 비용절감 30억달러도 6개월 앞당겨 달성<br>美 상류 생산 사상최대 210만 boe/d, 전분기 +5%<br>연 capex 180~190억 하단 전망…MS 전력계약도 언급</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">애브비 (ABBV)</span></div>
+      <div class="mv-r">스카이리치 55억·린버크 25억달러, 둘 다 +24%<br>휴미라 −36% 감소는 "예상 부합"…바이오시밀러 영향<br>아포지 인수로 EPS 14센트 희석…연 가이던스 소폭 하향<br>백반증·원형탈모 합산 최대매출 20억달러 육박 전망</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">린데 (LIN)</span></div>
+      <div class="mv-r">전자 최고 성장 견인…AI 하드웨어 수요·팹 증설<br>프로젝트 수주잔고 사상최대 81억달러(미 서부 전자)<br>연 EPS 가이던스 하단 17.70~17.90달러로 상향<br>美 홈케어 사업 전략적 적합성 검토 중</div>
+    </div>
+
+  </div>
+
+  <div class="foot">경제 브리핑 · 실적 컨퍼런스콜</div>
+</div>
+</body>
+</html>
