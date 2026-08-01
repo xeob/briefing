@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-01",
+ "generated": "2026-08-02",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
@@ -106,6 +106,17 @@
   },
   {
    "date": "2026-08-06",
+   "time": "05:05",
+   "title": "연준 쿡 발언",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "쿡"
+   ]
+  },
+  {
+   "date": "2026-08-06",
    "time": "21:30",
    "title": "고용보고서(비농업)",
    "impact": "High",
@@ -173,6 +184,17 @@
    "keywords": [
     "PPI",
     "생산자물가"
+   ]
+  },
+  {
+   "date": "2026-08-14",
+   "time": "21:30",
+   "title": "소매판매",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "소매판매"
    ]
   }
  ]
