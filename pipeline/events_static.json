@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-02",
+ "generated": "2026-08-03",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
@@ -77,6 +77,27 @@
   },
   "2026-07-31|employment cost index": {
    "0.8": "q/q"
+  },
+  "2026-08-03|construction spending": {
+   "0.2": "m/m"
+  },
+  "2026-08-04|factory orders": {
+   "0.0": "m/m"
+  },
+  "2026-08-06|prelim nonfarm productivity": {
+   "0.7": "q/q"
+  },
+  "2026-08-06|prelim unit labor costs": {
+   "2.1": "q/q"
+  },
+  "2026-08-06|final wholesale inventories": {
+   "0.3": "m/m"
+  },
+  "2026-08-07|average hourly earnings": {
+   "0.3": "m/m"
+  },
+  "2026-08-07|consumer credit": {
+   "12.1B": "m/m"
   }
  },
  "events": [
