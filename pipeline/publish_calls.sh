@@ -37,26 +37,9 @@ rm -rf "$TMP"
 echo "  게시 완료 → ${SITE_URL}archive/${TODAY}-calls.html"
 
 echo "[2/2] 카카오 발송..."
-RESP=$(curl -s -X POST "https://kauth.kakao.com/oauth/token" \
-  -d "grant_type=refresh_token" -d "client_id=${KAKAO_REST_KEY}" \
-  -d "client_secret=${KAKAO_CLIENT_SECRET}" -d "refresh_token=${KAKAO_REFRESH_TOKEN}")
-ACCESS=$(echo "$RESP" | python3 -c "import sys,json;print(json.load(sys.stdin)['access_token'])")
-NEWRT=$(echo "$RESP" | python3 -c "import sys,json;print(json.load(sys.stdin).get('refresh_token',''))")
-if [ -n "$NEWRT" ]; then
-  for f in .env ../../briefing-secrets/.env ../briefing-secrets/.env ../../../briefing-secrets/.env; do
-    if [ -f "$f" ] && grep -q "^KAKAO_REFRESH_TOKEN=" "$f"; then
-      sed -i.bak "s|^KAKAO_REFRESH_TOKEN=.*|KAKAO_REFRESH_TOKEN=${NEWRT}|" "$f" && rm -f "$f.bak"
-      echo "  ✓ 새 refresh_token 자동 저장: $f"
-      d=$(dirname "$f")
-      if [ -d "$d/.git" ]; then
-        (cd "$d" && git add .env && git commit -m "chore: kakao refresh_token 자동 갱신" >/dev/null 2>&1 \
-          && git push >/dev/null 2>&1 && echo "  ✓ briefing-secrets push 완료") \
-          || echo "  ⚠ secrets push 실패 — 보고에 명시하고 수동 커밋 필요"
-      fi
-      break
-    fi
-  done
-fi
+# 아침 브리핑과 동일한 단일 경로 사용(토큰 로직 중복 금지 — 두 벌이면 한쪽만 고쳐지는 사고가 난다)
+./kakao_token.sh
+ACCESS=$(cat out/.kakao_access)
 
 MD=$(TZ=Asia/Seoul date +%-m/%-d)
 SUMMARY=$(tr '\n' ' ' < out/calls_summary.txt 2>/dev/null)

@@ -36,28 +36,10 @@ rm -rf "$TMP"
 echo "  게시 완료 → ${SITE_URL}"
 
 echo "[2/2] 카카오 발송..."
-RESP=$(curl -s -X POST "https://kauth.kakao.com/oauth/token" \
-  -d "grant_type=refresh_token" -d "client_id=${KAKAO_REST_KEY}" \
-  -d "client_secret=${KAKAO_CLIENT_SECRET}" -d "refresh_token=${KAKAO_REFRESH_TOKEN}")
-ACCESS=$(echo "$RESP" | python3 -c "import sys,json;print(json.load(sys.stdin)['access_token'])")
-NEWRT=$(echo "$RESP" | python3 -c "import sys,json;print(json.load(sys.stdin).get('refresh_token',''))")
-# 새 refresh_token 자동 영속화: 카카오는 만료 1개월 전부터 갱신 호출 시 새 토큰을 주므로,
-# 매일 실행 + 아래 자동 저장이 유지되는 한 토큰은 영구 슬라이딩 갱신됨(수동 재인증 불필요)
-if [ -n "$NEWRT" ]; then
-  for f in .env ../../briefing-secrets/.env ../briefing-secrets/.env ../../../briefing-secrets/.env; do
-    if [ -f "$f" ] && grep -q "^KAKAO_REFRESH_TOKEN=" "$f"; then
-      sed -i.bak "s|^KAKAO_REFRESH_TOKEN=.*|KAKAO_REFRESH_TOKEN=${NEWRT}|" "$f" && rm -f "$f.bak"
-      echo "  ✓ 새 refresh_token 자동 저장: $f"
-      d=$(dirname "$f")
-      if [ -d "$d/.git" ]; then
-        (cd "$d" && git add .env && git commit -m "chore: kakao refresh_token 자동 갱신" >/dev/null 2>&1 \
-          && git push >/dev/null 2>&1 && echo "  ✓ briefing-secrets push 완료") \
-          || echo "  ⚠ secrets push 실패 — 보고에 명시하고 수동 커밋 필요"
-      fi
-      break
-    fi
-  done
-fi
+# 토큰 갱신 + 회전 시 영구 저장(검증 포함)은 kakao_token.sh 단일 경로. 실패하면 여기서 중단된다.
+# (조용히 넘기면 다음 날부터 invalid_grant로 전부 실패 — 2026-08-03 사고)
+./kakao_token.sh
+ACCESS=$(cat out/.kakao_access)
 
 MD=$(TZ=Asia/Seoul date +%-m/%-d)
 SUMMARY=$(tr '\n' ' ' < out/summary.txt 2>/dev/null)

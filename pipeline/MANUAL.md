@@ -59,6 +59,7 @@ v2.0 · 2026-07-05 · 저장소·루틴 배포 상태와 1:1 일치 · **복구 
 | gen_static.py | static 수동 재생성 도구 (비상용) |
 | verify.py | 기계 검증 게이트 (11종) |
 | publish.sh | 게시+발송 단일 경로 (verify 내장) |
+| kakao_token.sh | 카카오 토큰 갱신 + **회전 토큰 방탄 저장**(PAT로 main push→원격 재확인→실패 시 경보+중단). 두 발송 스크립트가 공통 사용 |
 | calls_template.html | 08:30 실적 컨콜 페이지 원형 |
 | publish_calls.sh | 컨콜 페이지 게시+카톡 2차 발송 (빈 내용이면 중단) |
 | .env / briefing-secrets/.env | 비밀값 6종 — **채팅·로그·공개 커밋 노출 절대 금지** |
@@ -256,7 +257,7 @@ v2.0 · 2026-07-05 · 저장소·루틴 배포 상태와 1:1 일치 · **복구 
 2. **GitHub**: index.html 교체 + archive/YYYY-MM-DD.html(KST) + 갱신 static → main push → Pages 1~2분 내 반영.
 3. **카카오**: refresh→access 토큰 → `talk/memo/send` 템플릿 **134931**, args `{"DATE":"M/D","SUMMARY":요약,"WDATE":"YYYY-MM-DD"}` → `result_code:0` 확인.
    - **WDATE**: 카드 링크가 그날 아카이브 영구본 → 과거 카드 불변.
-   - **토큰 슬라이딩 자동 갱신**: 새 refresh_token 수신 시 .env/briefing-secrets 자동 교체+push → 수동 재인증 영구 불필요.
+   - **토큰 슬라이딩 자동 갱신 (`kakao_token.sh` 단일 경로)**: 카카오는 refresh_token 60일 만료·**만료 1개월 이내 갱신 시 새 토큰 발급(기존 것 무효화)**. 새 토큰 수신 시 ⓐ컨테이너 .env 즉시 반영 ⓑ**PAT로 briefing-secrets를 직접 클론해 main에 push** ⓒ**원격에서 다시 읽어 지문 대조 검증** ⓓ실패하면 **그 순간 카톡 경보 + 실행 중단**(조용히 넘기면 다음 날 전부 실패). → ⓑ가 유지되는 한 **재인증 영구 불필요**. **전제: PAT에 briefing-secrets Contents R/W 권한** (없으면 2026-08-03 사고 재발).
    - 템플릿 ID 변경 시 .env `KAKAO_TEMPLATE_ID=`로 오버라이드.
 
 ---
@@ -318,7 +319,8 @@ v2.0 · 2026-07-05 · 저장소·루틴 배포 상태와 1:1 일치 · **복구 
 | verify 실패 | 수정→재실행 반복 → 끝내 실패 시 **미발송**+사유 보고 |
 | 미국 휴장 | 직전 개장 세션 + sec-note 라벨 (재탕 아님) |
 | Nasdaq 캘린더 부분 실패 | 재시도·static 폴백 자동 보충 |
-| Kakao invalid_grant | 토큰 완전 만료(2개월+ 중단 시에만) → 수동 재인증 1회 |
+| Kakao invalid_grant (KOE322) | ①60일+ 루틴 중단 ②**회전된 새 토큰이 저장 안 됨**(PAT 권한 확인!) ③사용자가 카카오에서 앱 연결 해제 → 재인증 1회(§복구 4.3-E) + 원인 제거 |
+| "새 refresh_token 저장 실패" 보고 | **즉시 조치**(내일 발송 전부 실패 예정) — PAT의 briefing-secrets Contents R/W 확인 |
 | static 14일 경과 경고 | 클라우드 연일 조회 실패 신호 → Claude에게 알리기(로컬 gen_static.py) |
 
 ---
@@ -341,6 +343,7 @@ v2.0 · 2026-07-05 · 저장소·루틴 배포 상태와 1:1 일치 · **복구 
 | 규칙 무시 발송 | publish.sh 단일 경로 + verify 물리 게이트 |
 | 밤사이 끝난 FOMC 의사록(7/9 03:00)이 일정 표에 실림 | events.py `passed` 분리 + verify #10 차단 + 지난 중요 일정은 '미국 시장' 해설/회색 설명글로 |
 | 연준 위원 발언이 어떤 날은 표·어떤 날은 회색 요약(2순위 재량으로 들쭉날쭉, 7/11 vs 7/12) | 연준 발언 전부 must_include化(events.py) → verify가 개별 강제, 항상 개별 행 |
+| **카톡 발송 전면 중단(8/2~8/3)** — 7/2 발급 토큰의 회전 시점(만료 1개월 전 = 8/1)에 새 refresh_token을 저장 못 해 옛 토큰이 무효화(KOE322). 게시는 정상이라 며칠간 모르고 지나감 | `kakao_token.sh`: PAT로 main 직접 push + **원격 재확인 검증** + 저장 실패 시 **즉시 카톡 경보·실행 중단**(조용한 실패 제거). 근본 원인 = PAT에 briefing-secrets 권한 없음 |
 | **근원 CPI(0.0%)가 헤드라인 CPI로 오라벨돼 released에 전달**(CANON이 "core" 미제외) + Nasdaq이 전월비·전년비를 같은 이름으로 줘 **임의 1건만 생존** — 모델이 웹 리서치로 덮어써서 겨우 정상 발행(7/15) | CANON에 core·지수·n.s.a 제외 + **FF 라벨↔consensus 대조로 변형 확정** + 전년비·전월비 각각 별도 항목(`basis`) + 확정 불가 시 생략·오류 |
 
 ---
