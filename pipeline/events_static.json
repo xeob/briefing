@@ -1,15 +1,9 @@
 {
- "generated": "2026-08-05",
+ "generated": "2026-08-06",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
  "ff_variants": {
-  "2026-07-15|core ppi": {
-   "0.3": "m/m"
-  },
-  "2026-07-15|ppi": {
-   "0.0": "m/m"
-  },
   "2026-07-16|core retail sales": {
    "0.0": "m/m"
   },
@@ -99,26 +93,14 @@
  },
  "events": [
   {
-   "date": "2026-08-05",
-   "time": "23:00",
-   "title": "ISM 서비스업 PMI",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "ISM",
-    "서비스업"
-   ]
-  },
-  {
    "date": "2026-08-06",
-   "time": "05:05",
-   "title": "연준 쿡 발언",
+   "time": "09:35",
+   "title": "연준 데일리 발언",
    "impact": "High",
    "cat": "지표",
    "src": "static",
    "keywords": [
-    "쿡"
+    "데일리"
    ]
   },
   {
@@ -190,6 +172,17 @@
    "keywords": [
     "PPI",
     "생산자물가"
+   ]
+  },
+  {
+   "date": "2026-08-13",
+   "time": "21:40",
+   "title": "연준 Barkin 발언",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "Barkin"
    ]
   },
   {
