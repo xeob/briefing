@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>실적 컨퍼런스콜</title>
+<style>
+:root{
+  --bg:#f6f6f4; --card:#ffffff; --text:#1a1a19; --sub:#63625d; --muted:#9a9992;
+  --border:#e6e5e1; --up:#0a7d33; --down:#d21c1c; --accent:#2f6fd0;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#181817; --card:#242422; --text:#f0efec; --sub:#a7a6a0; --muted:#77766f;
+    --border:#38372f; --up:#3fb950; --down:#f5564a; --accent:#5a9bf0; }
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+  word-break:keep-all;-webkit-text-size-adjust:100%;}
+.wrap{max-width:520px;margin:0 auto;padding:20px 16px 24px;}
+a{color:inherit;text-decoration:none;}
+.head{padding-bottom:14px;border-bottom:1px solid var(--border);margin-bottom:18px;}
+.head-row{display:flex;justify-content:space-between;align-items:baseline;}
+.head-title{font-size:20px;font-weight:600;}
+.head-date{font-size:13px;color:var(--muted);}
+.head-sub{margin:6px 0 0;font-size:12px;color:var(--muted);}
+.card{background:var(--card);border:0.5px solid var(--border);border-radius:12px;padding:13px 15px;margin-bottom:12px;}
+.sec{display:flex;align-items:center;gap:7px;margin-bottom:11px;}
+.sec-title{font-size:13px;font-weight:600;color:var(--sub);}
+.sec-note{font-size:11px;color:var(--muted);}
+.tag{display:inline-block;font-size:11px;padding:1px 8px;border-radius:20px;}
+.s-earn{color:#c1660f;background:rgba(193,102,15,.13);}
+.s-fed{color:#7a4fd0;background:rgba(122,79,208,.14);}
+.divide{height:1px;background:var(--border);margin:12px 0;}
+.lbl{font-size:11px;color:var(--muted);margin-bottom:5px;}
+.mv{margin-bottom:13px;}
+.mv-h{display:flex;align-items:baseline;gap:8px;}
+.mv-n{font-size:14px;font-weight:600;}
+.mv-p{font-size:13px;font-weight:600;}
+.mv-r{font-size:12px;color:var(--sub);line-height:1.55;margin-top:3px;}
+.up{color:var(--up);} .down{color:var(--down);}
+.note{font-size:12px;color:var(--sub);line-height:1.7;}
+.foot{margin-top:16px;text-align:center;font-size:11px;color:var(--muted);}
+@media (max-width:390px){ .head-title{font-size:18px;} .mv-n{font-size:13px;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ===== 헤더 (매일: 날짜) ===== -->
+  <div class="head">
+    <div class="head-row">
+      <div class="head-title">실적 컨퍼런스콜</div>
+      <div class="head-date">2026.08.06 (목)</div>
+    </div>
+    <p class="head-sub">간밤 실적 발표 · 컨퍼런스콜 주요 내용</p>
+  </div>
+
+  <!-- ===== 종목별 컨콜 (earnings.json must_cover 중 컨콜 내용 2소스 확인 종목) ===== -->
+  <div class="card">
+    <div class="sec"><span class="sec-title">주요 발언 · 특이사항</span><span class="sec-note">한국시간 기준</span></div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">웨스턴디지털 (WDC)</span><span class="mv-p down">시간외 −16%</span></div>
+      <div class="mv-r">CFO "전 사업부 수요 확대·마진 개선 지속 자신"<br>"데이터 생성은 둔화 아닌 가속"…AI·클라우드 견인<br>2026 생산 완판·2027~28년 장기계약 선확보<br>차기 총마진 55~56%·엑사바이트 +25% 전망<br>HAMR 44TB 27상반기·50TB 하반기…급등 후 차익실현</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">샌디스크 (SNDK)</span><span class="mv-p down">시간외 약세</span></div>
+      <div class="mv-r">CEO "데이터센터를 핵심 성장축으로 확립"<br>NBM 바닥가 장기계약 잇단 체결로 하방 방어<br>QLC '스타게이트' 출하 개시…데이터센터 고성장<br>실적 상당분 가격 효과…지속성 의구심에 시간외 약세</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">일라이릴리 (LLY)</span></div>
+      <div class="mv-r">경구 GLP-1 오르포글리프론 2형 당뇨 FDA 신청<br>Ricks "모멘텀 지속…전망 어느 때보다 밝다"<br>레타트루타이드 3상 3건 완료…27년 1분기 BLA<br>Ebglyss·Jaypirca 등 신규 승인…M&A도 활발</div>
+    </div>
+
+  </div>
+
+  <div class="foot">경제 브리핑 · 실적 컨퍼런스콜</div>
+</div>
+</body>
+</html>
