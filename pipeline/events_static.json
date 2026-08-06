@@ -1,21 +1,9 @@
 {
- "generated": "2026-08-06",
+ "generated": "2026-08-07",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
  "ff_variants": {
-  "2026-07-16|core retail sales": {
-   "0.0": "m/m"
-  },
-  "2026-07-16|retail sales": {
-   "0.2": "m/m"
-  },
-  "2026-07-16|business inventories": {
-   "0.3": "m/m"
-  },
-  "2026-07-16|pending home sales": {
-   "-0.5": "m/m"
-  },
   "2026-07-17|import prices": {
    "-0.7": "m/m"
   },
@@ -92,30 +80,6 @@
   }
  },
  "events": [
-  {
-   "date": "2026-08-06",
-   "time": "09:35",
-   "title": "연준 데일리 발언",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "데일리"
-   ]
-  },
-  {
-   "date": "2026-08-06",
-   "time": "21:30",
-   "title": "고용보고서(비농업)",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "고용",
-    "NFP",
-    "비농업"
-   ]
-  },
   {
    "date": "2026-08-07",
    "time": "21:30",
