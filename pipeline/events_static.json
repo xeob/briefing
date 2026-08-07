@@ -1,15 +1,9 @@
 {
- "generated": "2026-08-07",
+ "generated": "2026-08-08",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
  "ff_variants": {
-  "2026-07-17|import prices": {
-   "-0.7": "m/m"
-  },
-  "2026-07-17|industrial production": {
-   "0.2": "m/m"
-  },
   "2026-07-20|cb leading index": {
    "-0.1": "m/m"
   },
@@ -80,40 +74,6 @@
   }
  },
  "events": [
-  {
-   "date": "2026-08-07",
-   "time": "21:30",
-   "title": "시간당 평균임금",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "시간당",
-    "임금"
-   ]
-  },
-  {
-   "date": "2026-08-07",
-   "time": "21:30",
-   "title": "실업률",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "실업률"
-   ]
-  },
-  {
-   "date": "2026-08-07",
-   "time": "23:00",
-   "title": "연준 Barkin 발언",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "Barkin"
-   ]
-  },
   {
    "date": "2026-08-12",
    "time": "21:30",
