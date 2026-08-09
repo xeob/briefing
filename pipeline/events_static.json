@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-09",
+ "generated": "2026-08-10",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
@@ -71,6 +71,29 @@
    "12.1B": "m/m",
    "11.2B": "m/m",
    "11.4B": "m/m"
+  },
+  "2026-08-12|core cpi": {
+   "0.2": "m/m",
+   "2.5": "y/y"
+  },
+  "2026-08-12|cpi": {
+   "0.1": "m/m",
+   "3.4": "y/y"
+  },
+  "2026-08-13|core ppi": {
+   "0.3": "m/m"
+  },
+  "2026-08-13|ppi": {
+   "0.2": "m/m"
+  },
+  "2026-08-14|core retail sales": {
+   "0.2": "m/m"
+  },
+  "2026-08-14|retail sales": {
+   "0.1": "m/m"
+  },
+  "2026-08-14|business inventories": {
+   "0.2": "m/m"
   }
  },
  "events": [
