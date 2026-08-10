@@ -1,12 +1,9 @@
 {
- "generated": "2026-08-10",
+ "generated": "2026-08-11",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
  "ff_variants": {
-  "2026-07-20|cb leading index": {
-   "-0.1": "m/m"
-  },
   "2026-07-27|core durable goods orders": {
    "0.9": "m/m"
   },
