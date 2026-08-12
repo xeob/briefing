@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-12",
+ "generated": "2026-08-13",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
@@ -94,18 +94,6 @@
   }
  },
  "events": [
-  {
-   "date": "2026-08-12",
-   "time": "21:30",
-   "title": "소비자물가지수(CPI)",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "CPI",
-    "소비자물가"
-   ]
-  },
   {
    "date": "2026-08-13",
    "time": "21:30",
