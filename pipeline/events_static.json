@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-13",
+ "generated": "2026-08-14",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
@@ -95,26 +95,14 @@
  },
  "events": [
   {
-   "date": "2026-08-13",
-   "time": "21:30",
-   "title": "생산자물가지수(PPI)",
+   "date": "2026-08-14",
+   "time": "07:00",
+   "title": "연준 굴스비 발언",
    "impact": "High",
    "cat": "지표",
    "src": "static",
    "keywords": [
-    "PPI",
-    "생산자물가"
-   ]
-  },
-  {
-   "date": "2026-08-13",
-   "time": "21:40",
-   "title": "연준 Barkin 발언",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "Barkin"
+    "굴스비"
    ]
   },
   {
@@ -140,6 +128,29 @@
     "의사록",
     "연준",
     "금리"
+   ]
+  },
+  {
+   "date": "2026-08-26",
+   "time": "21:30",
+   "title": "PCE 물가지수",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "PCE"
+   ]
+  },
+  {
+   "date": "2026-08-26",
+   "time": "21:30",
+   "title": "GDP",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "GDP",
+    "성장률"
    ]
   }
  ]
