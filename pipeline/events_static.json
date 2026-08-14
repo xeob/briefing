@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-14",
+ "generated": "2026-08-15",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
@@ -94,28 +94,6 @@
   }
  },
  "events": [
-  {
-   "date": "2026-08-14",
-   "time": "07:00",
-   "title": "연준 굴스비 발언",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "굴스비"
-   ]
-  },
-  {
-   "date": "2026-08-14",
-   "time": "21:30",
-   "title": "소매판매",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "소매판매"
-   ]
-  },
   {
    "date": "2026-08-20",
    "time": "03:00",
