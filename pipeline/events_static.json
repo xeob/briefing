@@ -1,15 +1,9 @@
 {
- "generated": "2026-08-16",
+ "generated": "2026-08-18",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
  "ff_variants": {
-  "2026-07-27|core durable goods orders": {
-   "0.9": "m/m"
-  },
-  "2026-07-27|durable goods orders": {
-   "1.6": "m/m"
-  },
   "2026-07-28|prelim wholesale inventories": {
    "0.2": "m/m",
    "0.4": "m/m"
@@ -91,6 +85,18 @@
   },
   "2026-08-14|business inventories": {
    "0.2": "m/m"
+  },
+  "2026-08-18|import prices": {
+   "0.1": "m/m"
+  },
+  "2026-08-18|industrial production": {
+   "0.3": "m/m"
+  },
+  "2026-08-18|pending home sales": {
+   "0.1": "m/m"
+  },
+  "2026-08-20|cb leading index": {
+   "0.1": "m/m"
   }
  },
  "events": [
