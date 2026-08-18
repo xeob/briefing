@@ -1,21 +1,9 @@
 {
- "generated": "2026-08-18",
+ "generated": "2026-08-19",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
  "ff_variants": {
-  "2026-07-28|prelim wholesale inventories": {
-   "0.2": "m/m",
-   "0.4": "m/m"
-  },
-  "2026-07-28|hpi": {
-   "0.2": "m/m",
-   "0.1": "m/m"
-  },
-  "2026-07-28|s&p/cs composite-20 hpi": {
-   "0.8": "y/y",
-   "1.3": "y/y"
-  },
   "2026-07-30|advance gdp": {
    "2.3": "q/q",
    "2.1": "q/q"
