@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-19",
+ "generated": "2026-08-20",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
@@ -89,20 +89,6 @@
  },
  "events": [
   {
-   "date": "2026-08-20",
-   "time": "03:00",
-   "title": "FOMC",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "FOMC",
-    "의사록",
-    "연준",
-    "금리"
-   ]
-  },
-  {
    "date": "2026-08-26",
    "time": "21:30",
    "title": "PCE 물가지수",
@@ -123,6 +109,18 @@
    "keywords": [
     "GDP",
     "성장률"
+   ]
+  },
+  {
+   "date": "2026-09-01",
+   "time": "23:00",
+   "title": "ISM 제조업 PMI",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "ISM",
+    "제조업"
    ]
   }
  ]
