@@ -23,7 +23,9 @@ SEMI = {"NVDA", "AVGO", "TSM", "ASML", "AMD", "INTC", "QCOM", "TXN", "MU", "AMAT
         "LRCX", "KLAC", "ADI", "ARM", "NXPI", "MRVL", "SMCI", "STX", "WDC", "MPWR"}
 # 경기 가늠자(시총 작아도 경기 신호라 포함 — RUN.md 화이트리스트와 동일)
 GAUGE = {"LEVI", "NKE", "LULU", "SBUX", "MCD", "FDX", "UPS", "DAL", "UAL", "CAT", "DE", "NFLX"}
-MEGA_CAP_B = 200  # 메가캡 기준 $200B+
+INCLUDE_CAP_B = 100  # 실적 편입 시총 문턱(2026-08-21: 200→100. TJX $160B·로우스 $123B가 빠지던 문제 해소)
+MEGA_CAP_B = 200     # "메가캡" 라벨 기준(편입 문턱과 별개)
+UPCOMING_DAYS = 7    # 일정 표에 실을 "실적 예정" 조회 창(일). 12일로 넓히면 성수기 누적 행이 급증(실측 84행)
 
 KO = {"AAPL": "애플", "MSFT": "마이크로소프트", "NVDA": "엔비디아", "GOOGL": "알파벳", "GOOG": "알파벳",
       "AMZN": "아마존", "META": "메타", "TSLA": "테슬라", "AVGO": "브로드컴", "TSM": "TSMC",
@@ -43,7 +45,11 @@ KO = {"AAPL": "애플", "MSFT": "마이크로소프트", "NVDA": "엔비디아",
       "PM": "필립모리스", "RTX": "RTX", "AXP": "아메리칸익스프레스", "GE": "GE에어로스페이스",
       "LIN": "린데", "ISRG": "인튜이티브서지컬", "UBER": "우버", "COIN": "코인베이스",
       "SPGI": "S&P글로벌", "GLW": "코닝", "GSK": "GSK", "TMO": "써모피셔", "ABT": "애보트",
-      "CSCO": "시스코", "T": "AT&T", "VZ": "버라이즌", "NEE": "넥스트에라"}
+      "CSCO": "시스코", "T": "AT&T", "VZ": "버라이즌", "NEE": "넥스트에라",
+      "CRWD": "크라우드스트라이크", "PDD": "핀둬둬", "BABA": "알리바바", "TJX": "TJX", "LOW": "로우스",
+      "TGT": "타깃", "ROST": "로스스토어", "EL": "에스티로더", "NTES": "넷이즈",
+      "RY": "캐나다왕립은행", "TD": "토론토도미니언", "BMO": "몬트리올은행",
+      "BNS": "노바스코샤은행", "CM": "CIBC"}
 
 
 def curl_json(url, retries=3):
@@ -81,7 +87,7 @@ while session.weekday() >= 5:
 out = {"generated_kst": now.strftime("%Y-%m-%d %H:%M"), "session_et": session.isoformat(),
        "note": ("must_cover = 이 세션에 실적을 낸 화이트리스트 종목(브리핑 '실적 발표' 섹션에 반드시). "
                 "actual 수치는 API가 T+1에야 채우므로 매출·조정 EPS·가이던스는 2소스 리서치로 채운다."),
-       "must_cover": [], "deep": [], "errors": []}
+       "must_cover": [], "upcoming": [], "deep": [], "errors": []}
 
 try:
     d = curl_json(f"https://api.nasdaq.com/api/calendar/earnings?date={session.isoformat()}")
@@ -96,10 +102,10 @@ for r in rows:
         continue
     cb = cap_b(r.get("marketCap"))
     is_m7, is_semi, is_gauge = sym in M7, sym in SEMI, sym in GAUGE
-    is_mega = cb >= MEGA_CAP_B
-    if not (is_m7 or is_semi or is_gauge or is_mega):
-        continue  # 화이트리스트 밖 소형·비주력 실적은 제외(RUN.md 실적 대상과 동일)
-    tier = "M7" if is_m7 else ("반도체" if is_semi else ("메가캡" if is_mega else "가늠자"))
+    if not (is_m7 or is_semi or is_gauge or cb >= INCLUDE_CAP_B):
+        continue  # 화이트리스트 밖 + 문턱 미달은 제외
+    tier = ("M7" if is_m7 else "반도체" if is_semi
+            else "메가캡" if cb >= MEGA_CAP_B else "대형주" if cb >= INCLUDE_CAP_B else "가늠자")
     rec = {"symbol": sym, "name_ko": KO.get(sym, clean(r.get("name"))), "name_en": clean(r.get("name")),
            "cap_b": round(cb, 1), "tier": tier,
            "eps_forecast": clean(r.get("epsForecast")),   # 컨센서스(결정론) — 발표 전에도 제공됨
@@ -110,6 +116,40 @@ for r in rows:
     if rec["deep"]:
         out["deep"].append(sym)
 
+# 일정 표용 '실적 예정' 로스터 — 모델 리서치에 맡기면 누락이 반복되므로(리바이스 사고) 스크립트가 확정한다.
+for off in range(0, UPCOMING_DAYS + 1):
+    day = today + datetime.timedelta(days=off)
+    if day.weekday() >= 5:
+        continue
+    try:
+        d2 = curl_json(f"https://api.nasdaq.com/api/calendar/earnings?date={day.isoformat()}")
+        rows2 = (d2.get("data") or {}).get("rows") or []
+    except Exception as ex:
+        out["errors"].append(f"nasdaq upcoming {day}: {str(ex)[:50]}")
+        continue
+    for r in rows2:
+        sym = clean(r.get("symbol")).upper()
+        if not sym:
+            continue
+        cb = cap_b(r.get("marketCap"))
+        is_m7, is_semi, is_gauge = sym in M7, sym in SEMI, sym in GAUGE
+        if not (is_m7 or is_semi or is_gauge or cb >= INCLUDE_CAP_B):
+            continue
+        out["upcoming"].append({
+            "date": day.isoformat(), "symbol": sym,
+            "name_ko": KO.get(sym, clean(r.get("name"))), "cap_b": round(cb, 1),
+            "tier": ("M7" if is_m7 else "반도체" if is_semi
+                     else "메가캡" if cb >= MEGA_CAP_B else "대형주" if cb >= INCLUDE_CAP_B else "가늠자"),
+            "eps_forecast": clean(r.get("epsForecast")), "timing": clean(r.get("time"))})
+seen_up = set()
+uniq = []
+for e in out["upcoming"]:                      # 같은 종목이 인접일에 중복 게재되는 사례 방지
+    if e["symbol"] in seen_up:
+        continue
+    seen_up.add(e["symbol"])
+    uniq.append(e)
+out["upcoming"] = sorted(uniq, key=lambda x: (x["date"], -x["cap_b"]))
+
 out["must_cover"].sort(key=lambda x: (-x["cap_b"], x["symbol"]))
 os.makedirs("out", exist_ok=True)
 json.dump(out, open("out/earnings.json", "w"), ensure_ascii=False, indent=1)
@@ -118,6 +158,9 @@ print(f"세션 {session} 실적 · 대상 {len(out['must_cover'])}건 (심화 {l
 for e in out["must_cover"]:
     print(f"   {e['symbol']:6} {e['name_ko']:12} {e['tier']:5} 시총 ${e['cap_b']:.0f}B "
           f"· EPS 예상 {e['eps_forecast'] or '—'}{'  [심화]' if e['deep'] else ''}")
+print(f"  [일정 표용 실적 예정 · 향후 {UPCOMING_DAYS}일 · ${INCLUDE_CAP_B}B+] {len(out['upcoming'])}건")
+for e in out["upcoming"]:
+    print(f"   {e['date']}  {e['symbol']:6} {e['name_ko']:12} {e['tier']:5} ${e['cap_b']:.0f}B")
 if not out["must_cover"]:
     print("   (이 세션 화이트리스트 실적 없음 — 실적 섹션 생략)")
 for er in out["errors"]:

@@ -163,6 +163,17 @@ if ea:
             issues.append(f"[실적] '{e.get('name_ko', sym)} ({sym})' 누락 — {ea.get('session_et')} 세션 발표 "
                           f"{e.get('tier')} 종목은 실적 발표 섹션에 반드시 포함(earnings.json must_cover)")
 
+# 12) 실적 '예정' 누락 차단: earnings.json upcoming(향후 N일 $100B+) 종목이 미국장 주요 일정 표에 있는지
+#     모델 리서치에 맡기면 반복 누락됐던 항목(리바이스 사고) — 스크립트 로스터로 강제한다.
+if ea:
+    sm3 = re.search(r'미국장 주요 일정.*?</table>', html, re.S)
+    sched3 = sm3.group(0) if sm3 else html
+    for e in ea.get("upcoming", []):
+        sym = e.get("symbol", "")
+        if sym and f"({sym})" not in sched3:
+            issues.append(f"[실적예정] '{e.get('name_ko', sym)} ({sym})' 누락 — {e.get('date')} 발표 예정"
+                          f"({e.get('tier')}·${e.get('cap_b')}B), 미국장 주요 일정에 실적 행으로 포함할 것")
+
 if issues:
     print(f"❌ 검증 실패 {len(issues)}건 — 수정 후 재검증:")
     for i in issues:

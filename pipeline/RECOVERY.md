@@ -256,7 +256,7 @@ cd $TMP/r && git add -A && git commit -m restore && git push
       - **1순위 = 무조건 포함(상한 없음·절대 누락 금지)** = **out/events.json의 `must_include` 전부** + 판단 기준 "이 일정이 시장(지수·환율·금리·유가·업종)을 움직일 수 있는가 → 그렇다면 목록에 없어도 포함". 핵심 지표(CPI·PCE·NFP·FOMC·GDP·소매판매·ISM·PPI), 정책·거시(관세/무역·중앙은행·OPEC+·국채입찰·쿼드위칭·부채한도), 대형·한국 IPO(SK하이닉스 ADR), 어닝 개막 대형은행, 대형 M&A·규제. **must_include는 12행을 넘겨서라도 전부 넣는다**(verify.py가 누락 시 게시 차단). FOMC·대형은행 개막·초대형 IPO는 1주 밖이어도 "예고" 허용.
       - **2순위 = 대형 IPO만**: events.json `optional`. **Medium 지표는 일정 표에 싣지 않는다(2026-08-21 결정)** — 표를 핵심만으로 유지. 단 **「발표된 지표」에는 Medium도 그대로 실린다**(이미 나온 결과는 그날 시장을 설명하는 근거이므로). 1순위 다 넣은 뒤 IPO를 넣는다.
       - **연준 발언은 항상 개별 행 (의장·위원 구분 없이)**: 미래 연준 발언은 events.py가 `must_include`에 넣어 verify가 표 포함을 강제한다 — **요약·묶음·회색 글로 뭉개지 말고 발언자·시각마다 개별 행.** 연준 위원 발언도 2순위라며 컷하지 말 것. (이미 지난 발언만 아래 '이미 지난 일정 제외' 규칙대로 회색 글.)
-    - **실적 대상 = 아래 셋을 개별 포함(상한 없음)**: ① **M7**(애플·MS·아마존·구글·메타·엔비디아·테슬라) ② **메가캡($200B+)** ③ **경기 가늠자 화이트리스트(시총 작아도 경기 신호라 포함)** — 소비=리바이스·나이키·룰루레몬·스타벅스·맥도날드, 물류·항공=페덱스·UPS·델타·유나이티드, 산업=캐터필러·디어, 반도체(한국 관심)=마이크론·ASML·TSMC, 미디어=넷플릭스 등. 해당 종목이 in-window 실적 발표 시 **개별 행**으로 (역할 설명이 필요하면 내용 칸에 짧은 꼬리표 — 예: "리바이스 (LEVI) — 소비 가늠자"). **실적 상한 없음 — 몰리는 날은 12행 넘겨도 전부 개별 게재(요약 '그 외 다수'로 뭉개지 말 것).** 화이트리스트 밖 소형·비주력 실적만 제외. (화이트리스트는 상황 따라 RUN.md에서 갱신.)
+    - **실적 대상 = `python3 earnings.py` 의 `upcoming` 전부 개별 포함(상한 없음·verify #12가 누락 차단)**: 향후 7일 안에 실적을 내는 **시총 $100B 이상 전 종목** + **M7** + **경기 가늠자 화이트리스트**(소비=리바이스·나이키·룰루레몬·스타벅스·맥도날드, 물류·항공=페덱스·UPS·델타·유나이티드, 산업=캐터필러·디어, 반도체=마이크론·ASML·TSMC, 미디어=넷플릭스). **모델이 목록을 추측하지 말고 earnings.json upcoming을 그대로 쓴다**(과거 리바이스 반복 누락의 원인이 리서치 의존이었음). 각 종목 **개별 행**(역할 설명이 필요하면 짧은 꼬리표 — "리바이스 (LEVI) — 소비 가늠자"). **12행을 넘겨도 전부 개별 게재 — "그 외 다수"로 뭉개지 말 것.** 문턱·창은 earnings.py 상단 `INCLUDE_CAP_B`·`UPCOMING_DAYS`로 조정.
     - **이미 지난 일정 제외(생성 시각 기준)**: 일정 표에는 **브리핑 만드는 시각 이후(미래) 일정만** 넣는다. 생성 시각에 이미 지난 일정(밤사이 이미 끝난 FOMC 의사록 등 — events.json `passed`에 분리됨)은 **표에 넣지 않는다**(1순위·연준 발언이라도 지났으면 제외). 단 **시장을 움직인 중요한 지난 일정은 「미국 시장」 섹션의 원인 해설(2~3줄)에서 다루거나**(우선), 표 아래 회색 `.sched` 설명글에 **내용만** 적는다(일정 행 아님). verify.py가 표에 지난 시각 일정이 있으면 게시 차단.
     - **누락 금지(엄수)**: **1순위·대상 실적(M7·메가캡·화이트리스트)·2순위를 행 수 아끼려고 빼지 말 것 — 정보손실 최소화가 행 수보다 우선.** 형식(색태그 등)을 바꿔 재작성할 때도 기존 자격 행 삭제 금지.
     - **특이사항 줄(표 아래 회색 `.sched`)**: 휴장으로 인한 순연·일정 변경·1주 밖 "예고"·내용 없는 구분("IPO: 오늘 대형 IPO 없음") 등 **변동·특수 상황만** 여기에 기재 (예: "· ISM 서비스업 PMI: 7/3 휴장으로 7/6로 순연"). 화제성 IPO의 상장 첫날 결과는 다음 날 특징주에도 반영.
@@ -1409,6 +1409,17 @@ if ea:
             issues.append(f"[실적] '{e.get('name_ko', sym)} ({sym})' 누락 — {ea.get('session_et')} 세션 발표 "
                           f"{e.get('tier')} 종목은 실적 발표 섹션에 반드시 포함(earnings.json must_cover)")
 
+# 12) 실적 '예정' 누락 차단: earnings.json upcoming(향후 N일 $100B+) 종목이 미국장 주요 일정 표에 있는지
+#     모델 리서치에 맡기면 반복 누락됐던 항목(리바이스 사고) — 스크립트 로스터로 강제한다.
+if ea:
+    sm3 = re.search(r'미국장 주요 일정.*?</table>', html, re.S)
+    sched3 = sm3.group(0) if sm3 else html
+    for e in ea.get("upcoming", []):
+        sym = e.get("symbol", "")
+        if sym and f"({sym})" not in sched3:
+            issues.append(f"[실적예정] '{e.get('name_ko', sym)} ({sym})' 누락 — {e.get('date')} 발표 예정"
+                          f"({e.get('tier')}·${e.get('cap_b')}B), 미국장 주요 일정에 실적 행으로 포함할 것")
+
 if issues:
     print(f"❌ 검증 실패 {len(issues)}건 — 수정 후 재검증:")
     for i in issues:
@@ -1696,7 +1707,9 @@ SEMI = {"NVDA", "AVGO", "TSM", "ASML", "AMD", "INTC", "QCOM", "TXN", "MU", "AMAT
         "LRCX", "KLAC", "ADI", "ARM", "NXPI", "MRVL", "SMCI", "STX", "WDC", "MPWR"}
 # 경기 가늠자(시총 작아도 경기 신호라 포함 — RUN.md 화이트리스트와 동일)
 GAUGE = {"LEVI", "NKE", "LULU", "SBUX", "MCD", "FDX", "UPS", "DAL", "UAL", "CAT", "DE", "NFLX"}
-MEGA_CAP_B = 200  # 메가캡 기준 $200B+
+INCLUDE_CAP_B = 100  # 실적 편입 시총 문턱(2026-08-21: 200→100. TJX $160B·로우스 $123B가 빠지던 문제 해소)
+MEGA_CAP_B = 200     # "메가캡" 라벨 기준(편입 문턱과 별개)
+UPCOMING_DAYS = 7    # 일정 표에 실을 "실적 예정" 조회 창(일). 12일로 넓히면 성수기 누적 행이 급증(실측 84행)
 
 KO = {"AAPL": "애플", "MSFT": "마이크로소프트", "NVDA": "엔비디아", "GOOGL": "알파벳", "GOOG": "알파벳",
       "AMZN": "아마존", "META": "메타", "TSLA": "테슬라", "AVGO": "브로드컴", "TSM": "TSMC",
@@ -1716,7 +1729,11 @@ KO = {"AAPL": "애플", "MSFT": "마이크로소프트", "NVDA": "엔비디아",
       "PM": "필립모리스", "RTX": "RTX", "AXP": "아메리칸익스프레스", "GE": "GE에어로스페이스",
       "LIN": "린데", "ISRG": "인튜이티브서지컬", "UBER": "우버", "COIN": "코인베이스",
       "SPGI": "S&P글로벌", "GLW": "코닝", "GSK": "GSK", "TMO": "써모피셔", "ABT": "애보트",
-      "CSCO": "시스코", "T": "AT&T", "VZ": "버라이즌", "NEE": "넥스트에라"}
+      "CSCO": "시스코", "T": "AT&T", "VZ": "버라이즌", "NEE": "넥스트에라",
+      "CRWD": "크라우드스트라이크", "PDD": "핀둬둬", "BABA": "알리바바", "TJX": "TJX", "LOW": "로우스",
+      "TGT": "타깃", "ROST": "로스스토어", "EL": "에스티로더", "NTES": "넷이즈",
+      "RY": "캐나다왕립은행", "TD": "토론토도미니언", "BMO": "몬트리올은행",
+      "BNS": "노바스코샤은행", "CM": "CIBC"}
 
 
 def curl_json(url, retries=3):
@@ -1754,7 +1771,7 @@ while session.weekday() >= 5:
 out = {"generated_kst": now.strftime("%Y-%m-%d %H:%M"), "session_et": session.isoformat(),
        "note": ("must_cover = 이 세션에 실적을 낸 화이트리스트 종목(브리핑 '실적 발표' 섹션에 반드시). "
                 "actual 수치는 API가 T+1에야 채우므로 매출·조정 EPS·가이던스는 2소스 리서치로 채운다."),
-       "must_cover": [], "deep": [], "errors": []}
+       "must_cover": [], "upcoming": [], "deep": [], "errors": []}
 
 try:
     d = curl_json(f"https://api.nasdaq.com/api/calendar/earnings?date={session.isoformat()}")
@@ -1769,10 +1786,10 @@ for r in rows:
         continue
     cb = cap_b(r.get("marketCap"))
     is_m7, is_semi, is_gauge = sym in M7, sym in SEMI, sym in GAUGE
-    is_mega = cb >= MEGA_CAP_B
-    if not (is_m7 or is_semi or is_gauge or is_mega):
-        continue  # 화이트리스트 밖 소형·비주력 실적은 제외(RUN.md 실적 대상과 동일)
-    tier = "M7" if is_m7 else ("반도체" if is_semi else ("메가캡" if is_mega else "가늠자"))
+    if not (is_m7 or is_semi or is_gauge or cb >= INCLUDE_CAP_B):
+        continue  # 화이트리스트 밖 + 문턱 미달은 제외
+    tier = ("M7" if is_m7 else "반도체" if is_semi
+            else "메가캡" if cb >= MEGA_CAP_B else "대형주" if cb >= INCLUDE_CAP_B else "가늠자")
     rec = {"symbol": sym, "name_ko": KO.get(sym, clean(r.get("name"))), "name_en": clean(r.get("name")),
            "cap_b": round(cb, 1), "tier": tier,
            "eps_forecast": clean(r.get("epsForecast")),   # 컨센서스(결정론) — 발표 전에도 제공됨
@@ -1783,6 +1800,40 @@ for r in rows:
     if rec["deep"]:
         out["deep"].append(sym)
 
+# 일정 표용 '실적 예정' 로스터 — 모델 리서치에 맡기면 누락이 반복되므로(리바이스 사고) 스크립트가 확정한다.
+for off in range(0, UPCOMING_DAYS + 1):
+    day = today + datetime.timedelta(days=off)
+    if day.weekday() >= 5:
+        continue
+    try:
+        d2 = curl_json(f"https://api.nasdaq.com/api/calendar/earnings?date={day.isoformat()}")
+        rows2 = (d2.get("data") or {}).get("rows") or []
+    except Exception as ex:
+        out["errors"].append(f"nasdaq upcoming {day}: {str(ex)[:50]}")
+        continue
+    for r in rows2:
+        sym = clean(r.get("symbol")).upper()
+        if not sym:
+            continue
+        cb = cap_b(r.get("marketCap"))
+        is_m7, is_semi, is_gauge = sym in M7, sym in SEMI, sym in GAUGE
+        if not (is_m7 or is_semi or is_gauge or cb >= INCLUDE_CAP_B):
+            continue
+        out["upcoming"].append({
+            "date": day.isoformat(), "symbol": sym,
+            "name_ko": KO.get(sym, clean(r.get("name"))), "cap_b": round(cb, 1),
+            "tier": ("M7" if is_m7 else "반도체" if is_semi
+                     else "메가캡" if cb >= MEGA_CAP_B else "대형주" if cb >= INCLUDE_CAP_B else "가늠자"),
+            "eps_forecast": clean(r.get("epsForecast")), "timing": clean(r.get("time"))})
+seen_up = set()
+uniq = []
+for e in out["upcoming"]:                      # 같은 종목이 인접일에 중복 게재되는 사례 방지
+    if e["symbol"] in seen_up:
+        continue
+    seen_up.add(e["symbol"])
+    uniq.append(e)
+out["upcoming"] = sorted(uniq, key=lambda x: (x["date"], -x["cap_b"]))
+
 out["must_cover"].sort(key=lambda x: (-x["cap_b"], x["symbol"]))
 os.makedirs("out", exist_ok=True)
 json.dump(out, open("out/earnings.json", "w"), ensure_ascii=False, indent=1)
@@ -1791,6 +1842,9 @@ print(f"세션 {session} 실적 · 대상 {len(out['must_cover'])}건 (심화 {l
 for e in out["must_cover"]:
     print(f"   {e['symbol']:6} {e['name_ko']:12} {e['tier']:5} 시총 ${e['cap_b']:.0f}B "
           f"· EPS 예상 {e['eps_forecast'] or '—'}{'  [심화]' if e['deep'] else ''}")
+print(f"  [일정 표용 실적 예정 · 향후 {UPCOMING_DAYS}일 · ${INCLUDE_CAP_B}B+] {len(out['upcoming'])}건")
+for e in out["upcoming"]:
+    print(f"   {e['date']}  {e['symbol']:6} {e['name_ko']:12} {e['tier']:5} ${e['cap_b']:.0f}B")
 if not out["must_cover"]:
     print("   (이 세션 화이트리스트 실적 없음 — 실적 섹션 생략)")
 for er in out["errors"]:
@@ -2179,4 +2233,4 @@ echo "   (이후 60일마다 자동 회전·저장되므로 재인증은 다시 
 남길 것과 걷어낼 것이 헷갈리면 **걷어내지 말고 사용자에게 묻는다.**
 ````
 
-_부록 수록 시각: 2026-08-21 00:12 KST — 파일 변경 시 '복구 매뉴얼 갱신해줘'로 재수록_
+_부록 수록 시각: 2026-08-21 00:24 KST — 파일 변경 시 '복구 매뉴얼 갱신해줘'로 재수록_
