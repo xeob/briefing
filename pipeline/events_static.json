@@ -1,27 +1,9 @@
 {
- "generated": "2026-08-20",
+ "generated": "2026-08-21",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
  "ff_variants": {
-  "2026-07-30|advance gdp": {
-   "2.3": "q/q",
-   "2.1": "q/q"
-  },
-  "2026-07-30|core pce price index": {
-   "0.1": "m/m",
-   "0.2": "m/m"
-  },
-  "2026-07-30|advance gdp price index": {
-   "3.7": "q/q",
-   "4.1": "q/q"
-  },
-  "2026-07-30|personal income": {
-   "0.3": "m/m"
-  },
-  "2026-07-30|personal spending": {
-   "0.4": "m/m"
-  },
   "2026-07-31|employment cost index": {
    "0.8": "q/q"
   },
@@ -109,6 +91,30 @@
    "keywords": [
     "GDP",
     "성장률"
+   ]
+  },
+  {
+   "date": "2026-08-27",
+   "time": "21:30",
+   "title": "신규 실업수당청구",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "실업수당",
+    "신규 실업"
+   ]
+  },
+  {
+   "date": "2026-08-28",
+   "time": "23:00",
+   "title": "미시간 기대인플레",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "기대인플레",
+    "미시간"
    ]
   },
   {
