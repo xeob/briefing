@@ -246,7 +246,7 @@ cd $TMP/r && git add -A && git commit -m restore && git push
       - **묶음행도 동일** — 묶음이라고 이유를 뭉뚱그리지 말 것. 그 업종이 왜 동반 이동했는지 **구체적 사건**을 적는다(40자 제한을 이유로 원인을 생략하지 말 것 — 필요하면 핵심 사건 위주로 압축).
     - 완결성 자가검증: qualified 목록과 페이지 대조, 큰 이동 누락 없는지 확인
     - 스크립트 실패 시(fallback): stockanalysis.com/markets/gainers·losers WebFetch로 대체
-  - 발표된 지표: **out/events.json의 `released`에서 그 미국장 세션 날짜에 발표된 지표를 빠짐없이** (지표명·actual·forecast 값 그대로, 다른 날 금지). **포함 대상 = 등록부(events.py CANON)의 High+Medium만** — High: CPI·PCE·PPI·비농업고용·실업률·시간당임금·FOMC·연준의장발언·ISM제조업·ISM서비스업·소매판매·GDP / Medium: 신규실업수당·ADP·CB소비자신뢰·미시간심리·JOLTS·내구재·연준위원발언·주택착공/건축허가·기존주택판매·신규주택판매·산업생산. **Low(공장주문·도매재고·무역수지·모기지·원유재고·GDPNow·U-6·지역연은지수 등)는 제외.** released의 해당 세션 날짜 항목은 전부 표에(매 실행 일관성). 당일 발표가 없으면 표 대신 "· 당일 발표된 주요 지표 없음" 한 줄. **표 형식**(지표/결과/예상 3열). **★ 기준(전년비/전월비) 병기 — released 각 항목의 `basis`를 지표명에 함께 적는다**: `소비자물가지수 (6월, 전년비)` · `소비자물가지수 (6월, 전월비)`. **전년비·전월비가 둘 다 오면 둘 다 개별 행으로(전년비 먼저, 헤드라인 다음 근원).** `basis`가 빈 항목(실업률·ISM·신규 실업수당 등 변형 없는 지표)은 **기준 없이 지표명만**(고유 형태 그대로 — 수준·건수·지수). **값·기준을 모델이 추측·환산하지 말 것 — released 값 그대로.** 결과 색: **예상 대비 시장에 긍정적 서프라이즈면 up(초록), 부정적이면 down(빨강), 부합·중립이면 무색** (예: 물가 예상 상회=빨강, 실업수당청구 예상 하회=초록)
+  - 발표된 지표: **out/events.json의 `released`에서 그 미국장 세션 날짜에 발표된 지표를 빠짐없이** (지표명·actual·forecast 값 그대로, 다른 날 금지). **포함 대상 = 등록부(events.py CANON)의 High+Medium 전부**(일정 표와 달리 여기선 Medium도 싣는다) — High: CPI·PCE·PPI·비농업고용·실업률·시간당임금·FOMC·연준의장발언·ISM제조업·ISM서비스업·소매판매·GDP·**신규실업수당**·**미시간 기대인플레(1년·5년)**·**NY연은 기대인플레** / Medium: ADP·CB소비자신뢰·미시간심리·JOLTS·내구재·연준위원발언·주택착공/건축허가·기존주택판매·신규주택판매·산업생산. **Low(공장주문·도매재고·무역수지·모기지·원유재고·GDPNow·U-6·지역연은지수 등)는 제외.** released의 해당 세션 날짜 항목은 전부 표에(매 실행 일관성). 당일 발표가 없으면 표 대신 "· 당일 발표된 주요 지표 없음" 한 줄. **표 형식**(지표/결과/예상 3열). **★ 기준(전년비/전월비) 병기 — released 각 항목의 `basis`를 지표명에 함께 적는다**: `소비자물가지수 (6월, 전년비)` · `소비자물가지수 (6월, 전월비)`. **전년비·전월비가 둘 다 오면 둘 다 개별 행으로(전년비 먼저, 헤드라인 다음 근원).** `basis`가 빈 항목(실업률·ISM·신규 실업수당 등 변형 없는 지표)은 **기준 없이 지표명만**(고유 형태 그대로 — 수준·건수·지수). **값·기준을 모델이 추측·환산하지 말 것 — released 값 그대로.** 결과 색: **예상 대비 시장에 긍정적 서프라이즈면 up(초록), 부정적이면 down(빨강), 부합·중립이면 무색** (예: 물가 예상 상회=빨강, 실업수당청구 예상 하회=초록)
   - **실적 발표(그 세션 발표 결과) — `python3 earnings.py` (→ out/earnings.json)**: 발표된 지표 아래 새 섹션. **`must_cover` 전부 개별 게재(누락 시 verify 차단)**, 없으면 섹션 통째 생략.
     - **⚠ 수치는 반드시 웹 리서치 2소스로 확인** — Nasdaq은 실적 actual을 **T+1에야** 채워 당일 값이 없고(실측), `eps_actual_gaap`은 **GAAP**이라 언론 조정치와 다르다(TSLA GAAP 0.04 vs 조정 0.33). **earnings.json에서 그대로 쓰는 값은 로스터·`eps_forecast`(컨센서스)뿐.**
     - **표기**: `한글명 (티커)` + 예상 대비 서프라이즈 색(상회 up·하회 down). 본문 = **매출 · EPS(예상 병기) · 가이던스**. **EPS는 언론 기준 = 조정(Non-GAAP), "조정" 라벨은 붙이지 않는다.** 영업이익은 넣지 않음(미국 기업 보도 관행상 EPS·매출·가이던스 중심).
@@ -254,7 +254,7 @@ cd $TMP/r && git add -A && git commit -m restore && git push
   - 미국장 주요 일정(한국시간) — 섹션 제목도 이 이름 사용: **통합 표 1개, 3열(구분/내용/일시) — 비고 칸 없음**. 구분 셀 색 태그: 지표=`tag s-ind`(파랑)·연준=`tag s-fed`(보라)·실적=`tag s-earn`(주황)·IPO=`tag s-ipo`(초록)·기타=`tag s-etc`(회색). 날짜순 정렬, 오늘 일정은 일시에 "오늘(0/0)". **일시는 날짜·요일·시간 한 줄**(`7/14 (화) 21:30`, 시간 미정이면 날짜만). **연준 발언은 발언자 이름 표기**("연준 월러 발언"·"연준 의장 워시 발언" — events.json title 그대로). 내용 칸엔 짧은 꼬리표만 허용(예: "JP모건 등 대형은행 — 어닝 개막"). **표 목표 8~12행(비어닝시즌 기준). 단 1순위(지표·IPO)와 대상 실적(아래)이 많은 날은 12행을 넘겨서라도 전부 개별 게재 — 정보손실 최소화가 우선.** 잘리는 건 화이트리스트 밖 소형 실적·저우선 2순위뿐.
     - **★ 포함 우선순위 (반드시 이 순서로 채운다)**:
       - **1순위 = 무조건 포함(상한 없음·절대 누락 금지)** = **out/events.json의 `must_include` 전부** + 판단 기준 "이 일정이 시장(지수·환율·금리·유가·업종)을 움직일 수 있는가 → 그렇다면 목록에 없어도 포함". 핵심 지표(CPI·PCE·NFP·FOMC·GDP·소매판매·ISM·PPI), 정책·거시(관세/무역·중앙은행·OPEC+·국채입찰·쿼드위칭·부채한도), 대형·한국 IPO(SK하이닉스 ADR), 어닝 개막 대형은행, 대형 M&A·규제. **must_include는 12행을 넘겨서라도 전부 넣는다**(verify.py가 누락 시 게시 차단). FOMC·대형은행 개막·초대형 IPO는 1주 밖이어도 "예고" 허용.
-      - **2순위 = 기본 포함(중요 정보로 취급)**: events.json `optional`(Medium 지표·대형 IPO 등). 1순위 다 넣은 뒤 2순위도 넣는다 — 표가 길어져도(정보손실 최소화 우선) 포함하고, 정말 넘칠 때만 그 안에서 최저우선(예: 중복·저우선 2순위 지표)만 컷.
+      - **2순위 = 대형 IPO만**: events.json `optional`. **Medium 지표는 일정 표에 싣지 않는다(2026-08-21 결정)** — 표를 핵심만으로 유지. 단 **「발표된 지표」에는 Medium도 그대로 실린다**(이미 나온 결과는 그날 시장을 설명하는 근거이므로). 1순위 다 넣은 뒤 IPO를 넣는다.
       - **연준 발언은 항상 개별 행 (의장·위원 구분 없이)**: 미래 연준 발언은 events.py가 `must_include`에 넣어 verify가 표 포함을 강제한다 — **요약·묶음·회색 글로 뭉개지 말고 발언자·시각마다 개별 행.** 연준 위원 발언도 2순위라며 컷하지 말 것. (이미 지난 발언만 아래 '이미 지난 일정 제외' 규칙대로 회색 글.)
     - **실적 대상 = 아래 셋을 개별 포함(상한 없음)**: ① **M7**(애플·MS·아마존·구글·메타·엔비디아·테슬라) ② **메가캡($200B+)** ③ **경기 가늠자 화이트리스트(시총 작아도 경기 신호라 포함)** — 소비=리바이스·나이키·룰루레몬·스타벅스·맥도날드, 물류·항공=페덱스·UPS·델타·유나이티드, 산업=캐터필러·디어, 반도체(한국 관심)=마이크론·ASML·TSMC, 미디어=넷플릭스 등. 해당 종목이 in-window 실적 발표 시 **개별 행**으로 (역할 설명이 필요하면 내용 칸에 짧은 꼬리표 — 예: "리바이스 (LEVI) — 소비 가늠자"). **실적 상한 없음 — 몰리는 날은 12행 넘겨도 전부 개별 게재(요약 '그 외 다수'로 뭉개지 말 것).** 화이트리스트 밖 소형·비주력 실적만 제외. (화이트리스트는 상황 따라 RUN.md에서 갱신.)
     - **이미 지난 일정 제외(생성 시각 기준)**: 일정 표에는 **브리핑 만드는 시각 이후(미래) 일정만** 넣는다. 생성 시각에 이미 지난 일정(밤사이 이미 끝난 FOMC 의사록 등 — events.json `passed`에 분리됨)은 **표에 넣지 않는다**(1순위·연준 발언이라도 지났으면 제외). 단 **시장을 움직인 중요한 지난 일정은 「미국 시장」 섹션의 원인 해설(2~3줄)에서 다루거나**(우선), 표 아래 회색 `.sched` 설명글에 **내용만** 적는다(일정 행 아님). verify.py가 표에 지난 시각 일정이 있으면 게시 차단.
@@ -840,10 +840,12 @@ CANON = [
     ("ISM_SVC", 1, ["ism non-manufacturing pmi", "ism services pmi"], [], "ISM 서비스업 PMI", ["ISM", "서비스업"], "ism services pmi"),
     ("RETAIL",  1, ["retail sales"], [], "소매판매", ["소매판매"], "core retail sales m/m"),
     ("GDP",     1, ["gdp"], ["gdpnow", "now"], "GDP", ["GDP", "성장률"], "advance gdp q/q"),
-    ("JOBLESS", 2, ["initial jobless claims"], [], "신규 실업수당청구", ["실업수당", "신규 실업"], "unemployment claims"),
+    ("JOBLESS", 1, ["initial jobless claims"], [], "신규 실업수당청구", ["실업수당", "신규 실업"], "unemployment claims"),
     ("ADP",     2, ["adp employment"], ["weekly"], "ADP 고용", ["ADP"], "adp non-farm employment change"),
     ("CONF",    2, ["consumer confidence", "cb consumer"], [], "소비자신뢰지수", ["소비자신뢰"], "cb consumer confidence"),
-    ("MICH",    2, ["michigan"], [], "미시간 소비심리", ["미시간", "소비심리"], "prelim uom consumer sentiment"),
+    ("MICH_INF",1, ["michigan 1-year inflation", "michigan 5-year inflation"], [], "미시간 기대인플레", ["기대인플레", "미시간"], "prelim uom inflation expectations"),
+    ("NYFED_INF",1, ["ny fed 1-year consumer inflation", "ny fed 1-year inflation"], [], "NY연은 기대인플레", ["기대인플레", "연은"], None),
+    ("MICH",    2, ["michigan"], ["inflation", "current conditions", "expectations"], "미시간 소비심리", ["미시간", "소비심리"], "prelim uom consumer sentiment"),
     ("JOLTS",   2, ["jolts"], [], "JOLTS 구인", ["JOLTS", "구인"], "jolts job openings"),
     ("DURABLE", 2, ["durable goods"], [], "내구재 주문", ["내구재"], "core durable goods orders m/m"),
     ("HOUSING", 2, ["housing starts", "building permits"], [], "주택착공·건축허가", ["주택착공", "건축허가"], "housing starts"),
@@ -879,6 +881,16 @@ CORE_KO = {"CPI": "근원 CPI", "PPI": "근원 PPI", "PCE": "근원 PCE",
 def nnum(s):
     """예상치 대조용 정규화: '3.8%' → '3.8'"""
     return str(s or "").replace("%", "").replace(",", "").strip()
+
+def sub_series(ename_low):
+    """같은 지표 안에서 별개 시리즈를 구분: 근원 / 기대인플레 1년·5년. 그룹 키와 표기에 함께 쓴다."""
+    if ename_low.startswith("core"):
+        return "core"
+    if "1-year" in ename_low:
+        return "1y"
+    if "5-year" in ename_low:
+        return "5y"
+    return ""
 
 def classify(name):
     t = name.lower()
@@ -1018,8 +1030,10 @@ for (ds, cid), rec in raw.items():
             "title": rec["title"], "impact": "High" if tier1 else "Medium",
             "cat": "지표", "src": "nasdaq", "keywords": rec["keywords"]}
     d0 = datetime.date.fromisoformat(kst_date)
-    if today <= d0 <= today + datetime.timedelta(days=(12 if always else 7)):
-        (out["must_include"] if always else out["optional"]).append(base)
+    # 일정 표에는 High(1순위) + 연준 발언만 싣는다 — Medium 지표는 2026-08-21 결정으로 표에서 제외.
+    # (제외해도 '발표된 지표'(released)에는 그대로 남는다 — 그날 시장을 설명하는 근거이므로.)
+    if always and today <= d0 <= today + datetime.timedelta(days=12):
+        out["must_include"].append(base)
 
 # 3.5) 발표된 지표(released): 전년비·전월비·근원을 '각각 별도 항목'으로.
 #      Nasdaq은 전월비·전년비 행 이름이 똑같아(둘 다 "CPI") 그대로 쓰면 어느 쪽인지 알 수 없고,
@@ -1034,8 +1048,8 @@ for r in released_raw:
     if not (today - datetime.timedelta(days=3) <= et_day <= today):
         continue
     base_name = r["ename"].strip().lower()
-    groups.setdefault((et_day, r["cid"], base_name.startswith("core")), []).append((r, base_name))
-for (et_day, cid, is_core), rows in groups.items():
+    groups.setdefault((et_day, r["cid"], sub_series(base_name)), []).append((r, base_name))
+for (et_day, cid, sub), rows in groups.items():
     for r, base_name in rows:
         basis = ""
         if len(rows) > 1:  # 변형(전월비·전년비 등) 존재 → 라벨 확정 필수
@@ -1045,7 +1059,12 @@ for (et_day, cid, is_core), rows in groups.items():
                                      "— 발표지표에서 생략, 웹 확인 필요")
                 continue
             basis = VAR_KO.get(var, "")
-        title = (CORE_KO.get(cid, "근원 " + r["ko"])) if is_core else r["ko"]
+        if sub == "core":
+            title = CORE_KO.get(cid, "근원 " + r["ko"])
+        elif sub in ("1y", "5y"):   # 미시간 1년·5년 기대인플레는 같은 시각 동시 발표 → 기간을 구분해 각각 표기
+            title = r["ko"].replace("기대인플레", ("1년" if sub == "1y" else "5년") + " 기대인플레")
+        else:
+            title = r["ko"]
         key = (et_day.isoformat(), title, basis)
         if key in seen_rel:
             continue
@@ -2160,4 +2179,4 @@ echo "   (이후 60일마다 자동 회전·저장되므로 재인증은 다시 
 남길 것과 걷어낼 것이 헷갈리면 **걷어내지 말고 사용자에게 묻는다.**
 ````
 
-_부록 수록 시각: 2026-08-20 23:53 KST — 파일 변경 시 '복구 매뉴얼 갱신해줘'로 재수록_
+_부록 수록 시각: 2026-08-21 00:12 KST — 파일 변경 시 '복구 매뉴얼 갱신해줘'로 재수록_

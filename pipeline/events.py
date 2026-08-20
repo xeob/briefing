@@ -36,10 +36,12 @@ CANON = [
     ("ISM_SVC", 1, ["ism non-manufacturing pmi", "ism services pmi"], [], "ISM 서비스업 PMI", ["ISM", "서비스업"], "ism services pmi"),
     ("RETAIL",  1, ["retail sales"], [], "소매판매", ["소매판매"], "core retail sales m/m"),
     ("GDP",     1, ["gdp"], ["gdpnow", "now"], "GDP", ["GDP", "성장률"], "advance gdp q/q"),
-    ("JOBLESS", 2, ["initial jobless claims"], [], "신규 실업수당청구", ["실업수당", "신규 실업"], "unemployment claims"),
+    ("JOBLESS", 1, ["initial jobless claims"], [], "신규 실업수당청구", ["실업수당", "신규 실업"], "unemployment claims"),
     ("ADP",     2, ["adp employment"], ["weekly"], "ADP 고용", ["ADP"], "adp non-farm employment change"),
     ("CONF",    2, ["consumer confidence", "cb consumer"], [], "소비자신뢰지수", ["소비자신뢰"], "cb consumer confidence"),
-    ("MICH",    2, ["michigan"], [], "미시간 소비심리", ["미시간", "소비심리"], "prelim uom consumer sentiment"),
+    ("MICH_INF",1, ["michigan 1-year inflation", "michigan 5-year inflation"], [], "미시간 기대인플레", ["기대인플레", "미시간"], "prelim uom inflation expectations"),
+    ("NYFED_INF",1, ["ny fed 1-year consumer inflation", "ny fed 1-year inflation"], [], "NY연은 기대인플레", ["기대인플레", "연은"], None),
+    ("MICH",    2, ["michigan"], ["inflation", "current conditions", "expectations"], "미시간 소비심리", ["미시간", "소비심리"], "prelim uom consumer sentiment"),
     ("JOLTS",   2, ["jolts"], [], "JOLTS 구인", ["JOLTS", "구인"], "jolts job openings"),
     ("DURABLE", 2, ["durable goods"], [], "내구재 주문", ["내구재"], "core durable goods orders m/m"),
     ("HOUSING", 2, ["housing starts", "building permits"], [], "주택착공·건축허가", ["주택착공", "건축허가"], "housing starts"),
@@ -75,6 +77,16 @@ CORE_KO = {"CPI": "근원 CPI", "PPI": "근원 PPI", "PCE": "근원 PCE",
 def nnum(s):
     """예상치 대조용 정규화: '3.8%' → '3.8'"""
     return str(s or "").replace("%", "").replace(",", "").strip()
+
+def sub_series(ename_low):
+    """같은 지표 안에서 별개 시리즈를 구분: 근원 / 기대인플레 1년·5년. 그룹 키와 표기에 함께 쓴다."""
+    if ename_low.startswith("core"):
+        return "core"
+    if "1-year" in ename_low:
+        return "1y"
+    if "5-year" in ename_low:
+        return "5y"
+    return ""
 
 def classify(name):
     t = name.lower()
@@ -214,8 +226,10 @@ for (ds, cid), rec in raw.items():
             "title": rec["title"], "impact": "High" if tier1 else "Medium",
             "cat": "지표", "src": "nasdaq", "keywords": rec["keywords"]}
     d0 = datetime.date.fromisoformat(kst_date)
-    if today <= d0 <= today + datetime.timedelta(days=(12 if always else 7)):
-        (out["must_include"] if always else out["optional"]).append(base)
+    # 일정 표에는 High(1순위) + 연준 발언만 싣는다 — Medium 지표는 2026-08-21 결정으로 표에서 제외.
+    # (제외해도 '발표된 지표'(released)에는 그대로 남는다 — 그날 시장을 설명하는 근거이므로.)
+    if always and today <= d0 <= today + datetime.timedelta(days=12):
+        out["must_include"].append(base)
 
 # 3.5) 발표된 지표(released): 전년비·전월비·근원을 '각각 별도 항목'으로.
 #      Nasdaq은 전월비·전년비 행 이름이 똑같아(둘 다 "CPI") 그대로 쓰면 어느 쪽인지 알 수 없고,
@@ -230,8 +244,8 @@ for r in released_raw:
     if not (today - datetime.timedelta(days=3) <= et_day <= today):
         continue
     base_name = r["ename"].strip().lower()
-    groups.setdefault((et_day, r["cid"], base_name.startswith("core")), []).append((r, base_name))
-for (et_day, cid, is_core), rows in groups.items():
+    groups.setdefault((et_day, r["cid"], sub_series(base_name)), []).append((r, base_name))
+for (et_day, cid, sub), rows in groups.items():
     for r, base_name in rows:
         basis = ""
         if len(rows) > 1:  # 변형(전월비·전년비 등) 존재 → 라벨 확정 필수
@@ -241,7 +255,12 @@ for (et_day, cid, is_core), rows in groups.items():
                                      "— 발표지표에서 생략, 웹 확인 필요")
                 continue
             basis = VAR_KO.get(var, "")
-        title = (CORE_KO.get(cid, "근원 " + r["ko"])) if is_core else r["ko"]
+        if sub == "core":
+            title = CORE_KO.get(cid, "근원 " + r["ko"])
+        elif sub in ("1y", "5y"):   # 미시간 1년·5년 기대인플레는 같은 시각 동시 발표 → 기간을 구분해 각각 표기
+            title = r["ko"].replace("기대인플레", ("1년" if sub == "1y" else "5년") + " 기대인플레")
+        else:
+            title = r["ko"]
         key = (et_day.isoformat(), title, basis)
         if key in seen_rel:
             continue
