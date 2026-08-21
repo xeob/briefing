@@ -1,12 +1,9 @@
 {
- "generated": "2026-08-21",
+ "generated": "2026-08-22",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
  "ff_variants": {
-  "2026-07-31|employment cost index": {
-   "0.8": "q/q"
-  },
   "2026-08-03|construction spending": {
    "0.2": "m/m"
   },
@@ -71,6 +68,28 @@
  },
  "events": [
   {
+   "date": "2026-08-22",
+   "time": "08:00",
+   "title": "연준 Trump 발언",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "Trump"
+   ]
+  },
+  {
+   "date": "2026-08-25",
+   "time": "21:00",
+   "title": "연준 Barkin 발언",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "Barkin"
+   ]
+  },
+  {
    "date": "2026-08-26",
    "time": "21:30",
    "title": "PCE 물가지수",
@@ -108,6 +127,17 @@
   {
    "date": "2026-08-28",
    "time": "23:00",
+   "title": "연준 워시 발언",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "워시"
+   ]
+  },
+  {
+   "date": "2026-08-28",
+   "time": "23:00",
    "title": "미시간 기대인플레",
    "impact": "High",
    "cat": "지표",
@@ -127,6 +157,31 @@
    "keywords": [
     "ISM",
     "제조업"
+   ]
+  },
+  {
+   "date": "2026-09-03",
+   "time": "21:30",
+   "title": "고용보고서(비농업)",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "고용",
+    "NFP",
+    "비농업"
+   ]
+  },
+  {
+   "date": "2026-09-03",
+   "time": "23:00",
+   "title": "ISM 서비스업 PMI",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "ISM",
+    "서비스업"
    ]
   }
  ]
