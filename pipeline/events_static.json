@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-22",
+ "generated": "2026-08-23",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
@@ -67,17 +67,6 @@
   }
  },
  "events": [
-  {
-   "date": "2026-08-22",
-   "time": "08:00",
-   "title": "연준 Trump 발언",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "Trump"
-   ]
-  },
   {
    "date": "2026-08-25",
    "time": "21:00",
