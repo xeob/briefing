@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-23",
+ "generated": "2026-08-24",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
@@ -64,6 +64,36 @@
   },
   "2026-08-20|cb leading index": {
    "0.1": "m/m"
+  },
+  "2026-08-25|hpi": {
+   "0.2": "m/m"
+  },
+  "2026-08-25|s&p/cs composite-20 hpi": {
+   "1.9": "y/y"
+  },
+  "2026-08-26|core pce price index": {
+   "0.2": "m/m"
+  },
+  "2026-08-26|prelim gdp": {
+   "1.5": "q/q"
+  },
+  "2026-08-26|prelim gdp price index": {
+   "6.2": "q/q"
+  },
+  "2026-08-26|core durable goods orders": {
+   "0.5": "m/m"
+  },
+  "2026-08-26|durable goods orders": {
+   "0.5": "m/m"
+  },
+  "2026-08-26|personal income": {
+   "0.2": "m/m"
+  },
+  "2026-08-26|personal spending": {
+   "0.1": "m/m"
+  },
+  "2026-08-27|prelim wholesale inventories": {
+   "0.2": "m/m"
   }
  },
  "events": [
@@ -171,6 +201,29 @@
    "keywords": [
     "ISM",
     "서비스업"
+   ]
+  },
+  {
+   "date": "2026-09-04",
+   "time": "21:30",
+   "title": "시간당 평균임금",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "시간당",
+    "임금"
+   ]
+  },
+  {
+   "date": "2026-09-04",
+   "time": "21:30",
+   "title": "실업률",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "실업률"
    ]
   }
  ]
