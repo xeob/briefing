@@ -1,12 +1,9 @@
 {
- "generated": "2026-08-24",
+ "generated": "2026-08-25",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
  "ff_variants": {
-  "2026-08-03|construction spending": {
-   "0.2": "m/m"
-  },
   "2026-08-04|factory orders": {
    "0.0": "m/m",
    "0.2": "m/m"
@@ -69,7 +66,8 @@
    "0.2": "m/m"
   },
   "2026-08-25|s&p/cs composite-20 hpi": {
-   "1.9": "y/y"
+   "1.9": "y/y",
+   "1.8": "y/y"
   },
   "2026-08-26|core pce price index": {
    "0.2": "m/m"
@@ -176,6 +174,18 @@
    "keywords": [
     "ISM",
     "제조업"
+   ]
+  },
+  {
+   "date": "2026-09-03",
+   "time": "21:30",
+   "title": "신규 실업수당청구",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "실업수당",
+    "신규 실업"
    ]
   },
   {
