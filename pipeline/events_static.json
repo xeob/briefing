@@ -1,13 +1,9 @@
 {
- "generated": "2026-08-25",
+ "generated": "2026-08-26",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
  "ff_variants": {
-  "2026-08-04|factory orders": {
-   "0.0": "m/m",
-   "0.2": "m/m"
-  },
   "2026-08-06|prelim nonfarm productivity": {
    "0.7": "q/q",
    "0.6": "q/q"
@@ -79,10 +75,12 @@
    "6.2": "q/q"
   },
   "2026-08-26|core durable goods orders": {
-   "0.5": "m/m"
+   "0.5": "m/m",
+   "0.6": "m/m"
   },
   "2026-08-26|durable goods orders": {
-   "0.5": "m/m"
+   "0.5": "m/m",
+   "0.4": "m/m"
   },
   "2026-08-26|personal income": {
    "0.2": "m/m"
@@ -95,17 +93,6 @@
   }
  },
  "events": [
-  {
-   "date": "2026-08-25",
-   "time": "21:00",
-   "title": "연준 Barkin 발언",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "Barkin"
-   ]
-  },
   {
    "date": "2026-08-26",
    "time": "21:30",
