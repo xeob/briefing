@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-26",
+ "generated": "2026-08-27",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
@@ -93,29 +93,6 @@
   }
  },
  "events": [
-  {
-   "date": "2026-08-26",
-   "time": "21:30",
-   "title": "PCE 물가지수",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "PCE"
-   ]
-  },
-  {
-   "date": "2026-08-26",
-   "time": "21:30",
-   "title": "GDP",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "GDP",
-    "성장률"
-   ]
-  },
   {
    "date": "2026-08-27",
    "time": "21:30",
