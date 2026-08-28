@@ -1,17 +1,9 @@
 {
- "generated": "2026-08-28",
+ "generated": "2026-08-29",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
  "ff_variants": {
-  "2026-08-07|average hourly earnings": {
-   "0.3": "m/m"
-  },
-  "2026-08-07|consumer credit": {
-   "12.1B": "m/m",
-   "11.2B": "m/m",
-   "11.4B": "m/m"
-  },
   "2026-08-12|core cpi": {
    "0.2": "m/m",
    "2.5": "y/y"
@@ -83,29 +75,6 @@
  },
  "events": [
   {
-   "date": "2026-08-28",
-   "time": "23:00",
-   "title": "연준 워시 발언",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "워시"
-   ]
-  },
-  {
-   "date": "2026-08-28",
-   "time": "23:00",
-   "title": "미시간 기대인플레",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "기대인플레",
-    "미시간"
-   ]
-  },
-  {
    "date": "2026-09-01",
    "time": "23:00",
    "title": "ISM 제조업 PMI",
@@ -115,6 +84,28 @@
    "keywords": [
     "ISM",
     "제조업"
+   ]
+  },
+  {
+   "date": "2026-09-02",
+   "time": "21:30",
+   "title": "연준 월러 발언",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "월러"
+   ]
+  },
+  {
+   "date": "2026-09-03",
+   "time": "21:30",
+   "title": "연준 월러 발언",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "월러"
    ]
   },
   {
@@ -175,6 +166,18 @@
    "src": "static",
    "keywords": [
     "실업률"
+   ]
+  },
+  {
+   "date": "2026-09-10",
+   "time": "21:30",
+   "title": "생산자물가지수(PPI)",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "PPI",
+    "생산자물가"
    ]
   }
  ]
