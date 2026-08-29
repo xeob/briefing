@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-29",
+ "generated": "2026-08-30",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
@@ -178,6 +178,30 @@
    "keywords": [
     "PPI",
     "생산자물가"
+   ]
+  },
+  {
+   "date": "2026-09-11",
+   "time": "21:30",
+   "title": "소비자물가지수(CPI)",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "CPI",
+    "소비자물가"
+   ]
+  },
+  {
+   "date": "2026-09-11",
+   "time": "23:00",
+   "title": "미시간 기대인플레",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "기대인플레",
+    "미시간"
    ]
   }
  ]
