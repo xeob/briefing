@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-31",
+ "generated": "2026-09-01",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
@@ -76,7 +76,8 @@
    "0.0": "m/m"
   },
   "2026-09-02|factory orders": {
-   "0.6": "m/m"
+   "0.6": "m/m",
+   "0.7": "m/m"
   },
   "2026-09-03|revised nonfarm productivity": {
    "1.4": "q/q"
