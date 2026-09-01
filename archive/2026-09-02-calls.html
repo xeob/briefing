@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>실적 컨퍼런스콜</title>
+<style>
+:root{
+  --bg:#f6f6f4; --card:#ffffff; --text:#1a1a19; --sub:#63625d; --muted:#9a9992;
+  --border:#e6e5e1; --up:#0a7d33; --down:#d21c1c; --accent:#2f6fd0;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#181817; --card:#242422; --text:#f0efec; --sub:#a7a6a0; --muted:#77766f;
+    --border:#38372f; --up:#3fb950; --down:#f5564a; --accent:#5a9bf0; }
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+  word-break:keep-all;-webkit-text-size-adjust:100%;}
+.wrap{max-width:520px;margin:0 auto;padding:20px 16px 24px;}
+a{color:inherit;text-decoration:none;}
+.head{padding-bottom:14px;border-bottom:1px solid var(--border);margin-bottom:18px;}
+.head-row{display:flex;justify-content:space-between;align-items:baseline;}
+.head-title{font-size:20px;font-weight:600;}
+.head-date{font-size:13px;color:var(--muted);}
+.head-sub{margin:6px 0 0;font-size:12px;color:var(--muted);}
+.card{background:var(--card);border:0.5px solid var(--border);border-radius:12px;padding:13px 15px;margin-bottom:12px;}
+.sec{display:flex;align-items:center;gap:7px;margin-bottom:11px;}
+.sec-title{font-size:13px;font-weight:600;color:var(--sub);}
+.sec-note{font-size:11px;color:var(--muted);}
+.tag{display:inline-block;font-size:11px;padding:1px 8px;border-radius:20px;}
+.s-earn{color:#c1660f;background:rgba(193,102,15,.13);}
+.s-fed{color:#7a4fd0;background:rgba(122,79,208,.14);}
+.divide{height:1px;background:var(--border);margin:12px 0;}
+.lbl{font-size:11px;color:var(--muted);margin-bottom:5px;}
+.mv{margin-bottom:13px;}
+.mv-h{display:flex;align-items:baseline;gap:8px;}
+.mv-n{font-size:14px;font-weight:600;}
+.mv-p{font-size:13px;font-weight:600;}
+.mv-r{font-size:12px;color:var(--sub);line-height:1.55;margin-top:3px;}
+.up{color:var(--up);} .down{color:var(--down);}
+.note{font-size:12px;color:var(--sub);line-height:1.7;}
+.foot{margin-top:16px;text-align:center;font-size:11px;color:var(--muted);}
+@media (max-width:390px){ .head-title{font-size:18px;} .mv-n{font-size:13px;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ===== 헤더 ===== -->
+  <div class="head">
+    <div class="head-row">
+      <div class="head-title">실적 컨퍼런스콜</div>
+      <div class="head-date">2026.09.02 (수)</div>
+    </div>
+    <p class="head-sub">간밤 실적 발표 · 컨퍼런스콜 주요 내용</p>
+  </div>
+
+  <!-- ===== 종목별 컨콜 ===== -->
+  <div class="card">
+    <div class="sec"><span class="sec-title">주요 발언 · 특이사항</span><span class="sec-note">한국시간 기준</span></div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">델 (DELL)</span><span class="mv-p up">시간외 +9%</span></div>
+      <div class="mv-r">매출 $47.0B(+58%) · 조정 EPS $7.04 (예상 $4.9)<br>ISG $31.8B(+89%) · AI서버 $16.4B(+100%)<br>AI 수주 $60.9B · 백로그 $95B 사상 최대<br>클라크 "네오클라우드·국가·기업 수요 확대"<br>메모리 인플레가 가격·가이던스 견인<br>FY27 가이던스 매출 $192B·조정 EPS $25.50 상향<br>조정FCF $8.1B(+224%) · 배당 주당 $0.63</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">팔로알토네트웍스 (PANW)</span><span class="mv-p down">시간외 −2%</span></div>
+      <div class="mv-r">매출 $3.41B(+34%) · 조정 EPS $1.02 (예상 $0.98)<br>차세대보안 ARR $9.1B(+63%) · RPO $21.2B<br>RPO 첫 $20B 돌파 · 조정 영업익률 29.2%<br>아로라 "FY30 차세대보안 ARR $20B 목표"<br>GAAP는 사이버아크 통합비로 순손실 −$282M<br>FY27 가이던스 매출 $14.1~14.2B·EPS $4.16~4.19<br>원가 상승에 마진 우려 — 시간외 약세</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">메드트로닉 (MDT)</span><span class="mv-p up">장중 +4%</span></div>
+      <div class="mv-r">매출 $9.76B(+13.7%) · 조정 EPS $1.45 (예상 $1.38)<br>심혈관 $3.93B(+18.9%) · 신경 $2.68B(+9.3%)<br>의료수술 $2.28B · 당뇨 $0.84B(유기+14.9%)<br>회계상 14주차로 매출 약 +$570M 효과<br>FY27 유기성장 7.25~7.75%·EPS $5.94~6.00 상향<br>당뇨(미니메드) 분리 추진 — 최종 미정</div>
+    </div>
+  </div>
+
+  <!-- ===== 오늘 밤 예정 ===== -->
+  <div class="card">
+    <div class="sec"><span class="sec-title">오늘 밤 실적 예정</span></div>
+    <div class="note">
+      · 브로드컴 (AVGO) · 스노우플레이크 (SNOW) — 한국시간 내일 새벽
+    </div>
+  </div>
+
+  <div class="foot">경제 브리핑 · 실적 컨퍼런스콜</div>
+</div>
+</body>
+</html>
