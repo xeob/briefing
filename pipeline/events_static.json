@@ -1,5 +1,5 @@
 {
- "generated": "2026-09-01",
+ "generated": "2026-09-02",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
@@ -91,18 +91,6 @@
  },
  "events": [
   {
-   "date": "2026-09-01",
-   "time": "23:00",
-   "title": "ISM 제조업 PMI",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "ISM",
-    "제조업"
-   ]
-  },
-  {
    "date": "2026-09-02",
    "time": "21:30",
    "title": "연준 월러 발언",
@@ -185,6 +173,30 @@
    ]
   },
   {
+   "date": "2026-09-08",
+   "time": "00:00",
+   "title": "NY연은 기대인플레",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "기대인플레",
+    "연은"
+   ]
+  },
+  {
+   "date": "2026-09-09",
+   "time": "00:00",
+   "title": "NY연은 기대인플레",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "기대인플레",
+    "연은"
+   ]
+  },
+  {
    "date": "2026-09-10",
    "time": "21:30",
    "title": "생산자물가지수(PPI)",
@@ -194,6 +206,18 @@
    "keywords": [
     "PPI",
     "생산자물가"
+   ]
+  },
+  {
+   "date": "2026-09-10",
+   "time": "21:30",
+   "title": "신규 실업수당청구",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "실업수당",
+    "신규 실업"
    ]
   },
   {
