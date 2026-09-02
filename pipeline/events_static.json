@@ -1,17 +1,9 @@
 {
- "generated": "2026-09-02",
+ "generated": "2026-09-03",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
  "ff_variants": {
-  "2026-08-12|core cpi": {
-   "0.2": "m/m",
-   "2.5": "y/y"
-  },
-  "2026-08-12|cpi": {
-   "0.1": "m/m",
-   "3.4": "y/y"
-  },
   "2026-08-13|core ppi": {
    "0.3": "m/m"
   },
@@ -90,17 +82,6 @@
   }
  },
  "events": [
-  {
-   "date": "2026-09-02",
-   "time": "21:30",
-   "title": "연준 월러 발언",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "월러"
-   ]
-  },
   {
    "date": "2026-09-03",
    "time": "21:30",
