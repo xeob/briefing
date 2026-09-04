@@ -11,7 +11,7 @@
 이후(생성 단계, RUN.md 4단계): 2차 재료 게이트(A/B급 통과·C급 제외·$50B 이하 A급만·
 재료 없으면 7%+라도 제외, M7·메가캡 면제) → 3차 등락률순 top10+M7·메가캡 예외 →
 4차 동반 묶음(같은 실제 업종 |5%|+ 5개 이상). 화면 표시는 |등락률| 큰 순."""
-import json, time, os, subprocess
+import json, time, os, subprocess, datetime
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
@@ -23,10 +23,18 @@ MEGA_HINT = {"AVGO", "TSM", "ASML", "LLY", "JPM", "V", "UNH", "XOM", "WMT", "MA"
              "IBM", "ABBV", "PEP", "TMO", "CSCO", "WFC", "MS", "DIS", "ABT", "GE", "LIN",
              "ADBE", "NOW", "PM", "RTX", "AXP", "ARM", "COIN", "UBER", "ISRG", "BA"}
 
-def get(url):
-    r = subprocess.run(["curl", "-s", "-m", "15", "-H", "User-Agent: Mozilla/5.0", url],
-                       capture_output=True, text=True, check=True)
-    return json.loads(r.stdout)
+def get(url, tries=4):
+    """야후가 간헐적으로 빈 응답을 주므로 재시도 — 조회 실패 종목이 통째로 빠지는 것을 막는다."""
+    last = None
+    for i in range(tries):
+        r = subprocess.run(["curl", "-s", "-m", "15", "-H", "User-Agent: Mozilla/5.0", url],
+                           capture_output=True, text=True, check=True)
+        try:
+            return json.loads(r.stdout)
+        except Exception as e:
+            last = e
+            time.sleep(1.5 * (i + 1))
+    raise last
 
 def cnbc_cap_b(sym):
     """CNBC에서 시총($B) 조회 — 워치리스트 단독 종목의 시총 공백 보완. 실패 시 None."""
@@ -66,17 +74,22 @@ for s in sorted(CORE_SCAN):
     if s in out:
         continue
     try:
-        d = get(f"https://query1.finance.yahoo.com/v8/finance/chart/{s}?range=2d&interval=1d")
+        d = get(f"https://query1.finance.yahoo.com/v8/finance/chart/{s}?range=10d&interval=1d")
         r = d["chart"]["result"][0]
-        closes = [c for c in r["indicators"]["quote"][0]["close"] if c]
-        if len(closes) >= 2:
-            pct = (closes[-1] / closes[-2] - 1) * 100
+        m = r["meta"]
+        # 당일 일봉이 아직 null인 시간대(장 마감 직후)가 있어 종가 배열만 믿으면 '전일 세션'을 집계하게 된다.
+        # 확정 종가에 날짜를 붙여, 실시간가(regularMarketTime)가 더 최신이면 그 값을 당일 종가로 쓴다.
+        bars = [(datetime.datetime.utcfromtimestamp(t).date(), c)
+                for t, c in zip(r.get("timestamp") or [], r["indicators"]["quote"][0]["close"])]
+        valid = [(dt, c) for dt, c in bars if c]
+        last_px, rmt = m.get("regularMarketPrice"), m.get("regularMarketTime")
+        rmt_date = datetime.datetime.utcfromtimestamp(rmt).date() if rmt else None
+        if last_px and valid and rmt_date and rmt_date > valid[-1][0]:
+            pct = (last_px / valid[-1][1] - 1) * 100
+        elif len(valid) >= 2:
+            pct = (valid[-1][1] / valid[-2][1] - 1) * 100
         else:
-            m = r["meta"]
-            prev, last = m.get("chartPreviousClose"), m.get("regularMarketPrice")
-            if not (prev and last):
-                continue
-            pct = (last / prev - 1) * 100
+            continue
         if abs(pct) < 2.0:
             continue
         out[s] = {"symbol": s, "name": r["meta"].get("shortName") or s,
