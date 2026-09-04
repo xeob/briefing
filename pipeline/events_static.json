@@ -1,18 +1,9 @@
 {
- "generated": "2026-09-04",
+ "generated": "2026-09-05",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
  "ff_variants": {
-  "2026-08-14|core retail sales": {
-   "0.2": "m/m"
-  },
-  "2026-08-14|retail sales": {
-   "0.1": "m/m"
-  },
-  "2026-08-14|business inventories": {
-   "0.2": "m/m"
-  },
   "2026-08-18|import prices": {
    "0.1": "m/m"
   },
@@ -76,29 +67,6 @@
   }
  },
  "events": [
-  {
-   "date": "2026-09-04",
-   "time": "21:30",
-   "title": "시간당 평균임금",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "시간당",
-    "임금"
-   ]
-  },
-  {
-   "date": "2026-09-04",
-   "time": "21:30",
-   "title": "실업률",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "실업률"
-   ]
-  },
   {
    "date": "2026-09-08",
    "time": "00:00",
@@ -180,6 +148,20 @@
    "src": "static",
    "keywords": [
     "소매판매"
+   ]
+  },
+  {
+   "date": "2026-09-17",
+   "time": "03:00",
+   "title": "FOMC",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "FOMC",
+    "의사록",
+    "연준",
+    "금리"
    ]
   }
  ]
