@@ -1,15 +1,9 @@
 {
- "generated": "2026-09-03",
+ "generated": "2026-09-04",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
  "ff_variants": {
-  "2026-08-13|core ppi": {
-   "0.3": "m/m"
-  },
-  "2026-08-13|ppi": {
-   "0.2": "m/m"
-  },
   "2026-08-14|core retail sales": {
    "0.2": "m/m"
   },
@@ -82,54 +76,6 @@
   }
  },
  "events": [
-  {
-   "date": "2026-09-03",
-   "time": "21:30",
-   "title": "연준 월러 발언",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "월러"
-   ]
-  },
-  {
-   "date": "2026-09-03",
-   "time": "21:30",
-   "title": "신규 실업수당청구",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "실업수당",
-    "신규 실업"
-   ]
-  },
-  {
-   "date": "2026-09-03",
-   "time": "21:30",
-   "title": "고용보고서(비농업)",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "고용",
-    "NFP",
-    "비농업"
-   ]
-  },
-  {
-   "date": "2026-09-03",
-   "time": "23:00",
-   "title": "ISM 서비스업 PMI",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "ISM",
-    "서비스업"
-   ]
-  },
   {
    "date": "2026-09-04",
    "time": "21:30",
@@ -223,6 +169,17 @@
    "keywords": [
     "기대인플레",
     "미시간"
+   ]
+  },
+  {
+   "date": "2026-09-16",
+   "time": "21:30",
+   "title": "소매판매",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "소매판매"
    ]
   }
  ]
