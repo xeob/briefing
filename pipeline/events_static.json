@@ -1,5 +1,5 @@
 {
- "generated": "2026-09-06",
+ "generated": "2026-09-07",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
@@ -64,6 +64,26 @@
   },
   "2026-09-04|average hourly earnings": {
    "0.3": "m/m"
+  },
+  "2026-09-08|consumer credit": {
+   "13.2B": "m/m"
+  },
+  "2026-09-10|core ppi": {
+   "0.3": "m/m"
+  },
+  "2026-09-10|ppi": {
+   "0.4": "m/m"
+  },
+  "2026-09-10|final wholesale inventories": {
+   "1.3": "m/m"
+  },
+  "2026-09-11|core cpi": {
+   "0.2": "m/m",
+   "2.4": "y/y"
+  },
+  "2026-09-11|cpi": {
+   "0.4": "m/m",
+   "3.4": "y/y"
   }
  },
  "events": [
