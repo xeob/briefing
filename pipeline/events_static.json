@@ -1,12 +1,9 @@
 {
- "generated": "2026-09-10",
+ "generated": "2026-09-11",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
  "ff_variants": {
-  "2026-08-20|cb leading index": {
-   "0.1": "m/m"
-  },
   "2026-08-25|hpi": {
    "0.2": "m/m"
   },
@@ -80,30 +77,6 @@
   }
  },
  "events": [
-  {
-   "date": "2026-09-10",
-   "time": "21:30",
-   "title": "생산자물가지수(PPI)",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "PPI",
-    "생산자물가"
-   ]
-  },
-  {
-   "date": "2026-09-10",
-   "time": "21:30",
-   "title": "신규 실업수당청구",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "실업수당",
-    "신규 실업"
-   ]
-  },
   {
    "date": "2026-09-11",
    "time": "21:30",
