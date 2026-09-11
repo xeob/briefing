@@ -1,5 +1,5 @@
 {
- "generated": "2026-09-11",
+ "generated": "2026-09-12",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
@@ -78,30 +78,6 @@
  },
  "events": [
   {
-   "date": "2026-09-11",
-   "time": "21:30",
-   "title": "소비자물가지수(CPI)",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "CPI",
-    "소비자물가"
-   ]
-  },
-  {
-   "date": "2026-09-11",
-   "time": "23:00",
-   "title": "미시간 기대인플레",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "기대인플레",
-    "미시간"
-   ]
-  },
-  {
    "date": "2026-09-16",
    "time": "21:30",
    "title": "소매판매",
@@ -136,6 +112,17 @@
    "keywords": [
     "실업수당",
     "신규 실업"
+   ]
+  },
+  {
+   "date": "2026-09-18",
+   "time": "22:30",
+   "title": "연준 보먼 발언",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "보먼"
    ]
   }
  ]
