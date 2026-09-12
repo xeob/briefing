@@ -1,5 +1,5 @@
 {
- "generated": "2026-09-12",
+ "generated": "2026-09-13",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
@@ -123,6 +123,18 @@
    "src": "static",
    "keywords": [
     "보먼"
+   ]
+  },
+  {
+   "date": "2026-09-25",
+   "time": "23:00",
+   "title": "미시간 기대인플레",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "기대인플레",
+    "미시간"
    ]
   }
  ]
