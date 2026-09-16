@@ -1,32 +1,9 @@
 {
- "generated": "2026-09-16",
+ "generated": "2026-09-17",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
  "ff_variants": {
-  "2026-08-26|core pce price index": {
-   "0.2": "m/m"
-  },
-  "2026-08-26|prelim gdp": {
-   "1.5": "q/q"
-  },
-  "2026-08-26|prelim gdp price index": {
-   "6.2": "q/q"
-  },
-  "2026-08-26|core durable goods orders": {
-   "0.5": "m/m",
-   "0.6": "m/m"
-  },
-  "2026-08-26|durable goods orders": {
-   "0.5": "m/m",
-   "0.4": "m/m"
-  },
-  "2026-08-26|personal income": {
-   "0.2": "m/m"
-  },
-  "2026-08-26|personal spending": {
-   "0.1": "m/m"
-  },
   "2026-08-27|prelim wholesale inventories": {
    "0.2": "m/m"
   },
@@ -69,7 +46,8 @@
    "3.4": "y/y"
   },
   "2026-09-16|core retail sales": {
-   "0.5": "m/m"
+   "0.5": "m/m",
+   "0.6": "m/m"
   },
   "2026-09-16|retail sales": {
    "0.8": "m/m"
@@ -96,31 +74,6 @@
   }
  },
  "events": [
-  {
-   "date": "2026-09-16",
-   "time": "21:30",
-   "title": "소매판매",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "소매판매"
-   ]
-  },
-  {
-   "date": "2026-09-17",
-   "time": "03:00",
-   "title": "FOMC",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "FOMC",
-    "의사록",
-    "연준",
-    "금리"
-   ]
-  },
   {
    "date": "2026-09-17",
    "time": "21:30",
