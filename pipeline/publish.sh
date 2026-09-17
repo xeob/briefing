@@ -3,6 +3,10 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
+# 컨테이너 TZ가 UTC인 환경(클라우드 실행)에서 verify.py의 '오늘'(헤더 날짜·뉴스 창) 판정이
+# 아카이브 날짜(KST)와 하루 어긋나 게시가 막히는 것을 방지 — 기준 시간대를 KST로 고정.
+export TZ="${TZ:-Asia/Seoul}"
+
 # .env가 있으면 로드, 없으면 이미 export된 환경변수 사용(클라우드: briefing-secrets/.env를 미리 source)
 [ -f .env ] && { set -a; source .env; set +a; }
 : "${GH_PAT:?GH_PAT 필요}"; : "${GH_REPO:?GH_REPO 필요}"; : "${SITE_URL:?SITE_URL 필요}"
