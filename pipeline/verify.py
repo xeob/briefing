@@ -174,6 +174,35 @@ if ea:
             issues.append(f"[실적예정] '{e.get('name_ko', sym)} ({sym})' 누락 — {e.get('date')} 발표 예정"
                           f"({e.get('tier')}·${e.get('cap_b')}B), 미국장 주요 일정에 실적 행으로 포함할 것")
 
+# 13) SK하이닉스 ADR 상시 행: movers.json skhy가 있으면 매일 SKHY 행이 올바른 파트(상승=급등·하락=급락)에
+#     있어야 하고, 헤더 등락률·20시·괴리 수치가 원본과 일치해야 한다(2026-09-18 결정 — 한국 하이닉스와 직결).
+sk = mv.get("skhy")
+if sk:
+    def part(a, b):
+        return html.split(a, 1)[1].split(b, 1)[0] if a in html else ""
+    up_sec = part("특징주 · 급등", "특징주 · 급락")
+    dn_sec = part("특징주 · 급락", "발표된 지표")
+    want, other = (up_sec, dn_sec) if sk["side"] == "up" else (dn_sec, up_sec)
+    side_ko = "급등" if sk["side"] == "up" else "급락"
+    if "(SKHY)" not in want:
+        other_ko = "급락" if sk["side"] == "up" else "급등"
+        where = f"{side_ko} 파트가 아니라 {other_ko} 파트에 있음" if "(SKHY)" in other else f"{side_ko} 파트에 없음"
+        issues.append(f"[하이닉스] SK하이닉스 ADR (SKHY) 행이 {where} — 특징주 자격과 무관하게 매일 표시"
+                      f"(ADR {sk['pct_close']:+.2f}% → {side_ko} 파트: 자격 충족 시 본 순위, 아니면 맨 아래)")
+    else:
+        m = re.search(r'\(SKHY\)</span><span class="mv-p[^"]*">([-+−]?[\d.]+)%</span></div><div class="mv-r">(.*?)</div>',
+                      want, re.S)
+        if not m:
+            issues.append("[하이닉스] SKHY 행 형식을 인식할 수 없음 — 템플릿 형식(mv-n/mv-p/mv-r) 그대로 작성")
+        else:
+            if abs(num(m.group(1)) - sk["pct_close"]) > 0.15:
+                issues.append(f"[하이닉스] SKHY 등락률 HTML {m.group(1)}% ≠ 원본 {sk['pct_close']:+.2f}%")
+            body = re.sub(r'<[^>]+>', ' ', m.group(2))
+            got = [num(x) for x in re.findall(r'[-+−]?\d+\.\d+(?=%)', body)]
+            for label, val in (("20시", sk.get("pct_20")), ("한국장 마감 후", sk.get("gap"))):
+                if val is not None and not any(abs(g - val) <= 0.1 for g in got):
+                    issues.append(f"[하이닉스] SKHY {label} 수치({val:+.2f}%)가 본문에 없음 — movers.json skhy 값 그대로")
+
 if issues:
     print(f"❌ 검증 실패 {len(issues)}건 — 수정 후 재검증:")
     for i in issues:

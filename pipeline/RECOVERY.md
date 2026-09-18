@@ -246,6 +246,13 @@ cd $TMP/r && git add -A && git commit -m restore && git push
       - **구체성**: 누가·무엇을·언제가 드러나게(기관·인물·수치·일자). 막연한 명사만 나열하지 말 것.
       - **과장 금지(엄수)**: 확정되지 않은 것을 확정처럼 쓰지 말 것 — **"검토·논의"를 "발표·결정·확정"으로 격상 금지.** 미확인 SNS·루머발 주장은 배제하고 **2소스로 확인된 사실만.** (실측 2026-08-20: 8/19 백악관 서밋에서 트럼프는 매입을 "검토 중"이라 답했으나 SNS에서 "매입 발표"로 잘못 퍼졌고, 현장 취재 매체는 이를 확인하지 못했다.)
       - **묶음행도 동일** — 묶음이라고 이유를 뭉뚱그리지 말 것. 그 업종이 왜 동반 이동했는지 **구체적 사건**을 적는다(40자 제한을 이유로 원인을 생략하지 말 것 — 필요하면 핵심 사건 위주로 압축).
+    - **⑧ SK하이닉스 ADR(SKHY) 상시 표시 (2026-09-18 결정 — 한국 하이닉스와 직결)**: 특징주 자격과 무관하게 **매일** 싣는다. 수치는 `out/movers.json`의 `skhy` 블록 **그대로**(추측·재계산 금지).
+      - **위치**: 특징주 자격을 충족해 ⑤에서 개별 배치된 날은 **본 순위 자리에 그대로** 두고 ADR 줄만 추가(중복 행 금지). 자격 미달·개별 제외인 날은 **해당 파트 맨 아래** — `side:up`(보합 포함)=급등 파트 맨 아래 / `side:down`=급락 파트 맨 아래. **묶음행에는 넣지 않는다**(항상 자기 행).
+      - **표기**: 헤더 `SK하이닉스 ADR (SKHY)` + `pct_close`(up/down 색). 본문 첫 줄 = `20시 {pct_20} → 미장 종가 {pct_close} · 한국장 마감 후 {gap}`.
+        - **20시** = 한국 NXT 애프터마켓이 끝나는 20:00 KST 시점 ADR(미국 프리마켓 호가 기준) · **한국장 마감 후** = 20시→미장 종가 변동, 즉 한국장이 끝난 뒤 미장에서 더 움직인 몫(다음 날 한국 시초가 신호).
+        - `kr_trading:false`(추석·설 등 한국 휴장)면 첫 줄 끝에 "(한국 휴장)" — 20시가 한국 마감이 아니므로. `pct_20`이 null이면 "20시 시세 없음"으로 쓰고 종가만.
+        - 사유는 **뚜렷한 재료가 있을 때만** 둘째 줄(⑦ 품질 규칙 적용). 없으면 생략 — 매일 싣는 행이라 억지 사유 금지.
+      - verify #13이 **존재·파트(급등/급락)·등락률·20시·괴리 수치**를 기계 대조한다.
     - 완결성 자가검증: qualified 목록과 페이지 대조, 큰 이동 누락 없는지 확인
     - 스크립트 실패 시(fallback): stockanalysis.com/markets/gainers·losers WebFetch로 대체
   - 발표된 지표: **out/events.json의 `released`에서 그 미국장 세션 날짜에 발표된 지표를 빠짐없이** (지표명·actual·forecast 값 그대로, 다른 날 금지). **포함 대상 = 등록부(events.py CANON)의 High+Medium 전부**(일정 표와 달리 여기선 Medium도 싣는다) — High: CPI·PCE·PPI·비농업고용·실업률·시간당임금·FOMC·연준의장발언·ISM제조업·ISM서비스업·소매판매·GDP·**신규실업수당**·**미시간 기대인플레(1년·5년)**·**NY연은 기대인플레** / Medium: ADP·CB소비자신뢰·미시간심리·JOLTS·내구재·연준위원발언·주택착공/건축허가·기존주택판매·신규주택판매·산업생산. **Low(공장주문·도매재고·무역수지·모기지·원유재고·GDPNow·U-6·지역연은지수 등)는 제외.** released의 해당 세션 날짜 항목은 전부 표에(매 실행 일관성). 당일 발표가 없으면 표 대신 "· 당일 발표된 주요 지표 없음" 한 줄. **표 형식**(지표/결과/예상 3열). **★ 기준(전년비/전월비) 병기 — released 각 항목의 `basis`를 지표명에 함께 적는다**: `소비자물가지수 (6월, 전년비)` · `소비자물가지수 (6월, 전월비)`. **전년비·전월비가 둘 다 오면 둘 다 개별 행으로(전년비 먼저, 헤드라인 다음 근원).** `basis`가 빈 항목(실업률·ISM·신규 실업수당 등 변형 없는 지표)은 **기준 없이 지표명만**(고유 형태 그대로 — 수준·건수·지수). **값·기준을 모델이 추측·환산하지 말 것 — released 값 그대로.** 결과 색: **예상 대비 시장에 긍정적 서프라이즈면 up(초록), 부정적이면 down(빨강), 부합·중립이면 무색** (예: 물가 예상 상회=빨강, 실업수당청구 예상 하회=초록)
@@ -504,11 +511,18 @@ a{color:inherit;text-decoration:none;}
            <div class="mv-r">종목A&nbsp;<span class="down">−0.0%</span> · 종목B&nbsp;<span class="down">−0.0%</span><br>업종 공통 이유</div></div> -->
     <div class="mv"><div class="mv-h"><span class="mv-n">종목명 (TICKER)</span><span class="mv-p up">+0.00%</span></div><div class="mv-r">이유 1<br>이유 2 (있을 때만)</div></div>
     <!-- 급등 최대 10개 반복 -->
+    <!-- ★ SK하이닉스 ADR 상시 행 (매일 필수 — RUN.md 특징주 ⑧, verify #13 대조):
+         상승(보합 포함)한 날 = 급등 파트 맨 아래 / 하락한 날 = 급락 파트 맨 아래.
+         특징주 자격으로 본 순위에 든 날은 그 자리에 두고 아래 ADR 줄만 추가(중복 행 금지). 묶음행엔 넣지 않는다.
+         수치는 movers.json skhy 그대로 — 헤더 % = pct_close / 본문 첫 줄 = 20시 pct_20 → 미장 종가 pct_close · 한국장 마감 후 gap.
+         kr_trading=false면 첫 줄 끝에 "(한국 휴장)", pct_20=null이면 "20시 시세 없음". 사유는 뚜렷한 재료 있을 때만 둘째 줄. -->
+    <div class="mv"><div class="mv-h"><span class="mv-n">SK하이닉스 ADR (SKHY)</span><span class="mv-p up">+0.00%</span></div><div class="mv-r">20시 +0.00% → 미장 종가 +0.00% · 한국장 마감 후 +0.00%<br>사유(뚜렷한 재료 있을 때만)</div></div>
 
     <div class="divide"></div>
     <div class="lbl">특징주 · 급락</div>
     <div class="mv"><div class="mv-h"><span class="mv-n">종목명 (TICKER)</span><span class="mv-p down">−0.00%</span></div><div class="mv-r">촉매(이유)</div></div>
     <!-- 급락 최대 10개 반복 (movers.json selected_down 순서) -->
+    <!-- 하이닉스 ADR이 하락한 날은 위 급등 파트가 아니라 여기 맨 아래에 같은 형식으로 -->
 
     <div class="divide"></div>
     <div class="lbl">발표된 지표</div>
@@ -684,7 +698,7 @@ for e in out["errors"]:
 이후(생성 단계, RUN.md 4단계): 2차 재료 게이트(A/B급 통과·C급 제외·$50B 이하 A급만·
 재료 없으면 7%+라도 제외, M7·메가캡 면제) → 3차 등락률순 top10+M7·메가캡 예외 →
 4차 동반 묶음(같은 실제 업종 |5%|+ 5개 이상). 화면 표시는 |등락률| 큰 순."""
-import json, time, os, subprocess
+import json, time, os, subprocess, datetime
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
@@ -836,8 +850,61 @@ def candidates(side):
 q_up = candidates([r for r in qual if r["pct"] > 0])
 q_down = candidates([r for r in qual if r["pct"] < 0])
 
+# SK하이닉스 ADR 상시 블록 — 한국 하이닉스와 직결되는 종목이라 특징주 자격과 무관하게 매일 표시(2026-09-18 결정).
+#   ① 20시 KST(한국 NXT 애프터마켓 마감) 시점 ADR 등락률 ② 미장 종가 등락률
+#   ③ 괴리 = 20시→종가 변동 = 한국장이 끝난 뒤 미장에서 더 움직인 몫(다음 날 한국 시초가에 반영될 신호).
+#   20시 KST는 미국 프리마켓(여름 07:00·겨울 06:00 ET)이라 프리·애프터 포함 5분봉에서 뽑는다 — 거래량이 0으로 잡혀
+#   체결가가 아닌 호가 기준일 수 있다. 종가는 공식 일봉 종가.
+KR_ADR = "SKHY"
+
+def skhy_block():
+    from zoneinfo import ZoneInfo
+    ET, KST = ZoneInfo("America/New_York"), ZoneInfo("Asia/Seoul")
+    now_et = datetime.datetime.now(ET)
+    r = get(f"https://query1.finance.yahoo.com/v8/finance/chart/{KR_ADR}?range=10d&interval=1d")["chart"]["result"][0]
+    closes = {}
+    for t, c in zip(r["timestamp"], r["indicators"]["quote"][0]["close"]):
+        day = datetime.datetime.fromtimestamp(t, ET).date()
+        if c is None or (day == now_et.date() and now_et.hour < 16):
+            continue  # 정규장이 아직 안 끝난 날의 미완성 봉은 제외
+        closes[day] = c
+    days = sorted(closes)
+    if len(days) < 2:
+        raise ValueError("완료된 미국 세션이 2개 미만")
+    s_day, prev_day = days[-1], days[-2]
+    close, prev = closes[s_day], closes[prev_day]
+    # 20시 KST 시점 가격 = 세션일(KST 같은 날짜) 20:00 직전 30분 안의 마지막 5분봉 종가
+    target = datetime.datetime(s_day.year, s_day.month, s_day.day, 20, 0, tzinfo=KST)
+    m = get(f"https://query1.finance.yahoo.com/v8/finance/chart/{KR_ADR}?range=10d&interval=5m&includePrePost=true")
+    mr = m["chart"]["result"][0]
+    p20 = t20 = None
+    for t, c in zip(mr["timestamp"], mr["indicators"]["quote"][0]["close"]):
+        tk = datetime.datetime.fromtimestamp(t, KST)
+        if c is not None and target - datetime.timedelta(minutes=30) <= tk < target:
+            p20, t20 = c, tk + datetime.timedelta(minutes=5)   # 봉 시작+5분 = 그 가격의 시각
+    # 그 날 한국 정규장이 열렸는가(추석·설 등) — 휴장이면 '20시=한국 마감' 전제가 성립하지 않는다
+    kr_trading = None
+    try:
+        kd = get("https://query1.finance.yahoo.com/v8/finance/chart/000660.KS?range=10d&interval=1d")["chart"]["result"][0]
+        kr_trading = s_day in {datetime.datetime.fromtimestamp(t, KST).date() for t in kd["timestamp"]}
+    except Exception:
+        pass
+    return {"symbol": KR_ADR, "session_et": s_day.isoformat(), "prev_session_et": prev_day.isoformat(),
+            "prev_close": round(prev, 2), "close": round(close, 2),
+            "p20": round(p20, 2) if p20 else None, "p20_kst": t20.strftime("%Y-%m-%d %H:%M") if t20 else None,
+            "pct_20": round((p20 / prev - 1) * 100, 2) if p20 else None,
+            "pct_close": round((close / prev - 1) * 100, 2),
+            "gap": round((close / p20 - 1) * 100, 2) if p20 else None,
+            "kr_trading": kr_trading, "side": "up" if close >= prev else "down"}
+
+try:
+    skhy = skhy_block()
+except Exception as e:
+    skhy = None
+    errors.append(f"skhy block: {str(e)[:60]}")
+
 os.makedirs("out", exist_ok=True)
-json.dump({"generated_kst": time.strftime("%Y-%m-%d %H:%M"), "errors": errors,
+json.dump({"generated_kst": time.strftime("%Y-%m-%d %H:%M"), "errors": errors, "skhy": skhy,
            "rule": "자격: M7 ±2% / 메가캡 ±3% / 그외 ±4% · 우선순위: 티어→|등락률| · 최종 표시는 |등락률|순",
            "qualified_up": q_up, "qualified_down": q_down, "all": rows},
           open("out/movers.json", "w"), ensure_ascii=False, indent=1)
@@ -851,6 +918,11 @@ for r in q_up:
 print("=== 급락 후보 ===")
 for r in q_down:
     print(f"{r['symbol']:6} {r['pct']:+7.2f}%  [{TN[r['tier']]:3}] cap:{r.get('mktcap_b')}B  {(r.get('name') or '')[:24]}")
+if skhy:
+    f = lambda v: "없음" if v is None else f"{v:+.2f}%"
+    print(f"=== SK하이닉스 ADR 상시 블록 (세션 {skhy['session_et']}) — {'급등' if skhy['side']=='up' else '급락'} 파트 ===")
+    print(f"  20시({skhy['p20_kst'] or '-'} KST) ${skhy['p20']} {f(skhy['pct_20'])} → 미장 종가 ${skhy['close']} {f(skhy['pct_close'])}"
+          f" · 한국장 마감 후 {f(skhy['gap'])}  {'' if skhy['kr_trading'] is not False else '(한국 휴장)'}")
 ````
 
 ### 8.events.py
@@ -1473,6 +1545,35 @@ if ea:
         if sym and f"({sym})" not in sched3:
             issues.append(f"[실적예정] '{e.get('name_ko', sym)} ({sym})' 누락 — {e.get('date')} 발표 예정"
                           f"({e.get('tier')}·${e.get('cap_b')}B), 미국장 주요 일정에 실적 행으로 포함할 것")
+
+# 13) SK하이닉스 ADR 상시 행: movers.json skhy가 있으면 매일 SKHY 행이 올바른 파트(상승=급등·하락=급락)에
+#     있어야 하고, 헤더 등락률·20시·괴리 수치가 원본과 일치해야 한다(2026-09-18 결정 — 한국 하이닉스와 직결).
+sk = mv.get("skhy")
+if sk:
+    def part(a, b):
+        return html.split(a, 1)[1].split(b, 1)[0] if a in html else ""
+    up_sec = part("특징주 · 급등", "특징주 · 급락")
+    dn_sec = part("특징주 · 급락", "발표된 지표")
+    want, other = (up_sec, dn_sec) if sk["side"] == "up" else (dn_sec, up_sec)
+    side_ko = "급등" if sk["side"] == "up" else "급락"
+    if "(SKHY)" not in want:
+        other_ko = "급락" if sk["side"] == "up" else "급등"
+        where = f"{side_ko} 파트가 아니라 {other_ko} 파트에 있음" if "(SKHY)" in other else f"{side_ko} 파트에 없음"
+        issues.append(f"[하이닉스] SK하이닉스 ADR (SKHY) 행이 {where} — 특징주 자격과 무관하게 매일 표시"
+                      f"(ADR {sk['pct_close']:+.2f}% → {side_ko} 파트: 자격 충족 시 본 순위, 아니면 맨 아래)")
+    else:
+        m = re.search(r'\(SKHY\)</span><span class="mv-p[^"]*">([-+−]?[\d.]+)%</span></div><div class="mv-r">(.*?)</div>',
+                      want, re.S)
+        if not m:
+            issues.append("[하이닉스] SKHY 행 형식을 인식할 수 없음 — 템플릿 형식(mv-n/mv-p/mv-r) 그대로 작성")
+        else:
+            if abs(num(m.group(1)) - sk["pct_close"]) > 0.15:
+                issues.append(f"[하이닉스] SKHY 등락률 HTML {m.group(1)}% ≠ 원본 {sk['pct_close']:+.2f}%")
+            body = re.sub(r'<[^>]+>', ' ', m.group(2))
+            got = [num(x) for x in re.findall(r'[-+−]?\d+\.\d+(?=%)', body)]
+            for label, val in (("20시", sk.get("pct_20")), ("한국장 마감 후", sk.get("gap"))):
+                if val is not None and not any(abs(g - val) <= 0.1 for g in got):
+                    issues.append(f"[하이닉스] SKHY {label} 수치({val:+.2f}%)가 본문에 없음 — movers.json skhy 값 그대로")
 
 if issues:
     print(f"❌ 검증 실패 {len(issues)}건 — 수정 후 재검증:")
@@ -2289,4 +2390,4 @@ echo "   (이후 60일마다 자동 회전·저장되므로 재인증은 다시 
 남길 것과 걷어낼 것이 헷갈리면 **걷어내지 말고 사용자에게 묻는다.**
 ````
 
-_부록 수록 시각: 2026-09-18 14:38 KST — 파일 변경 시 '복구 매뉴얼 갱신해줘'로 재수록_
+_부록 수록 시각: 2026-09-18 14:56 KST — 파일 변경 시 '복구 매뉴얼 갱신해줘'로 재수록_

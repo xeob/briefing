@@ -13,7 +13,7 @@
 이후(생성 단계, RUN.md 4단계): 2차 재료 게이트(A/B급 통과·C급 제외·$50B 이하 A급만·
 재료 없으면 7%+라도 제외, M7·메가캡 면제) → 3차 등락률순 top10+M7·메가캡 예외 →
 4차 동반 묶음(같은 실제 업종 |5%|+ 5개 이상). 화면 표시는 |등락률| 큰 순."""
-import json, time, os, subprocess
+import json, time, os, subprocess, datetime
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
@@ -165,8 +165,61 @@ def candidates(side):
 q_up = candidates([r for r in qual if r["pct"] > 0])
 q_down = candidates([r for r in qual if r["pct"] < 0])
 
+# SK하이닉스 ADR 상시 블록 — 한국 하이닉스와 직결되는 종목이라 특징주 자격과 무관하게 매일 표시(2026-09-18 결정).
+#   ① 20시 KST(한국 NXT 애프터마켓 마감) 시점 ADR 등락률 ② 미장 종가 등락률
+#   ③ 괴리 = 20시→종가 변동 = 한국장이 끝난 뒤 미장에서 더 움직인 몫(다음 날 한국 시초가에 반영될 신호).
+#   20시 KST는 미국 프리마켓(여름 07:00·겨울 06:00 ET)이라 프리·애프터 포함 5분봉에서 뽑는다 — 거래량이 0으로 잡혀
+#   체결가가 아닌 호가 기준일 수 있다. 종가는 공식 일봉 종가.
+KR_ADR = "SKHY"
+
+def skhy_block():
+    from zoneinfo import ZoneInfo
+    ET, KST = ZoneInfo("America/New_York"), ZoneInfo("Asia/Seoul")
+    now_et = datetime.datetime.now(ET)
+    r = get(f"https://query1.finance.yahoo.com/v8/finance/chart/{KR_ADR}?range=10d&interval=1d")["chart"]["result"][0]
+    closes = {}
+    for t, c in zip(r["timestamp"], r["indicators"]["quote"][0]["close"]):
+        day = datetime.datetime.fromtimestamp(t, ET).date()
+        if c is None or (day == now_et.date() and now_et.hour < 16):
+            continue  # 정규장이 아직 안 끝난 날의 미완성 봉은 제외
+        closes[day] = c
+    days = sorted(closes)
+    if len(days) < 2:
+        raise ValueError("완료된 미국 세션이 2개 미만")
+    s_day, prev_day = days[-1], days[-2]
+    close, prev = closes[s_day], closes[prev_day]
+    # 20시 KST 시점 가격 = 세션일(KST 같은 날짜) 20:00 직전 30분 안의 마지막 5분봉 종가
+    target = datetime.datetime(s_day.year, s_day.month, s_day.day, 20, 0, tzinfo=KST)
+    m = get(f"https://query1.finance.yahoo.com/v8/finance/chart/{KR_ADR}?range=10d&interval=5m&includePrePost=true")
+    mr = m["chart"]["result"][0]
+    p20 = t20 = None
+    for t, c in zip(mr["timestamp"], mr["indicators"]["quote"][0]["close"]):
+        tk = datetime.datetime.fromtimestamp(t, KST)
+        if c is not None and target - datetime.timedelta(minutes=30) <= tk < target:
+            p20, t20 = c, tk + datetime.timedelta(minutes=5)   # 봉 시작+5분 = 그 가격의 시각
+    # 그 날 한국 정규장이 열렸는가(추석·설 등) — 휴장이면 '20시=한국 마감' 전제가 성립하지 않는다
+    kr_trading = None
+    try:
+        kd = get("https://query1.finance.yahoo.com/v8/finance/chart/000660.KS?range=10d&interval=1d")["chart"]["result"][0]
+        kr_trading = s_day in {datetime.datetime.fromtimestamp(t, KST).date() for t in kd["timestamp"]}
+    except Exception:
+        pass
+    return {"symbol": KR_ADR, "session_et": s_day.isoformat(), "prev_session_et": prev_day.isoformat(),
+            "prev_close": round(prev, 2), "close": round(close, 2),
+            "p20": round(p20, 2) if p20 else None, "p20_kst": t20.strftime("%Y-%m-%d %H:%M") if t20 else None,
+            "pct_20": round((p20 / prev - 1) * 100, 2) if p20 else None,
+            "pct_close": round((close / prev - 1) * 100, 2),
+            "gap": round((close / p20 - 1) * 100, 2) if p20 else None,
+            "kr_trading": kr_trading, "side": "up" if close >= prev else "down"}
+
+try:
+    skhy = skhy_block()
+except Exception as e:
+    skhy = None
+    errors.append(f"skhy block: {str(e)[:60]}")
+
 os.makedirs("out", exist_ok=True)
-json.dump({"generated_kst": time.strftime("%Y-%m-%d %H:%M"), "errors": errors,
+json.dump({"generated_kst": time.strftime("%Y-%m-%d %H:%M"), "errors": errors, "skhy": skhy,
            "rule": "자격: M7 ±2% / 메가캡 ±3% / 그외 ±4% · 우선순위: 티어→|등락률| · 최종 표시는 |등락률|순",
            "qualified_up": q_up, "qualified_down": q_down, "all": rows},
           open("out/movers.json", "w"), ensure_ascii=False, indent=1)
@@ -180,3 +233,8 @@ for r in q_up:
 print("=== 급락 후보 ===")
 for r in q_down:
     print(f"{r['symbol']:6} {r['pct']:+7.2f}%  [{TN[r['tier']]:3}] cap:{r.get('mktcap_b')}B  {(r.get('name') or '')[:24]}")
+if skhy:
+    f = lambda v: "없음" if v is None else f"{v:+.2f}%"
+    print(f"=== SK하이닉스 ADR 상시 블록 (세션 {skhy['session_et']}) — {'급등' if skhy['side']=='up' else '급락'} 파트 ===")
+    print(f"  20시({skhy['p20_kst'] or '-'} KST) ${skhy['p20']} {f(skhy['pct_20'])} → 미장 종가 ${skhy['close']} {f(skhy['pct_close'])}"
+          f" · 한국장 마감 후 {f(skhy['gap'])}  {'' if skhy['kr_trading'] is not False else '(한국 휴장)'}")

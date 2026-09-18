@@ -201,11 +201,18 @@ a{color:inherit;text-decoration:none;}
            <div class="mv-r">종목A&nbsp;<span class="down">−0.0%</span> · 종목B&nbsp;<span class="down">−0.0%</span><br>업종 공통 이유</div></div> -->
     <div class="mv"><div class="mv-h"><span class="mv-n">종목명 (TICKER)</span><span class="mv-p up">+0.00%</span></div><div class="mv-r">이유 1<br>이유 2 (있을 때만)</div></div>
     <!-- 급등 최대 10개 반복 -->
+    <!-- ★ SK하이닉스 ADR 상시 행 (매일 필수 — RUN.md 특징주 ⑧, verify #13 대조):
+         상승(보합 포함)한 날 = 급등 파트 맨 아래 / 하락한 날 = 급락 파트 맨 아래.
+         특징주 자격으로 본 순위에 든 날은 그 자리에 두고 아래 ADR 줄만 추가(중복 행 금지). 묶음행엔 넣지 않는다.
+         수치는 movers.json skhy 그대로 — 헤더 % = pct_close / 본문 첫 줄 = 20시 pct_20 → 미장 종가 pct_close · 한국장 마감 후 gap.
+         kr_trading=false면 첫 줄 끝에 "(한국 휴장)", pct_20=null이면 "20시 시세 없음". 사유는 뚜렷한 재료 있을 때만 둘째 줄. -->
+    <div class="mv"><div class="mv-h"><span class="mv-n">SK하이닉스 ADR (SKHY)</span><span class="mv-p up">+0.00%</span></div><div class="mv-r">20시 +0.00% → 미장 종가 +0.00% · 한국장 마감 후 +0.00%<br>사유(뚜렷한 재료 있을 때만)</div></div>
 
     <div class="divide"></div>
     <div class="lbl">특징주 · 급락</div>
     <div class="mv"><div class="mv-h"><span class="mv-n">종목명 (TICKER)</span><span class="mv-p down">−0.00%</span></div><div class="mv-r">촉매(이유)</div></div>
     <!-- 급락 최대 10개 반복 (movers.json selected_down 순서) -->
+    <!-- 하이닉스 ADR이 하락한 날은 위 급등 파트가 아니라 여기 맨 아래에 같은 형식으로 -->
 
     <div class="divide"></div>
     <div class="lbl">발표된 지표</div>
