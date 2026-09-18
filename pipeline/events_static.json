@@ -1,5 +1,5 @@
 {
- "generated": "2026-09-18",
+ "generated": "2026-09-19",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
@@ -72,28 +72,6 @@
  },
  "events": [
   {
-   "date": "2026-09-18",
-   "time": "22:30",
-   "title": "연준 보먼 발언",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "보먼"
-   ]
-  },
-  {
-   "date": "2026-09-19",
-   "time": "00:45",
-   "title": "연준 슈미드 발언",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "슈미드"
-   ]
-  },
-  {
    "date": "2026-09-21",
    "time": "19:30",
    "title": "연준 굴스비 발언",
@@ -124,6 +102,17 @@
    "src": "static",
    "keywords": [
     "제퍼슨"
+   ]
+  },
+  {
+   "date": "2026-09-23",
+   "time": "02:00",
+   "title": "연준 Barkin 발언",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "Barkin"
    ]
   },
   {
@@ -171,6 +160,18 @@
    "keywords": [
     "GDP",
     "성장률"
+   ]
+  },
+  {
+   "date": "2026-10-01",
+   "time": "23:00",
+   "title": "ISM 제조업 PMI",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "ISM",
+    "제조업"
    ]
   }
  ]
