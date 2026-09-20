@@ -1,5 +1,5 @@
 {
- "generated": "2026-09-20",
+ "generated": "2026-09-21",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
@@ -68,6 +68,12 @@
   "2026-09-18|cb leading index": {
    "0.2": "m/m",
    "0.1": "m/m"
+  },
+  "2026-09-25|core durable goods orders": {
+   "0.5": "m/m"
+  },
+  "2026-09-25|durable goods orders": {
+   "-0.3": "m/m"
   }
  },
  "events": [
