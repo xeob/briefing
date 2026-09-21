@@ -1,5 +1,5 @@
 {
- "generated": "2026-09-21",
+ "generated": "2026-09-22",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
@@ -70,24 +70,14 @@
    "0.1": "m/m"
   },
   "2026-09-25|core durable goods orders": {
-   "0.5": "m/m"
+   "0.5": "m/m",
+   "0.6": "m/m"
   },
   "2026-09-25|durable goods orders": {
    "-0.3": "m/m"
   }
  },
  "events": [
-  {
-   "date": "2026-09-21",
-   "time": "19:30",
-   "title": "연준 굴스비 발언",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "굴스비"
-   ]
-  },
   {
    "date": "2026-09-22",
    "time": "23:05",
