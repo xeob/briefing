@@ -1,12 +1,9 @@
 {
- "generated": "2026-09-22",
+ "generated": "2026-09-23",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
  "ff_variants": {
-  "2026-09-01|construction spending": {
-   "0.0": "m/m"
-  },
   "2026-09-02|factory orders": {
    "0.6": "m/m",
    "0.7": "m/m"
@@ -79,39 +76,6 @@
  },
  "events": [
   {
-   "date": "2026-09-22",
-   "time": "23:05",
-   "title": "연준 윌리엄스 발언",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "윌리엄스"
-   ]
-  },
-  {
-   "date": "2026-09-22",
-   "time": "23:20",
-   "title": "연준 제퍼슨 발언",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "제퍼슨"
-   ]
-  },
-  {
-   "date": "2026-09-23",
-   "time": "02:00",
-   "title": "연준 Barkin 발언",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "Barkin"
-   ]
-  },
-  {
    "date": "2026-09-24",
    "time": "21:30",
    "title": "신규 실업수당청구",
@@ -160,6 +124,17 @@
   },
   {
    "date": "2026-10-01",
+   "time": "02:30",
+   "title": "연준 Barkin 발언",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "Barkin"
+   ]
+  },
+  {
+   "date": "2026-10-01",
    "time": "23:00",
    "title": "ISM 제조업 PMI",
    "impact": "High",
@@ -204,6 +179,18 @@
    "src": "static",
    "keywords": [
     "실업률"
+   ]
+  },
+  {
+   "date": "2026-10-05",
+   "time": "23:00",
+   "title": "ISM 서비스업 PMI",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "ISM",
+    "서비스업"
    ]
   }
  ]
