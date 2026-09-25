@@ -1,12 +1,9 @@
 {
- "generated": "2026-09-25",
+ "generated": "2026-09-26",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
  "ff_variants": {
-  "2026-09-04|average hourly earnings": {
-   "0.3": "m/m"
-  },
   "2026-09-08|consumer credit": {
    "13.2B": "m/m",
    "11.9B": "m/m"
@@ -66,37 +63,25 @@
  },
  "events": [
   {
-   "date": "2026-09-25",
-   "time": "18:15",
+   "date": "2026-09-30",
+   "time": "02:00",
+   "title": "연준 굴스비 발언",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "굴스비"
+   ]
+  },
+  {
+   "date": "2026-09-30",
+   "time": "03:00",
    "title": "연준 윌리엄스 발언",
    "impact": "High",
    "cat": "지표",
    "src": "static",
    "keywords": [
     "윌리엄스"
-   ]
-  },
-  {
-   "date": "2026-09-25",
-   "time": "22:20",
-   "title": "연준 슈미드 발언",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "슈미드"
-   ]
-  },
-  {
-   "date": "2026-09-25",
-   "time": "23:00",
-   "title": "미시간 기대인플레",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "기대인플레",
-    "미시간"
    ]
   },
   {
@@ -135,6 +120,39 @@
   },
   {
    "date": "2026-10-01",
+   "time": "04:25",
+   "title": "연준 쿡 발언",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "쿡"
+   ]
+  },
+  {
+   "date": "2026-10-01",
+   "time": "06:10",
+   "title": "연준 굴스비 발언",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "굴스비"
+   ]
+  },
+  {
+   "date": "2026-10-01",
+   "time": "07:00",
+   "title": "연준 카슈카리 발언",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "카슈카리"
+   ]
+  },
+  {
+   "date": "2026-10-01",
    "time": "21:30",
    "title": "신규 실업수당청구",
    "impact": "High",
@@ -147,6 +165,28 @@
   },
   {
    "date": "2026-10-01",
+   "time": "22:05",
+   "title": "연준 콜린스 발언",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "콜린스"
+   ]
+  },
+  {
+   "date": "2026-10-01",
+   "time": "22:05",
+   "title": "연준 슈미드 발언",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "슈미드"
+   ]
+  },
+  {
+   "date": "2026-10-01",
    "time": "23:00",
    "title": "ISM 제조업 PMI",
    "impact": "High",
@@ -155,6 +195,39 @@
    "keywords": [
     "ISM",
     "제조업"
+   ]
+  },
+  {
+   "date": "2026-10-02",
+   "time": "04:30",
+   "title": "연준 쿡 발언",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "쿡"
+   ]
+  },
+  {
+   "date": "2026-10-02",
+   "time": "04:30",
+   "title": "연준 윌리엄스 발언",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "윌리엄스"
+   ]
+  },
+  {
+   "date": "2026-10-02",
+   "time": "07:45",
+   "title": "연준 로건 발언",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "로건"
    ]
   },
   {
