@@ -3,6 +3,10 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
+# 파이프라인 전체가 KST 기준이다(market.py의 generated_kst, verify.py의 헤더 날짜 검사 등).
+# 클라우드 컨테이너는 TZ=UTC라 15:00 KST 이후엔 verify.py가 헤더 날짜를 하루 전으로 보고 게시를 막는다.
+export TZ=Asia/Seoul
+
 # .env가 있으면 로드, 없으면 이미 export된 환경변수 사용(클라우드: briefing-secrets/.env를 미리 source)
 [ -f .env ] && { set -a; source .env; set +a; }
 : "${GH_PAT:?GH_PAT 필요}"; : "${GH_REPO:?GH_REPO 필요}"; : "${SITE_URL:?SITE_URL 필요}"
