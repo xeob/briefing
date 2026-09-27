@@ -1,5 +1,5 @@
 {
- "generated": "2026-09-27",
+ "generated": "2026-09-28",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
@@ -59,6 +59,39 @@
   },
   "2026-09-25|durable goods orders": {
    "-0.3": "m/m"
+  },
+  "2026-09-29|hpi": {
+   "0.1": "m/m"
+  },
+  "2026-09-29|s&p/cs composite-20 hpi": {
+   "2.2": "y/y"
+  },
+  "2026-09-30|core pce price index": {
+   "0.3": "m/m"
+  },
+  "2026-09-30|final gdp": {
+   "1.5": "q/q"
+  },
+  "2026-09-30|final gdp price index": {
+   "6.4": "q/q"
+  },
+  "2026-09-30|personal income": {
+   "0.5": "m/m"
+  },
+  "2026-09-30|personal spending": {
+   "1.0": "m/m"
+  },
+  "2026-09-30|prelim wholesale inventories": {
+   "1.1": "m/m"
+  },
+  "2026-10-01|construction spending": {
+   "0.1": "m/m"
+  },
+  "2026-10-02|average hourly earnings": {
+   "0.3": "m/m"
+  },
+  "2026-10-02|factory orders": {
+   "-0.1": "m/m"
   }
  },
  "events": [
