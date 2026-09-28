@@ -1,5 +1,5 @@
 {
- "generated": "2026-09-28",
+ "generated": "2026-09-29",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
@@ -79,33 +79,26 @@
    "0.5": "m/m"
   },
   "2026-09-30|personal spending": {
-   "1.0": "m/m"
+   "1.0": "m/m",
+   "0.8": "m/m"
   },
   "2026-09-30|prelim wholesale inventories": {
-   "1.1": "m/m"
+   "1.1": "m/m",
+   "0.5": "m/m"
   },
   "2026-10-01|construction spending": {
-   "0.1": "m/m"
+   "0.1": "m/m",
+   "0.0": "m/m"
   },
   "2026-10-02|average hourly earnings": {
    "0.3": "m/m"
   },
   "2026-10-02|factory orders": {
-   "-0.1": "m/m"
+   "-0.1": "m/m",
+   "0.1": "m/m"
   }
  },
  "events": [
-  {
-   "date": "2026-09-28",
-   "time": "21:15",
-   "title": "연준 보먼 발언",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "보먼"
-   ]
-  },
   {
    "date": "2026-09-30",
    "time": "00:00",
