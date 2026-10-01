@@ -1,19 +1,9 @@
 {
- "generated": "2026-10-01",
+ "generated": "2026-10-02",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
  "ff_variants": {
-  "2026-09-10|core ppi": {
-   "0.3": "m/m"
-  },
-  "2026-09-10|ppi": {
-   "0.4": "m/m"
-  },
-  "2026-09-10|final wholesale inventories": {
-   "1.3": "m/m",
-   "1.2": "m/m"
-  },
   "2026-09-11|core cpi": {
    "0.2": "m/m",
    "2.4": "y/y"
@@ -96,107 +86,6 @@
  },
  "events": [
   {
-   "date": "2026-10-01",
-   "time": "21:30",
-   "title": "신규 실업수당청구",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "실업수당",
-    "신규 실업"
-   ]
-  },
-  {
-   "date": "2026-10-01",
-   "time": "22:05",
-   "title": "연준 콜린스 발언",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "콜린스"
-   ]
-  },
-  {
-   "date": "2026-10-01",
-   "time": "22:05",
-   "title": "연준 슈미드 발언",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "슈미드"
-   ]
-  },
-  {
-   "date": "2026-10-01",
-   "time": "23:00",
-   "title": "연준 월러 발언",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "월러"
-   ]
-  },
-  {
-   "date": "2026-10-01",
-   "time": "23:00",
-   "title": "ISM 제조업 PMI",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "ISM",
-    "제조업"
-   ]
-  },
-  {
-   "date": "2026-10-02",
-   "time": "02:30",
-   "title": "연준 제퍼슨 발언",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "제퍼슨"
-   ]
-  },
-  {
-   "date": "2026-10-02",
-   "time": "04:00",
-   "title": "연준 보먼 발언",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "보먼"
-   ]
-  },
-  {
-   "date": "2026-10-02",
-   "time": "04:30",
-   "title": "연준 쿡 발언",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "쿡"
-   ]
-  },
-  {
-   "date": "2026-10-02",
-   "time": "04:30",
-   "title": "연준 윌리엄스 발언",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "윌리엄스"
-   ]
-  },
-  {
    "date": "2026-10-02",
    "time": "07:45",
    "title": "연준 로건 발언",
@@ -267,6 +156,17 @@
    ]
   },
   {
+   "date": "2026-10-07",
+   "time": "10:05",
+   "title": "연준 윌리엄스 발언",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "윌리엄스"
+   ]
+  },
+  {
    "date": "2026-10-08",
    "time": "00:00",
    "title": "NY연은 기대인플레",
@@ -314,6 +214,18 @@
    "keywords": [
     "기대인플레",
     "미시간"
+   ]
+  },
+  {
+   "date": "2026-10-14",
+   "time": "21:30",
+   "title": "소비자물가지수(CPI)",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "CPI",
+    "소비자물가"
    ]
   }
  ]
