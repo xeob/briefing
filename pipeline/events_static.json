@@ -1,17 +1,9 @@
 {
- "generated": "2026-10-02",
+ "generated": "2026-10-03",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
  "ff_variants": {
-  "2026-09-11|core cpi": {
-   "0.2": "m/m",
-   "2.4": "y/y"
-  },
-  "2026-09-11|cpi": {
-   "0.4": "m/m",
-   "3.4": "y/y"
-  },
   "2026-09-16|core retail sales": {
    "0.5": "m/m",
    "0.6": "m/m"
@@ -86,53 +78,6 @@
  },
  "events": [
   {
-   "date": "2026-10-02",
-   "time": "07:45",
-   "title": "연준 로건 발언",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "로건"
-   ]
-  },
-  {
-   "date": "2026-10-02",
-   "time": "21:30",
-   "title": "시간당 평균임금",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "시간당",
-    "임금"
-   ]
-  },
-  {
-   "date": "2026-10-02",
-   "time": "21:30",
-   "title": "고용보고서(비농업)",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "고용",
-    "NFP",
-    "비농업"
-   ]
-  },
-  {
-   "date": "2026-10-02",
-   "time": "21:30",
-   "title": "실업률",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "실업률"
-   ]
-  },
-  {
    "date": "2026-10-05",
    "time": "23:00",
    "title": "ISM 서비스업 PMI",
@@ -142,6 +87,17 @@
    "keywords": [
     "ISM",
     "서비스업"
+   ]
+  },
+  {
+   "date": "2026-10-06",
+   "time": "23:45",
+   "title": "연준 보먼 발언",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "보먼"
    ]
   },
   {
@@ -226,6 +182,29 @@
    "keywords": [
     "CPI",
     "소비자물가"
+   ]
+  },
+  {
+   "date": "2026-10-15",
+   "time": "21:30",
+   "title": "생산자물가지수(PPI)",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "PPI",
+    "생산자물가"
+   ]
+  },
+  {
+   "date": "2026-10-15",
+   "time": "21:30",
+   "title": "소매판매",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "소매판매"
    ]
   }
  ]
