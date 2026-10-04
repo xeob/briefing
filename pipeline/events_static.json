@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-03",
+ "generated": "2026-10-05",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
@@ -74,6 +74,12 @@
   "2026-10-02|factory orders": {
    "-0.1": "m/m",
    "0.1": "m/m"
+  },
+  "2026-10-07|consumer credit": {
+   "15.4B": "m/m"
+  },
+  "2026-10-08|final wholesale inventories": {
+   "0.7": "m/m"
   }
  },
  "events": [
@@ -150,6 +156,17 @@
   },
   {
    "date": "2026-10-08",
+   "time": "17:30",
+   "title": "연준 월러 발언",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "월러"
+   ]
+  },
+  {
+   "date": "2026-10-08",
    "time": "21:30",
    "title": "신규 실업수당청구",
    "impact": "High",
@@ -170,6 +187,17 @@
    "keywords": [
     "기대인플레",
     "미시간"
+   ]
+  },
+  {
+   "date": "2026-10-10",
+   "time": "05:00",
+   "title": "연준 콜린스 발언",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "콜린스"
    ]
   },
   {
