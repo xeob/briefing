@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-06",
+ "generated": "2026-10-07",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
@@ -76,24 +76,14 @@
    "0.1": "m/m"
   },
   "2026-10-07|consumer credit": {
-   "15.4B": "m/m"
+   "15.4B": "m/m",
+   "14.5B": "m/m"
   },
   "2026-10-08|final wholesale inventories": {
    "0.7": "m/m"
   }
  },
  "events": [
-  {
-   "date": "2026-10-06",
-   "time": "23:45",
-   "title": "연준 보먼 발언",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "보먼"
-   ]
-  },
   {
    "date": "2026-10-07",
    "time": "08:00",
@@ -221,6 +211,18 @@
    "src": "static",
    "keywords": [
     "소매판매"
+   ]
+  },
+  {
+   "date": "2026-10-15",
+   "time": "21:30",
+   "title": "신규 실업수당청구",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "실업수당",
+    "신규 실업"
    ]
   }
  ]
