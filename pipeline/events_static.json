@@ -1,17 +1,9 @@
 {
- "generated": "2026-10-09",
+ "generated": "2026-10-10",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
  "ff_variants": {
-  "2026-09-18|industrial production": {
-   "0.1": "m/m",
-   "0.3": "m/m"
-  },
-  "2026-09-18|cb leading index": {
-   "0.2": "m/m",
-   "0.1": "m/m"
-  },
   "2026-09-25|core durable goods orders": {
    "0.5": "m/m",
    "0.6": "m/m"
@@ -66,26 +58,36 @@
  },
  "events": [
   {
-   "date": "2026-10-09",
-   "time": "23:00",
-   "title": "미시간 기대인플레",
+   "date": "2026-10-13",
+   "time": "16:45",
+   "title": "연준 월러 발언",
    "impact": "High",
    "cat": "지표",
    "src": "static",
    "keywords": [
-    "기대인플레",
-    "미시간"
+    "월러"
    ]
   },
   {
-   "date": "2026-10-10",
-   "time": "05:00",
-   "title": "연준 콜린스 발언",
+   "date": "2026-10-14",
+   "time": "02:00",
+   "title": "연준 Barkin 발언",
    "impact": "High",
    "cat": "지표",
    "src": "static",
    "keywords": [
-    "콜린스"
+    "Barkin"
+   ]
+  },
+  {
+   "date": "2026-10-14",
+   "time": "18:40",
+   "title": "연준 보먼 발언",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "보먼"
    ]
   },
   {
@@ -98,6 +100,17 @@
    "keywords": [
     "CPI",
     "소비자물가"
+   ]
+  },
+  {
+   "date": "2026-10-15",
+   "time": "02:30",
+   "title": "연준 Barkin 발언",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "Barkin"
    ]
   },
   {
@@ -133,6 +146,17 @@
    "keywords": [
     "실업수당",
     "신규 실업"
+   ]
+  },
+  {
+   "date": "2026-10-16",
+   "time": "12:30",
+   "title": "연준 의장 워시 발언",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "워시"
    ]
   }
  ]
