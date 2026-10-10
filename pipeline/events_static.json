@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-10",
+ "generated": "2026-10-11",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
@@ -81,6 +81,17 @@
   },
   {
    "date": "2026-10-14",
+   "time": "05:00",
+   "title": "연준 콜린스 발언",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "콜린스"
+   ]
+  },
+  {
+   "date": "2026-10-14",
    "time": "18:40",
    "title": "연준 보먼 발언",
    "impact": "High",
@@ -157,6 +168,18 @@
    "src": "static",
    "keywords": [
     "워시"
+   ]
+  },
+  {
+   "date": "2026-10-23",
+   "time": "23:00",
+   "title": "미시간 기대인플레",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "기대인플레",
+    "미시간"
    ]
   }
  ]
