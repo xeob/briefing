@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-11",
+ "generated": "2026-10-12",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
@@ -54,6 +54,35 @@
   },
   "2026-10-08|final wholesale inventories": {
    "0.7": "m/m"
+  },
+  "2026-10-14|core cpi": {
+   "0.2": "m/m",
+   "2.5": "y/y"
+  },
+  "2026-10-14|cpi": {
+   "0.6": "m/m",
+   "3.6": "y/y"
+  },
+  "2026-10-15|core ppi": {
+   "0.3": "m/m"
+  },
+  "2026-10-15|core retail sales": {
+   "0.5": "m/m"
+  },
+  "2026-10-15|ppi": {
+   "0.5": "m/m"
+  },
+  "2026-10-15|retail sales": {
+   "0.3": "m/m"
+  },
+  "2026-10-15|business inventories": {
+   "0.4": "m/m"
+  },
+  "2026-10-16|import prices": {
+   "0.6": "m/m"
+  },
+  "2026-10-16|industrial production": {
+   "0.4": "m/m"
   }
  },
  "events": [
