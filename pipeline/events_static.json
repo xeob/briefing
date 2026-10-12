@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-12",
+ "generated": "2026-10-13",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
@@ -197,6 +197,18 @@
    "src": "static",
    "keywords": [
     "워시"
+   ]
+  },
+  {
+   "date": "2026-10-22",
+   "time": "21:30",
+   "title": "신규 실업수당청구",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "실업수당",
+    "신규 실업"
    ]
   },
   {
