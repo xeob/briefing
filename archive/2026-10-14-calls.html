@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>실적 컨퍼런스콜</title>
+<style>
+:root{
+  --bg:#f6f6f4; --card:#ffffff; --text:#1a1a19; --sub:#63625d; --muted:#9a9992;
+  --border:#e6e5e1; --up:#0a7d33; --down:#d21c1c; --accent:#2f6fd0;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#181817; --card:#242422; --text:#f0efec; --sub:#a7a6a0; --muted:#77766f;
+    --border:#38372f; --up:#3fb950; --down:#f5564a; --accent:#5a9bf0; }
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+  word-break:keep-all;-webkit-text-size-adjust:100%;}
+.wrap{max-width:520px;margin:0 auto;padding:20px 16px 24px;}
+a{color:inherit;text-decoration:none;}
+.head{padding-bottom:14px;border-bottom:1px solid var(--border);margin-bottom:18px;}
+.head-row{display:flex;justify-content:space-between;align-items:baseline;}
+.head-title{font-size:20px;font-weight:600;}
+.head-date{font-size:13px;color:var(--muted);}
+.head-sub{margin:6px 0 0;font-size:12px;color:var(--muted);}
+.card{background:var(--card);border:0.5px solid var(--border);border-radius:12px;padding:13px 15px;margin-bottom:12px;}
+.sec{display:flex;align-items:center;gap:7px;margin-bottom:11px;}
+.sec-title{font-size:13px;font-weight:600;color:var(--sub);}
+.sec-note{font-size:11px;color:var(--muted);}
+.tag{display:inline-block;font-size:11px;padding:1px 8px;border-radius:20px;}
+.s-earn{color:#c1660f;background:rgba(193,102,15,.13);}
+.s-fed{color:#7a4fd0;background:rgba(122,79,208,.14);}
+.divide{height:1px;background:var(--border);margin:12px 0;}
+.lbl{font-size:11px;color:var(--muted);margin-bottom:5px;}
+.mv{margin-bottom:13px;}
+.mv-h{display:flex;align-items:baseline;gap:8px;}
+.mv-n{font-size:14px;font-weight:600;}
+.mv-p{font-size:13px;font-weight:600;}
+.mv-r{font-size:12px;color:var(--sub);line-height:1.55;margin-top:3px;}
+.up{color:var(--up);} .down{color:var(--down);}
+.note{font-size:12px;color:var(--sub);line-height:1.7;}
+.foot{margin-top:16px;text-align:center;font-size:11px;color:var(--muted);}
+@media (max-width:390px){ .head-title{font-size:18px;} .mv-n{font-size:13px;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ===== 헤더 ===== -->
+  <div class="head">
+    <div class="head-row">
+      <div class="head-title">실적 컨퍼런스콜</div>
+      <div class="head-date">2026.10.14 (수)</div>
+    </div>
+    <p class="head-sub">간밤 실적 발표 · 컨퍼런스콜 주요 내용 (美 10/13 세션)</p>
+  </div>
+
+  <!-- ===== 종목별 컨콜 ===== -->
+  <div class="card">
+    <div class="sec"><span class="sec-title">주요 발언 · 특이사항</span><span class="sec-note">한국시간 기준 · 美 3Q 금융·헬스케어 실적</span></div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">JP모건 (JPM)</span><span class="mv-p down">마감 −0.9%</span></div>
+      <div class="mv-r">매출 $50.2B(+8%) · 조정EPS $5.75(예상 $5.94 하회)<br>순이익 $15.3B(+6%) · ROTCE 20% · GAAP EPS $5.57<br>주식 트레이딩 $5.0B(+49%)·FICC $5.4B(−4%)·IB $3.0B(+14%)<br>다이먼 "소비자 매우 건전, 노동시장이 뒷받침"<br>4Q NII 약 $28B·대손 $2.7B(−19%)·자사주 의도적 축소</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">존슨앤드존슨 (JNJ)</span><span class="mv-p down">하락</span></div>
+      <div class="mv-r">매출 $25.4B(+5.9%) · 조정EPS $2.59(예상 $2.53 상회)<br>GAAP EPS $0.09 — 탤크 소송 합의 $5.5B 충당 반영<br>혁신의약품 $16.8B(+7.7%)·메드텍 $8.6B(+2.5% 부진)<br>트렘피어 +68% · 다잘렉스 +15% · 스텔라라 −54%<br>연간 가이던스 상향: 조정EPS $11.05~11.15·매출 $101B+</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">유나이티드헬스 (UNH)</span><span class="mv-p up">상승</span></div>
+      <div class="mv-r">매출 $112.7B(−0.4%, 예상 상회) · 조정EPS $4.69(예상 $4.12 상회)<br>의료비율(MCR) 88.4% — 전년비 약 150bp 개선<br>UHC $86.3B · 옵텀 $66.9B(옵텀헬스 −10%)<br>연간 조정EPS 가이던스 상향 "최소 $20.50"(올해 3번째)<br>경영진 "27년 두 자릿수 성장 하단이 현실적 출발점"</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">골드만삭스 (GS)</span><span class="mv-p up">장중 +4%</span></div>
+      <div class="mv-r">매출 $18.7B(+23%) · EPS $17.01(예상 $12.90 대폭 상회)<br>순이익 $5.29B · ROE 18.7% · 역대 2번째 분기 매출<br>주식 $6.44B(+72%)·FICC $3.47B(−1%)·IB수수료 +21%<br>자산·웰스관리 $5.05B(+14%) · 솔로몬 "M&A 백로그 견조"<br>"AI 데이터센터 금융의 중심" · 장중 +4%후 반락 보합 마감</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">웰스파고 (WFC)</span><span class="mv-p down">약세</span></div>
+      <div class="mv-r">매출 $21.9B(+2%, 예상 하회) · EPS $1.87(예상 $1.85 상회)<br>순이자이익 $12.5B(+5%) · 순이자마진 2.43%<br>ROTCE 16.3% · 효율성비율 63% · 대손 $1.0B(+51%)<br>샤프 "소비자 회복력 견조·전반적 신용 악화 없어"<br>연간 가이던스: NII 약 $50B·비용 약 $55.7B·자사주 $2.5B</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">씨티그룹 (C)</span><span class="mv-p down">약세</span></div>
+      <div class="mv-r">매출 $23.8B(+8%) · EPS $2.85(예상 $2.66 상회)<br>순이익 $5.2B · ROTCE 11.5% · "10년來 최대 3분기 매출"<br>서비스 $6.6B(+15%)·마켓 $6.1B(+6%)·웰스 $3.3B(+15%)<br>프레이저 "올해 수익 목표 초과" · 연 ROTCE 11%+로 상향<br>자사주 $3.0B·주주환원 $4.1B · 실적 호조에도 주가 약세</div>
+    </div>
+
+  </div>
+
+  <!-- ===== 오늘 밤 예정 ===== -->
+  <div class="card">
+    <div class="sec"><span class="sec-title">오늘 밤 실적 예정</span></div>
+    <div class="note">
+      · ASML (ASML) · 뱅크오브아메리카 (BAC) · 모건스탠리 (MS) — 한국시간 오늘 밤~내일 새벽
+    </div>
+  </div>
+
+  <div class="foot">경제 브리핑 · 실적 컨퍼런스콜</div>
+</div>
+</body>
+</html>
