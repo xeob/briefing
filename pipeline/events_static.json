@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-13",
+ "generated": "2026-10-14",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
@@ -67,10 +67,12 @@
    "0.3": "m/m"
   },
   "2026-10-15|core retail sales": {
-   "0.5": "m/m"
+   "0.5": "m/m",
+   "0.6": "m/m"
   },
   "2026-10-15|ppi": {
-   "0.5": "m/m"
+   "0.5": "m/m",
+   "0.6": "m/m"
   },
   "2026-10-15|retail sales": {
    "0.3": "m/m"
@@ -79,46 +81,14 @@
    "0.4": "m/m"
   },
   "2026-10-16|import prices": {
-   "0.6": "m/m"
+   "0.6": "m/m",
+   "0.9": "m/m"
   },
   "2026-10-16|industrial production": {
    "0.4": "m/m"
   }
  },
  "events": [
-  {
-   "date": "2026-10-13",
-   "time": "16:45",
-   "title": "연준 월러 발언",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "월러"
-   ]
-  },
-  {
-   "date": "2026-10-14",
-   "time": "02:00",
-   "title": "연준 Barkin 발언",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "Barkin"
-   ]
-  },
-  {
-   "date": "2026-10-14",
-   "time": "05:00",
-   "title": "연준 콜린스 발언",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "콜린스"
-   ]
-  },
   {
    "date": "2026-10-14",
    "time": "18:40",
