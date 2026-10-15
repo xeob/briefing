@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-15",
+ "generated": "2026-10-16",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
@@ -89,41 +89,6 @@
   }
  },
  "events": [
-  {
-   "date": "2026-10-15",
-   "time": "21:30",
-   "title": "생산자물가지수(PPI)",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "PPI",
-    "생산자물가"
-   ]
-  },
-  {
-   "date": "2026-10-15",
-   "time": "21:30",
-   "title": "소매판매",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "소매판매"
-   ]
-  },
-  {
-   "date": "2026-10-15",
-   "time": "21:30",
-   "title": "신규 실업수당청구",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "실업수당",
-    "신규 실업"
-   ]
-  },
   {
    "date": "2026-10-16",
    "time": "12:30",
