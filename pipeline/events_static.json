@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-18",
+ "generated": "2026-10-19",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
@@ -79,6 +79,12 @@
   },
   "2026-10-16|industrial production": {
    "0.4": "m/m"
+  },
+  "2026-10-20|pending home sales": {
+   "-0.4": "m/m"
+  },
+  "2026-10-22|cb leading index": {
+   "-0.2": "m/m"
   }
  },
  "events": [
