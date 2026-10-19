@@ -13,6 +13,23 @@ issues = []
 def num(s):
     return float(str(s).replace(",", "").replace("−", "-").replace("+", "").replace("%", "").strip())
 
+# 시간외 특징주 섹션 분리(2026-10-19) — 이 섹션 수치는 '시간외' 기준이라 정규장 대조에서 떼어낸다.
+#   · #2에 그대로 걸리면 정규장 등락률과 달라 오탐으로 게시가 막힌다(실적일엔 낮·밤 둘 다 움직인다).
+#   · #11은 "(티커)가 페이지 어디든 있으면 통과"라서, 시간외 행이 실적 섹션 누락을 가려준다.
+#   섹션이 없는 날엔 ah_sec="" → html_main은 html과 동일해 기존 동작이 그대로 유지된다.
+AH_LBL = "시간외 특징주"
+
+def seg(start, *ends):
+    """start 다음부터 ends 중 '가장 먼저' 나오는 경계 앞까지. 경계가 하나도 없으면 끝까지."""
+    if start not in html:
+        return ""
+    s = html.split(start, 1)[1]
+    cuts = [s.index(e) for e in ends if e in s]
+    return s[:min(cuts)] if cuts else s
+
+ah_sec = seg(AH_LBL, "발표된 지표")
+html_main = html.replace(ah_sec, "") if ah_sec else html
+
 # 1) 지수 카드: 이름/종가/등락률 대조
 for m in re.finditer(r'idx-name">(.*?)</div>\s*<div class="idx-val">(.*?)</div>\s*<div class="idx-chg[^"]*">(.*?)</div>', html):
     name, val, chg = _html.unescape(m.group(1).strip()), m.group(2), m.group(3)
@@ -35,7 +52,7 @@ for m in re.finditer(r'idx-name">(.*?)</div>\s*<div class="idx-val">(.*?)</div>\
 
 # 2) 특징주: (티커) + 등락률 → movers.json 대조
 allmv = {r["symbol"]: r["pct"] for r in mv.get("all", [])}
-for m in re.finditer(r'mv-n">[^<(]*\(([A-Z]{1,6})\)</span><span class="mv-p[^"]*">([-+−][\d.]+)%', html):
+for m in re.finditer(r'mv-n">[^<(]*\(([A-Z]{1,6})\)</span><span class="mv-p[^"]*">([-+−][\d.]+)%', html_main):
     tk, pct = m.group(1), num(m.group(2))
     if tk in allmv and abs(pct - allmv[tk]) > 0.15:
         issues.append(f"[특징주] {tk} 등락률 HTML {pct:+.2f}% ≠ 원본 {allmv[tk]:+.2f}%")
@@ -159,7 +176,7 @@ except Exception:
 if ea:
     for e in ea.get("must_cover", []):
         sym = e.get("symbol", "")
-        if sym and f"({sym})" not in html:
+        if sym and f"({sym})" not in html_main:
             issues.append(f"[실적] '{e.get('name_ko', sym)} ({sym})' 누락 — {ea.get('session_et')} 세션 발표 "
                           f"{e.get('tier')} 종목은 실적 발표 섹션에 반드시 포함(earnings.json must_cover)")
 
@@ -178,10 +195,8 @@ if ea:
 #     있어야 하고, 헤더 등락률·20시·괴리 수치가 원본과 일치해야 한다(2026-09-18 결정 — 한국 하이닉스와 직결).
 sk = mv.get("skhy")
 if sk:
-    def part(a, b):
-        return html.split(a, 1)[1].split(b, 1)[0] if a in html else ""
-    up_sec = part("특징주 · 급등", "특징주 · 급락")
-    dn_sec = part("특징주 · 급락", "발표된 지표")
+    up_sec = seg("특징주 · 급등", "특징주 · 급락")
+    dn_sec = seg("특징주 · 급락", AH_LBL, "발표된 지표")
     want, other = (up_sec, dn_sec) if sk["side"] == "up" else (dn_sec, up_sec)
     side_ko = "급등" if sk["side"] == "up" else "급락"
     if "(SKHY)" not in want:
@@ -202,6 +217,45 @@ if sk:
             for label, val in (("20시", sk.get("pct_20")), ("한국장 마감 후", sk.get("gap"))):
                 if val is not None and not any(abs(g - val) <= 0.1 for g in got):
                     issues.append(f"[하이닉스] SKHY {label} 수치({val:+.2f}%)가 본문에 없음 — movers.json skhy 값 그대로")
+
+# 14) 시간외 특징주 섹션: movers.json afterhours 와 1:1 대조 (2026-10-19 신설)
+#     rows가 있으면 전부 게재(누락 차단) / rows가 없으면 섹션 자체 금지(날조·재탕 차단).
+#     표시 수치는 movers.json 값 그대로여야 하고, 기준시각(ET·KST)을 반드시 적는다.
+ah = mv.get("afterhours") or {}
+ah_rows = ah.get("rows") or []
+if ah_rows and not ah_sec:
+    lst = ", ".join("%s %+.2f%%" % (r["symbol"], r["pct"]) for r in ah_rows)
+    issues.append(f"[시간외] 시간외 특징주 섹션 누락 — afterhours.rows {len(ah_rows)}건({lst})은 "
+                  "특징주 급락 아래 섹션에 전부 게재")
+if ah_sec and not ah_rows:
+    issues.append(f"[시간외] 자격 통과 0건(status={ah.get('status')})인데 섹션이 있음 — "
+                  "섹션(제목 포함) 통째로 삭제(어제 자료 재탕·임의 추가 금지)")
+if ah_sec:
+    if 'class="mv-p' in ah_sec:
+        issues.append('[시간외] 섹션에 class="mv-p" 사용 — 시간외 등락률은 class="ah-p"로 표기'
+                      "(mv-p는 정규장 대조 #2에 걸려 오탐을 만든다)")
+    if "(SKHY)" in ah_sec:
+        issues.append("[시간외] SKHY 행은 시간외 섹션에 넣지 않는다 — 하이닉스 ADR은 전용 상시 행(급등/급락 파트 맨 아래)")
+    for lb, v in (("ET", ah.get("cut_et_hm")), ("KST", ah.get("cut_kst_hm"))):
+        if v and v not in ah_sec:
+            issues.append(f"[시간외] 기준시각 {lb} {v} 표기 없음 — 제목 줄에 "
+                          f"'{ah.get('cut_et_hm')} ET · {ah.get('cut_kst_hm')} KST 기준' 병기(검증 가능성)")
+    want = {r["symbol"]: r["pct"] for r in ah_rows}
+    got = {m.group(1): num(m.group(2)) for m in
+           re.finditer(r'mv-n">[^<(]*\(([A-Z]{1,6})\)</span><span class="ah-p[^"]*">[^<]*?([-+−][\d.]+)%', ah_sec)}
+    n_mvn = ah_sec.count('class="mv-n"')
+    if n_mvn != len(got):
+        issues.append(f"[시간외] 행 형식 인식 실패(인식 {len(got)}건 / mv-n {n_mvn}건) — "
+                      "템플릿 형식 그대로: mv-n에 '한글명 (TICKER)', 이어서 ah-p에 '시간외 +0.00%'")
+    for sym, pct in want.items():
+        if sym not in got:
+            issues.append(f"[시간외] {sym} 행 누락 — afterhours.rows({pct:+.2f}%)는 전부 게재")
+        elif abs(got[sym] - pct) > 0.15:
+            issues.append(f"[시간외] {sym} 등락률 HTML {got[sym]:+.2f}% ≠ 원본 {pct:+.2f}% (movers.json 값 그대로)")
+    for sym in got:
+        if sym not in want:
+            issues.append(f"[시간외] {sym} 행은 afterhours.rows에 없음 — 임의 추가 금지"
+                          "(기준 미달·거래대금 미달·2소스 미확인 중 하나로 걸러진 종목)")
 
 if issues:
     print(f"❌ 검증 실패 {len(issues)}건 — 수정 후 재검증:")

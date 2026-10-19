@@ -257,6 +257,13 @@ cd $TMP/r && git add -A && git commit -m restore && git push
         - `kr_trading:false`(추석·설 등 한국 휴장)면 첫 줄 끝에 "(한국 휴장)" — 20시가 한국 마감이 아니므로. `pct_20`이 null이면 "20시 시세 없음"으로 쓰고 종가만.
         - 사유는 **뚜렷한 재료가 있을 때만** 둘째 줄(⑦ 품질 규칙 적용). 없으면 생략 — 매일 싣는 행이라 억지 사유 금지.
       - verify #13이 **존재·파트(급등/급락)·등락률·20시·괴리 수치**를 기계 대조한다.
+    - **⑨ 시간외 특징주 (2026-10-19 신설)**: 정규장 종료 후 **브리핑 제작 직전까지** 움직인 종목을 **특징주 · 급락 바로 아래 별도 섹션**으로. 데이터는 `movers.json`의 `afterhours` — **status가 `ok`이고 `rows`가 있을 때만** 섹션을 쓰고, 비면 **섹션 통째 생략**(주말·휴일 다음 브리핑은 창이 지나 대개 생략된다). 모델이 종목·수치를 직접 찾지 말 것 — rows 그대로.
+      - **자격은 정규장과 동일**(M7 ±2% / 메가캡 ±3% / 그 외 ±4%), 기준은 **정규장 공식 종가 대비**. 감시 대상 = CORE_SCAN ∪ 그날 정규장 자격 종목 ∪ 그 세션 실적 발표 로스터(`earnings.json` must_cover — 파일이 없으면 movers.py가 `earnings.py`를 직접 한 번 돌려 확보하므로 **스크립트 실행 순서와 무관**하다).
+      - **표기**: 제목 줄에 `{cut_et_hm} ET · {cut_kst_hm} KST 기준` 병기(생략 금지), 각 행은 헤더 `한글명 (TICKER)` + `시간외 {pct}`(클래스 **ah-p** — mv-p 금지), 본문은 **재료 한 줄**. **거래대금·고저폭은 쓰지 않는다**(거래대금은 나스닥 단일 소스라 필터·감사용 / 고저폭엔 허수 체결이 섞인다 — 10/15 실측 넷플릭스 고저폭 12.8%).
+      - **사유를 2소스로 확인 못 하면 그 종목은 싣지 않는다** — 정규장의 "이유 미확인" 예외가 **없다**(시간외는 단발 호가가 흔하다). 묶음행 금지, SKHY 금지(⑧이 전용 행으로 다룬다).
+      - 정규장 특징주에 이미 실린 종목도 시간외 자격을 갖추면 **다시 싣는다**(다른 시간대) — 사유는 시간외 재료로만, 정규장 사유 재사용 금지.
+      - 스크립트 쪽 방어(참고): 마지막 2개 5분봉 전부 기준선 통과 + 나스닥 시간외 거래대금 $5M+ + 야후↔나스닥 체결가 0.5% 이내(표시값=나스닥 체결가). 실측 근거 — 22세션에서 '마지막 1봉'만 보면 허수 3건(UNH +6.6%·ABT +6.0%·AAPL −2.4%, 전부 다음 시가 복귀)이 통과했고 2봉이면 0건.
+      - verify #14가 **섹션 유무·행 누락·임의 추가·등락률·기준시각 표기·형식(ah-p)**을 기계 대조한다.
     - 완결성 자가검증: qualified 목록과 페이지 대조, 큰 이동 누락 없는지 확인
     - 스크립트 실패 시(fallback): stockanalysis.com/markets/gainers·losers WebFetch로 대체
   - 발표된 지표: **out/events.json의 `released`에서 그 미국장 세션 날짜에 발표된 지표를 빠짐없이** (지표명·actual·forecast 값 그대로, 다른 날 금지). **포함 대상 = 등록부(events.py CANON)의 High+Medium 전부**(일정 표와 달리 여기선 Medium도 싣는다) — High: CPI·PCE·PPI·비농업고용·실업률·시간당임금·FOMC·연준의장발언·ISM제조업·ISM서비스업·소매판매·GDP·**신규실업수당**·**미시간 기대인플레(1년·5년)**·**NY연은 기대인플레** / Medium: ADP·CB소비자신뢰·미시간심리·JOLTS·내구재·연준위원발언·주택착공/건축허가·기존주택판매·신규주택판매·산업생산. **Low(공장주문·도매재고·무역수지·모기지·원유재고·GDPNow·U-6·지역연은지수 등)는 제외.** released의 해당 세션 날짜 항목은 전부 표에(매 실행 일관성). 당일 발표가 없으면 표 대신 "· 당일 발표된 주요 지표 없음" 한 줄. **표 형식**(지표/결과/예상 3열). **★ 기준(전년비/전월비) 병기 — released 각 항목의 `basis`를 지표명에 함께 적는다**: `소비자물가지수 (6월, 전년비)` · `소비자물가지수 (6월, 전월비)`. **전년비·전월비가 둘 다 오면 둘 다 개별 행으로(전년비 먼저, 헤드라인 다음 근원).** `basis`가 빈 항목(실업률·ISM·신규 실업수당 등 변형 없는 지표)은 **기준 없이 지표명만**(고유 형태 그대로 — 수준·건수·지수). **값·기준을 모델이 추측·환산하지 말 것 — released 값 그대로.** 결과 색: **예상 대비 시장에 긍정적 서프라이즈면 up(초록), 부정적이면 down(빨강), 부합·중립이면 무색** (예: 물가 예상 상회=빨강, 실업수당청구 예상 하회=초록) — **판단 기준은 지표 본래 의미(평상시 해석)**: 소매판매·고용·ISM 예상 상회=초록. 그날 시장이 반대로 받아들였어도 **색은 바꾸지 않고**, 그 사정은 해설(cmt)에서 풀어 설명한다.
@@ -387,6 +394,7 @@ a{color:inherit;text-decoration:none;}
 .mv-h{display:flex;align-items:baseline;gap:8px;}
 .mv-n{font-size:14px;font-weight:600;}
 .mv-p{font-size:13px;font-weight:600;}
+.ah-p{font-size:12.5px;font-weight:600;}
 .mv-r{font-size:12px;color:var(--sub);line-height:1.5;}
 .sched{font-size:12.5px;color:var(--sub);line-height:1.75;}
 .tbl{width:100%;border-collapse:collapse;font-size:12.5px;}
@@ -529,6 +537,20 @@ a{color:inherit;text-decoration:none;}
     <div class="mv"><div class="mv-h"><span class="mv-n">종목명 (TICKER)</span><span class="mv-p down">−0.00%</span></div><div class="mv-r">촉매(이유)</div></div>
     <!-- 급락 최대 10개 반복 (movers.json selected_down 순서) -->
     <!-- 하이닉스 ADR이 하락한 날은 위 급등 파트가 아니라 여기 맨 아래에 같은 형식으로 -->
+
+    <div class="divide"></div>
+    <div class="lbl">시간외 특징주 <span class="sec-note">00:00 ET · 00:00 KST 기준 · 정규장 종가 대비</span></div>
+    <!-- ★ out/movers.json 의 afterhours — status가 "ok"이고 rows가 있을 때만 이 섹션(제목 포함)을 쓴다.
+         rows가 비었거나 status가 ok가 아니면(주말·휴일 다음 브리핑, 창 경과, 불완전 스캔) **섹션 통째로 생략**.
+         verify #14가 누락·임의 추가 양쪽을 차단한다.
+         · 제목 줄 기준시각 = afterhours 의 cut_et_hm / cut_kst_hm 그대로 — 생략 금지(수치가 몇 시 기준인지가 검증 근거).
+         · 등락률 = rows[].pct 그대로. 클래스는 반드시 **ah-p** — mv-p를 쓰면 정규장 대조(#2)에 걸려 오탐으로 게시가 막힌다.
+         · 거래대금·고저폭은 지면에 쓰지 않는다(거래대금은 나스닥 단일 소스라 필터·감사용, 고저폭은 허수 체결이 섞인다).
+         · 사유는 2소스 확인된 재료만 — **못 찾으면 그 종목은 싣지 않는다**(정규장의 '이유 미확인' 예외 없음. 시간외는 허수가 많다).
+         · 묶음행(그 외 ○○ 동반) 금지 · SKHY 금지(하이닉스 ADR은 전용 상시 행이 급등/급락 파트에 따로 있다).
+         · 정규장 특징주에 이미 실린 종목도 시간외 자격을 갖추면 여기 다시 싣는다(다른 시간대·다른 재료) — 사유는 시간외 재료로만. -->
+    <div class="mv"><div class="mv-h"><span class="mv-n">종목명 (TICKER)</span><span class="ah-p up">시간외 +0.00%</span></div><div class="mv-r">움직임을 만든 재료 (2소스 확인·40자 이내)</div></div>
+    <!-- rows 수만큼 반복 — 순서는 afterhours.rows 그대로(|등락률| 큰 순) -->
 
     <div class="divide"></div>
     <div class="lbl">발표된 지표</div>
@@ -910,10 +932,160 @@ except Exception as e:
     skhy = None
     errors.append(f"skhy block: {str(e)[:60]}")
 
+# 시간외 특징주 — 정규장 종료 후 '브리핑 제작 직전까지'의 움직임(2026-10-19 결정).
+#   자격 기준은 정규장과 동일(M7 ±2% / 메가캡 ±3% / 그 외 ±4%)이지만, 시간외엔 1주 단위 허수 체결이 흔해
+#   그대로 쓰면 날조에 가까운 수치가 실린다. 실측(2026-09-16~10-15 22세션·메가캡 62종목):
+#     · 마지막 1봉만 보면 3건 통과 — UNH +6.61%·ABT +5.96%·AAPL −2.39% (셋 다 다음 세션 시가에서 ±0.5% 복귀 = 허수)
+#     · AMAT −29.0%·TSM −30.6% 같은 단발 프린트도 창 안에 찍혔다
+#     · '마지막 2봉 전부 통과'로 바꾸면 위 전부 탈락(허수 0건). 3봉은 겨울 30분 창에서 갓 나온 실적 반응을 놓친다.
+#   그래서 방어 3중: ① 마지막 2개 5분봉 전부 기준선 통과(+방향 동일) ② 나스닥 시간외 거래대금 하한
+#   ③ 야후 봉 ↔ 나스닥 체결가 일치(표시값은 나스닥 체결가 = 2소스 합의).
+#   고저폭(고가·저가)은 판단·표시 모두 금지 — 조용한 날에도 넷플릭스 고저폭이 종가의 12.8%로 찍혔다(10/15 실측).
+#   거래대금은 나스닥 단일 소스라 지면에는 쓰지 않고 필터·감사용으로만 기록한다(2026-10-19 사용자 결정).
+#   창은 ET로 계산해 서머타임을 자동 반영(여름 06:30 KST=17:30 ET·겨울=16:30 ET).
+AH_ENABLE = True        # 문제 발생 시 이 한 줄로 즉시 중단(섹션만 사라지고 나머지는 정상)
+AH_BARS = 2             # 지속성: 마지막 N개 5분봉이 전부 기준선 통과
+AH_MIN_VALUE_M = 5.0    # 시간외 거래대금 하한($M) — 얇은 외국 ADR 단발 체결 차단(실측 공백대 $1.7M~$6.4M)
+AH_SRC_TOL = 0.5        # 야후↔나스닥 가격 허용 오차(%)
+AH_STALE_MIN = 15       # 마지막 봉이 기준시각보다 이만큼 이상 오래됐으면 제외(체결 끊긴 종목)
+AH_BUDGET_S = 90        # 조회 전체 시간예산(초) — 초과분은 조회하지 않고 실패로 집계
+AH_MAX_FAIL = 0.2       # 실패율이 이보다 크면 불완전 스캔으로 보고 섹션 생략
+
+def ah_roster():
+    """그 세션 실적 발표 종목(earnings.json must_cover). 파일이 없으면 earnings.py를 직접 한 번 돌린다 —
+    루틴의 스크립트 실행 순서에 의존하지 않기 위해(실적 발표 종목이야말로 시간외가 크게 움직이는 쪽이다).
+    이미 있으면 그대로 읽고, 실패하면 빈 집합(섹션은 CORE_SCAN·자격 종목만으로 돌아간다)."""
+    for attempt in (1, 2):
+        try:
+            if attempt == 1 and time.time() - os.path.getmtime("out/earnings.json") > 12 * 3600:
+                raise ValueError("earnings.json 12시간 초과 — 어제 로스터일 수 있어 다시 수집")
+            return {e["symbol"] for e in json.load(open("out/earnings.json")).get("must_cover", []) if e.get("symbol")}
+        except Exception:
+            if attempt == 2:
+                return set()
+            try:
+                import sys
+                subprocess.run([sys.executable, "earnings.py"], capture_output=True, timeout=180, check=False)
+            except Exception:
+                return set()
+
+def ah_universe():
+    """감시 대상 = CORE_SCAN ∪ 그날 정규장 자격 종목 ∪ 그 세션 실적 발표 로스터.
+    SKHY는 전용 상시 블록이 20시→종가 괴리로 따로 다루므로 제외(중복·verify #13 충돌 방지)."""
+    u = set(CORE_SCAN) | {r["symbol"] for r in qual} | ah_roster()
+    return sorted(s for s in u if s and s != KR_ADR)
+
+def afterhours_block(now_et=None):
+    from zoneinfo import ZoneInfo
+    from concurrent.futures import ThreadPoolExecutor
+    ET, KST = ZoneInfo("America/New_York"), ZoneInfo("Asia/Seoul")
+    now_et = now_et or datetime.datetime.now(ET)
+    syms = ah_universe()
+    t0 = time.time()
+
+    def fetch(sym):
+        r = get(f"https://query1.finance.yahoo.com/v8/finance/chart/{sym}"
+                f"?range=5d&interval=5m&includePrePost=true")["chart"]["result"][0]
+        m = r["meta"]
+        close, rmt = m.get("regularMarketPrice"), m.get("regularMarketTime")
+        if not (close and rmt):
+            raise ValueError("종가 메타 없음")
+        return {"symbol": sym, "name": m.get("shortName") or sym, "close": close,
+                "session": datetime.datetime.fromtimestamp(rmt, ET).date(),
+                "bars": [(datetime.datetime.fromtimestamp(t, ET), c)
+                         for t, c in zip(r["timestamp"], r["indicators"]["quote"][0]["close"]) if c is not None]}
+
+    def one(sym):
+        if time.time() - t0 > AH_BUDGET_S:
+            return sym, None, "시간예산 초과"
+        try:
+            return sym, fetch(sym), None
+        except Exception as e:
+            return sym, None, str(e)[:40]
+
+    data, failed = [], []
+    with ThreadPoolExecutor(6) as ex:
+        for sym, d, err in ex.map(one, syms):
+            data.append(d) if d else failed.append(f"{sym}: {err}")
+    if not data:
+        return {"status": "error", "reason": "시간외 시세 전건 조회 실패 — 섹션 생략", "errors": failed[:10]}
+
+    sess = max(d["session"] for d in data)
+    open_et = datetime.datetime.combine(sess, datetime.time(16, 0), ET)
+    end_et = datetime.datetime.combine(sess, datetime.time(20, 0), ET)
+    next_pre = datetime.datetime.combine(sess + datetime.timedelta(days=1), datetime.time(4, 0), ET)
+    if now_et >= next_pre:
+        # 주말·휴일 다음 브리핑이나 낮 수동 재실행 — 이미 끝난 시간외를 '제작 직전까지'로 보여주지 않는다
+        return {"status": "skipped", "session_et": sess.isoformat(),
+                "reason": f"{sess} 세션 시간외 창 경과(다음 프리마켓 개시 이후 실행) — 섹션 생략"}
+    cut = min(now_et, end_et)
+    if len(failed) / max(1, len(syms)) > AH_MAX_FAIL:
+        return {"status": "partial", "session_et": sess.isoformat(),
+                "reason": f"조회 실패 {len(failed)}/{len(syms)} — 불완전 스캔이라 섹션 생략(누락 위험)",
+                "errors": failed[:10]}
+
+    cand = []
+    for d in data:
+        if d["session"] != sess:
+            continue                        # 거래정지·상장폐지 등 세션이 다른 종목
+        win = [(t, c) for t, c in d["bars"] if open_et <= t <= cut]
+        if len(win) < AH_BARS or cut - win[-1][0] > datetime.timedelta(minutes=AH_STALE_MIN):
+            continue                        # 봉이 부족하거나 최근 체결이 끊긴 종목
+        row = out.get(d["symbol"]) or {"symbol": d["symbol"], "mktcap_b": LIVE_MEGA.get(d["symbol"])}
+        th = THRESH[tier(row)]
+        tail = [(c / d["close"] - 1) * 100 for _, c in win[-AH_BARS:]]
+        if not all(abs(p) >= th for p in tail) or len({p > 0 for p in tail}) > 1:
+            continue                        # 지속성 미달 또는 방향이 섞인 봉(허수)
+        cand.append({**d, "tier": tier(row), "th": th, "y_last": win[-1][1], "y_t": win[-1][0]})
+
+    rows_ah, dropped = [], []
+    for c in cand:
+        def drop(why):
+            dropped.append({"symbol": c["symbol"], "yahoo_pct": round((c["y_last"] / c["close"] - 1) * 100, 2),
+                            "reason": why})
+        try:
+            t = get(f"https://api.nasdaq.com/api/quote/{c['symbol']}/extended-trading"
+                    f"?assetclass=stocks&markettype=post&time=0")["data"]["infoTable"]["rows"][0]
+            n_last = float(str(t["consolidated"]).split()[0].replace("$", "").replace(",", ""))
+            n_vol = float(str(t["volume"]).replace(",", ""))
+        except Exception as e:
+            drop(f"나스닥 시간외 조회 실패({str(e)[:30]}) — 2소스 확인 불가")
+            continue
+        value_m, diff = n_vol * n_last / 1e6, abs(n_last / c["y_last"] - 1) * 100
+        pct = (n_last / c["close"] - 1) * 100
+        if value_m < AH_MIN_VALUE_M:
+            drop(f"거래대금 ${value_m:.1f}M < ${AH_MIN_VALUE_M:.0f}M")
+        elif diff > AH_SRC_TOL:
+            drop(f"2소스 불일치 {diff:.2f}% (야후 {c['y_last']:.2f} vs 나스닥 {n_last:.2f})")
+        elif abs(pct) < c["th"]:
+            drop(f"나스닥 체결가 기준 {pct:+.2f}% < 기준 {c['th']:.0f}%")
+        else:
+            rows_ah.append({"symbol": c["symbol"], "name": c["name"], "tier": c["tier"],
+                            "close": round(c["close"], 2), "price": round(n_last, 2), "pct": round(pct, 2),
+                            "yahoo_pct": round((c["y_last"] / c["close"] - 1) * 100, 2),
+                            "value_m": round(value_m, 1), "src_diff": round(diff, 2),
+                            "last_bar_et": c["y_t"].strftime("%H:%M")})
+    rows_ah.sort(key=lambda r: -abs(r["pct"]))
+    cut_kst = cut.astimezone(KST)
+    return {"status": "ok", "session_et": sess.isoformat(), "window_et": f"16:00~{cut:%H:%M}",
+            "cut_et_hm": f"{cut:%H:%M}", "cut_kst_hm": f"{cut_kst:%H:%M}",
+            "cut_kst": cut_kst.strftime("%Y-%m-%d %H:%M"), "scanned": len(data), "failed": len(failed),
+            "rows": rows_ah, "dropped": dropped[:10], "errors": failed[:5],
+            "rule": f"정규장과 동일 자격(M7 ±2%/메가캡 ±3%/그외 ±4%) · 마지막 {AH_BARS}개 5분봉 전부 통과 · "
+                    f"거래대금 ${AH_MIN_VALUE_M:.0f}M+ · 야후↔나스닥 {AH_SRC_TOL}% 이내 · 표시값=나스닥 체결가 "
+                    f"· 거래대금·고저폭은 지면 비표시"}
+
+try:
+    ah = afterhours_block() if AH_ENABLE else {"status": "off", "reason": "AH_ENABLE=False"}
+except Exception as e:
+    ah = {"status": "error", "reason": f"afterhours block: {str(e)[:60]}"}
+if ah.get("status") in ("error", "partial"):
+    errors.append(f"afterhours: {ah.get('reason')}")   # 비차단 — 아침 브리핑은 그대로 발행된다
+
 os.makedirs("out", exist_ok=True)
 json.dump({"generated_kst": time.strftime("%Y-%m-%d %H:%M"), "errors": errors, "skhy": skhy,
            "rule": "자격: M7 ±2% / 메가캡 ±3% / 그외 ±4% · 우선순위: 티어→|등락률| · 최종 표시는 |등락률|순",
-           "qualified_up": q_up, "qualified_down": q_down, "all": rows},
+           "qualified_up": q_up, "qualified_down": q_down, "afterhours": ah, "all": rows},
           open("out/movers.json", "w"), ensure_ascii=False, indent=1)
 
 TN = {0: "M7", 1: "메가캡", 2: "일반"}
@@ -930,6 +1102,18 @@ if skhy:
     print(f"=== SK하이닉스 ADR 상시 블록 (세션 {skhy['session_et']}) — {'급등' if skhy['side']=='up' else '급락'} 파트 ===")
     print(f"  20시({skhy['p20_kst'] or '-'} KST) ${skhy['p20']} {f(skhy['pct_20'])} → 미장 종가 ${skhy['close']} {f(skhy['pct_close'])}"
           f" · 한국장 마감 후 {f(skhy['gap'])}  {'' if skhy['kr_trading'] is not False else '(한국 휴장)'}")
+print(f"=== 시간외 특징주 [{ah.get('status')}] ===")
+if ah.get("status") == "ok":
+    print(f"  세션 {ah['session_et']} · 창 {ah['window_et']} ET ({ah['cut_kst_hm']} KST) · 감시 {ah['scanned']}종목(실패 {ah['failed']})")
+    for r in ah["rows"]:
+        print(f"  {r['symbol']:6} {r['pct']:+7.2f}%  [{TN[r['tier']]:3}] ${r['price']} (종가 ${r['close']})"
+              f"  거래대금 ${r['value_m']}M · 2소스차 {r['src_diff']}%  {r['name'][:22]}")
+    if not ah["rows"]:
+        print("  자격 통과 0건 — 섹션 생략(정상)")
+    for d in ah.get("dropped", []):
+        print(f"  (제외) {d['symbol']:6} 야후 {d['yahoo_pct']:+.2f}% — {d['reason']}")
+else:
+    print(f"  {ah.get('reason')}")
 ````
 
 ### 8.events.py
@@ -1392,6 +1576,23 @@ issues = []
 def num(s):
     return float(str(s).replace(",", "").replace("−", "-").replace("+", "").replace("%", "").strip())
 
+# 시간외 특징주 섹션 분리(2026-10-19) — 이 섹션 수치는 '시간외' 기준이라 정규장 대조에서 떼어낸다.
+#   · #2에 그대로 걸리면 정규장 등락률과 달라 오탐으로 게시가 막힌다(실적일엔 낮·밤 둘 다 움직인다).
+#   · #11은 "(티커)가 페이지 어디든 있으면 통과"라서, 시간외 행이 실적 섹션 누락을 가려준다.
+#   섹션이 없는 날엔 ah_sec="" → html_main은 html과 동일해 기존 동작이 그대로 유지된다.
+AH_LBL = "시간외 특징주"
+
+def seg(start, *ends):
+    """start 다음부터 ends 중 '가장 먼저' 나오는 경계 앞까지. 경계가 하나도 없으면 끝까지."""
+    if start not in html:
+        return ""
+    s = html.split(start, 1)[1]
+    cuts = [s.index(e) for e in ends if e in s]
+    return s[:min(cuts)] if cuts else s
+
+ah_sec = seg(AH_LBL, "발표된 지표")
+html_main = html.replace(ah_sec, "") if ah_sec else html
+
 # 1) 지수 카드: 이름/종가/등락률 대조
 for m in re.finditer(r'idx-name">(.*?)</div>\s*<div class="idx-val">(.*?)</div>\s*<div class="idx-chg[^"]*">(.*?)</div>', html):
     name, val, chg = _html.unescape(m.group(1).strip()), m.group(2), m.group(3)
@@ -1414,7 +1615,7 @@ for m in re.finditer(r'idx-name">(.*?)</div>\s*<div class="idx-val">(.*?)</div>\
 
 # 2) 특징주: (티커) + 등락률 → movers.json 대조
 allmv = {r["symbol"]: r["pct"] for r in mv.get("all", [])}
-for m in re.finditer(r'mv-n">[^<(]*\(([A-Z]{1,6})\)</span><span class="mv-p[^"]*">([-+−][\d.]+)%', html):
+for m in re.finditer(r'mv-n">[^<(]*\(([A-Z]{1,6})\)</span><span class="mv-p[^"]*">([-+−][\d.]+)%', html_main):
     tk, pct = m.group(1), num(m.group(2))
     if tk in allmv and abs(pct - allmv[tk]) > 0.15:
         issues.append(f"[특징주] {tk} 등락률 HTML {pct:+.2f}% ≠ 원본 {allmv[tk]:+.2f}%")
@@ -1538,7 +1739,7 @@ except Exception:
 if ea:
     for e in ea.get("must_cover", []):
         sym = e.get("symbol", "")
-        if sym and f"({sym})" not in html:
+        if sym and f"({sym})" not in html_main:
             issues.append(f"[실적] '{e.get('name_ko', sym)} ({sym})' 누락 — {ea.get('session_et')} 세션 발표 "
                           f"{e.get('tier')} 종목은 실적 발표 섹션에 반드시 포함(earnings.json must_cover)")
 
@@ -1557,10 +1758,8 @@ if ea:
 #     있어야 하고, 헤더 등락률·20시·괴리 수치가 원본과 일치해야 한다(2026-09-18 결정 — 한국 하이닉스와 직결).
 sk = mv.get("skhy")
 if sk:
-    def part(a, b):
-        return html.split(a, 1)[1].split(b, 1)[0] if a in html else ""
-    up_sec = part("특징주 · 급등", "특징주 · 급락")
-    dn_sec = part("특징주 · 급락", "발표된 지표")
+    up_sec = seg("특징주 · 급등", "특징주 · 급락")
+    dn_sec = seg("특징주 · 급락", AH_LBL, "발표된 지표")
     want, other = (up_sec, dn_sec) if sk["side"] == "up" else (dn_sec, up_sec)
     side_ko = "급등" if sk["side"] == "up" else "급락"
     if "(SKHY)" not in want:
@@ -1581,6 +1780,45 @@ if sk:
             for label, val in (("20시", sk.get("pct_20")), ("한국장 마감 후", sk.get("gap"))):
                 if val is not None and not any(abs(g - val) <= 0.1 for g in got):
                     issues.append(f"[하이닉스] SKHY {label} 수치({val:+.2f}%)가 본문에 없음 — movers.json skhy 값 그대로")
+
+# 14) 시간외 특징주 섹션: movers.json afterhours 와 1:1 대조 (2026-10-19 신설)
+#     rows가 있으면 전부 게재(누락 차단) / rows가 없으면 섹션 자체 금지(날조·재탕 차단).
+#     표시 수치는 movers.json 값 그대로여야 하고, 기준시각(ET·KST)을 반드시 적는다.
+ah = mv.get("afterhours") or {}
+ah_rows = ah.get("rows") or []
+if ah_rows and not ah_sec:
+    lst = ", ".join("%s %+.2f%%" % (r["symbol"], r["pct"]) for r in ah_rows)
+    issues.append(f"[시간외] 시간외 특징주 섹션 누락 — afterhours.rows {len(ah_rows)}건({lst})은 "
+                  "특징주 급락 아래 섹션에 전부 게재")
+if ah_sec and not ah_rows:
+    issues.append(f"[시간외] 자격 통과 0건(status={ah.get('status')})인데 섹션이 있음 — "
+                  "섹션(제목 포함) 통째로 삭제(어제 자료 재탕·임의 추가 금지)")
+if ah_sec:
+    if 'class="mv-p' in ah_sec:
+        issues.append('[시간외] 섹션에 class="mv-p" 사용 — 시간외 등락률은 class="ah-p"로 표기'
+                      "(mv-p는 정규장 대조 #2에 걸려 오탐을 만든다)")
+    if "(SKHY)" in ah_sec:
+        issues.append("[시간외] SKHY 행은 시간외 섹션에 넣지 않는다 — 하이닉스 ADR은 전용 상시 행(급등/급락 파트 맨 아래)")
+    for lb, v in (("ET", ah.get("cut_et_hm")), ("KST", ah.get("cut_kst_hm"))):
+        if v and v not in ah_sec:
+            issues.append(f"[시간외] 기준시각 {lb} {v} 표기 없음 — 제목 줄에 "
+                          f"'{ah.get('cut_et_hm')} ET · {ah.get('cut_kst_hm')} KST 기준' 병기(검증 가능성)")
+    want = {r["symbol"]: r["pct"] for r in ah_rows}
+    got = {m.group(1): num(m.group(2)) for m in
+           re.finditer(r'mv-n">[^<(]*\(([A-Z]{1,6})\)</span><span class="ah-p[^"]*">[^<]*?([-+−][\d.]+)%', ah_sec)}
+    n_mvn = ah_sec.count('class="mv-n"')
+    if n_mvn != len(got):
+        issues.append(f"[시간외] 행 형식 인식 실패(인식 {len(got)}건 / mv-n {n_mvn}건) — "
+                      "템플릿 형식 그대로: mv-n에 '한글명 (TICKER)', 이어서 ah-p에 '시간외 +0.00%'")
+    for sym, pct in want.items():
+        if sym not in got:
+            issues.append(f"[시간외] {sym} 행 누락 — afterhours.rows({pct:+.2f}%)는 전부 게재")
+        elif abs(got[sym] - pct) > 0.15:
+            issues.append(f"[시간외] {sym} 등락률 HTML {got[sym]:+.2f}% ≠ 원본 {pct:+.2f}% (movers.json 값 그대로)")
+    for sym in got:
+        if sym not in want:
+            issues.append(f"[시간외] {sym} 행은 afterhours.rows에 없음 — 임의 추가 금지"
+                          "(기준 미달·거래대금 미달·2소스 미확인 중 하나로 걸러진 종목)")
 
 if issues:
     print(f"❌ 검증 실패 {len(issues)}건 — 수정 후 재검증:")

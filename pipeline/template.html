@@ -73,6 +73,7 @@ a{color:inherit;text-decoration:none;}
 .mv-h{display:flex;align-items:baseline;gap:8px;}
 .mv-n{font-size:14px;font-weight:600;}
 .mv-p{font-size:13px;font-weight:600;}
+.ah-p{font-size:12.5px;font-weight:600;}
 .mv-r{font-size:12px;color:var(--sub);line-height:1.5;}
 .sched{font-size:12.5px;color:var(--sub);line-height:1.75;}
 .tbl{width:100%;border-collapse:collapse;font-size:12.5px;}
@@ -215,6 +216,20 @@ a{color:inherit;text-decoration:none;}
     <div class="mv"><div class="mv-h"><span class="mv-n">종목명 (TICKER)</span><span class="mv-p down">−0.00%</span></div><div class="mv-r">촉매(이유)</div></div>
     <!-- 급락 최대 10개 반복 (movers.json selected_down 순서) -->
     <!-- 하이닉스 ADR이 하락한 날은 위 급등 파트가 아니라 여기 맨 아래에 같은 형식으로 -->
+
+    <div class="divide"></div>
+    <div class="lbl">시간외 특징주 <span class="sec-note">00:00 ET · 00:00 KST 기준 · 정규장 종가 대비</span></div>
+    <!-- ★ out/movers.json 의 afterhours — status가 "ok"이고 rows가 있을 때만 이 섹션(제목 포함)을 쓴다.
+         rows가 비었거나 status가 ok가 아니면(주말·휴일 다음 브리핑, 창 경과, 불완전 스캔) **섹션 통째로 생략**.
+         verify #14가 누락·임의 추가 양쪽을 차단한다.
+         · 제목 줄 기준시각 = afterhours 의 cut_et_hm / cut_kst_hm 그대로 — 생략 금지(수치가 몇 시 기준인지가 검증 근거).
+         · 등락률 = rows[].pct 그대로. 클래스는 반드시 **ah-p** — mv-p를 쓰면 정규장 대조(#2)에 걸려 오탐으로 게시가 막힌다.
+         · 거래대금·고저폭은 지면에 쓰지 않는다(거래대금은 나스닥 단일 소스라 필터·감사용, 고저폭은 허수 체결이 섞인다).
+         · 사유는 2소스 확인된 재료만 — **못 찾으면 그 종목은 싣지 않는다**(정규장의 '이유 미확인' 예외 없음. 시간외는 허수가 많다).
+         · 묶음행(그 외 ○○ 동반) 금지 · SKHY 금지(하이닉스 ADR은 전용 상시 행이 급등/급락 파트에 따로 있다).
+         · 정규장 특징주에 이미 실린 종목도 시간외 자격을 갖추면 여기 다시 싣는다(다른 시간대·다른 재료) — 사유는 시간외 재료로만. -->
+    <div class="mv"><div class="mv-h"><span class="mv-n">종목명 (TICKER)</span><span class="ah-p up">시간외 +0.00%</span></div><div class="mv-r">움직임을 만든 재료 (2소스 확인·40자 이내)</div></div>
+    <!-- rows 수만큼 반복 — 순서는 afterhours.rows 그대로(|등락률| 큰 순) -->
 
     <div class="divide"></div>
     <div class="lbl">발표된 지표</div>
