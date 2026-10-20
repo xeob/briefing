@@ -1,15 +1,9 @@
 {
- "generated": "2026-10-20",
+ "generated": "2026-10-21",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
  "ff_variants": {
-  "2026-09-29|hpi": {
-   "0.1": "m/m"
-  },
-  "2026-09-29|s&p/cs composite-20 hpi": {
-   "2.2": "y/y"
-  },
   "2026-09-30|core pce price index": {
    "0.3": "m/m"
   },
@@ -82,10 +76,12 @@
   },
   "2026-10-20|pending home sales": {
    "-0.4": "m/m",
-   "-0.7": "m/m"
+   "-0.7": "m/m",
+   "-0.6": "m/m"
   },
   "2026-10-22|cb leading index": {
-   "-0.2": "m/m"
+   "-0.2": "m/m",
+   "-0.1": "m/m"
   }
  },
  "events": [
