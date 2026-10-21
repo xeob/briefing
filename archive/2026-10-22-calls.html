@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>실적 컨퍼런스콜</title>
+<style>
+:root{
+  --bg:#f6f6f4; --card:#ffffff; --text:#1a1a19; --sub:#63625d; --muted:#9a9992;
+  --border:#e6e5e1; --up:#0a7d33; --down:#d21c1c; --accent:#2f6fd0;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#181817; --card:#242422; --text:#f0efec; --sub:#a7a6a0; --muted:#77766f;
+    --border:#38372f; --up:#3fb950; --down:#f5564a; --accent:#5a9bf0; }
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+  word-break:keep-all;-webkit-text-size-adjust:100%;}
+.wrap{max-width:520px;margin:0 auto;padding:20px 16px 24px;}
+a{color:inherit;text-decoration:none;}
+.head{padding-bottom:14px;border-bottom:1px solid var(--border);margin-bottom:18px;}
+.head-row{display:flex;justify-content:space-between;align-items:baseline;}
+.head-title{font-size:20px;font-weight:600;}
+.head-date{font-size:13px;color:var(--muted);}
+.head-sub{margin:6px 0 0;font-size:12px;color:var(--muted);}
+.card{background:var(--card);border:0.5px solid var(--border);border-radius:12px;padding:13px 15px;margin-bottom:12px;}
+.sec{display:flex;align-items:center;gap:7px;margin-bottom:11px;}
+.sec-title{font-size:13px;font-weight:600;color:var(--sub);}
+.sec-note{font-size:11px;color:var(--muted);}
+.tag{display:inline-block;font-size:11px;padding:1px 8px;border-radius:20px;}
+.s-earn{color:#c1660f;background:rgba(193,102,15,.13);}
+.s-fed{color:#7a4fd0;background:rgba(122,79,208,.14);}
+.divide{height:1px;background:var(--border);margin:12px 0;}
+.lbl{font-size:11px;color:var(--muted);margin-bottom:5px;}
+.mv{margin-bottom:13px;}
+.mv-h{display:flex;align-items:baseline;gap:8px;}
+.mv-n{font-size:14px;font-weight:600;}
+.mv-p{font-size:13px;font-weight:600;}
+.mv-r{font-size:12px;color:var(--sub);line-height:1.55;margin-top:3px;}
+.up{color:var(--up);} .down{color:var(--down);}
+.note{font-size:12px;color:var(--sub);line-height:1.7;}
+.foot{margin-top:16px;text-align:center;font-size:11px;color:var(--muted);}
+@media (max-width:390px){ .head-title{font-size:18px;} .mv-n{font-size:13px;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ===== 헤더 ===== -->
+  <div class="head">
+    <div class="head-row">
+      <div class="head-title">실적 컨퍼런스콜</div>
+      <div class="head-date">2026.10.22 (목)</div>
+    </div>
+    <p class="head-sub">간밤 실적 발표 · 컨퍼런스콜 주요 내용</p>
+  </div>
+
+  <!-- ===== 종목별 컨콜 (10/21 미국 세션 발표) ===== -->
+  <div class="card">
+    <div class="sec"><span class="sec-title">주요 발언 · 특이사항</span><span class="sec-note">10/21 미국 세션 발표</span></div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">메타 (META)</span><span class="mv-p up">시간외 +약3%</span></div>
+      <div class="mv-r">매출 $64.6B(+26%)·희석EPS $3.83(예상 $3.57)<br>광고 $63.1B(+26%)·순이익 $9.86B(+264%)<br>주정부 합의 법률충당 $9.9B(제외 시 EPS $7.40)<br>Q3 capex $34.91B·연간 $135~145B로 상향(AI)<br>4분기 매출 $73~76B·FCF −$2.1B·무의결 C주 신설</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">테슬라 (TSLA)</span><span class="mv-p down">시간외 −약2%</span></div>
+      <div class="mv-r">매출 $28.05B(전년과 비슷)·조정EPS $0.48(예상 $0.45)<br>GAAP 순이익 $787M(−43%)·총마진 19.6%(전년 18.0%)<br>자동차 매출 ~$20.6B(−3%)·에너지 $2.88B(−16%)<br>컨콜: 2026 capex ~$20B로 하향(기존 $25B+)<br>로보택시 연내 달라스 확대·24시간 목표·2027 매출 기여<br>FCF $1.5B·머스크 "옵티머스 고객 인도 1년 뒤"</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">텍사스인스트루먼트 (TXN)</span><span class="mv-p up">매출 +28%</span></div>
+      <div class="mv-r">매출 $6.06B(+28%)·EPS $2.62(예상 $2.40)<br>아날로그 +32%·임베디드 +21%·영업이익 $2.87B(+73%)<br>4분기 가이던스 매출 $5.80~6.30B·EPS $2.45~2.79<br>컨콜: 산업·데이터센터 수요로 계절적 둔화 상쇄</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">램리서치 (LRCX)</span><span class="mv-p down">시간외 하락</span></div>
+      <div class="mv-r">매출 $8.22B(사상 최대)·조정EPS $2.20(예상 $2.18)<br>영업마진 40.2%(첫 40%대·사상 최대)·GAAP EPS $2.19<br>12월 분기 가이던스 매출 $8.60B±0.4·EPS $2.33±0.15<br>AI 장비 수요 호조에도 공급망·지역 믹스에 시간외 약세</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">필립모리스 (PM)</span><span class="mv-p down">가이던스 하회</span></div>
+      <div class="mv-r">매출 $11.4B(+5.5%)·조정EPS $2.36(예상 $2.30)<br>유기성장 +7.1%·영업이익 사상최대 $4.9B(+14.1%)<br>美 ZYN 출하 +4.2% 32억 파우치·IQOS HTU +7.1%<br>연간 조정EPS $8.29~8.44로 하향 → 시간외 약세</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">SAP (SAP)</span><span class="mv-p up">클라우드 가속</span></div>
+      <div class="mv-r">매출 €10.27B(+12%*)·조정EPS €1.89(+19%)<br>클라우드 매출 €6.67B(+25%*)·수주잔고 €24.1B(+26%*)<br>연간 클라우드 €25.8~26.2B 상단 목표 (*고정환율)</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">써모피셔 (TMO)</span><span class="mv-p up">가이던스 상향</span></div>
+      <div class="mv-r">매출 $12.14B(+9%)·조정EPS $6.68(예상 $6.40)<br>유기성장 +6%·조정 영업마진 24.5%(+120bp)<br>연간 상향: 매출 $47.7~48.2B·조정EPS $25.13~25.43</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">IBM (IBM)</span><span class="mv-p up">컨센 상회</span></div>
+      <div class="mv-r">매출 $17.1B(+5%)·조정EPS $2.95(예상 $2.86)<br>소프트웨어 $7.80B(+8%)·인프라 $3.70B(+4%)·컨설팅 보합<br>연간 매출성장 4~5%(고정환율) 유지·FCF 전망 상향</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">애보트 (ABT)</span><span class="mv-p down">가이던스 하향</span></div>
+      <div class="mv-r">매출 $13.01B(+14.5%)·조정EPS $1.42(예상 $1.42)<br>진단 +46.7%(이그잭트사이언스 인수 효과)·GAAP EPS $0.53<br>연간 유기성장 전망 ~6%로 하향·영양사업 분사 발표</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">넥스트에라에너지 (NEE)</span><span class="mv-p up">EPS 상회·매출 하회</span></div>
+      <div class="mv-r">조정EPS $1.24(예상 $1.18)·매출 $8.09B(예상 하회)<br>조정EPS 전년比 +9.7%·수주잔고 36.7GW(+3.7GW)<br>배터리 2.4GW 추가·가이던스 $3.92~4.02 상단 목표</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">AT&T (T)</span><span class="mv-p up">가이던스 상향</span></div>
+      <div class="mv-r">매출 $32.3B(+5.3%)·조정EPS $0.65(예상 $0.60)<br>후불폰 순증 37.9만·인터넷 순증 76.9만(분기 최대)<br>연간 조정EPS ~$2.40로 상향·FCF $18B+ 유지</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">다나허 (DHR)</span><span class="mv-p up">가이던스 상향</span></div>
+      <div class="mv-r">매출 $6.55B(+8.5%)·조정EPS $2.11(예상 $1.92)<br>코어성장 3%(호흡기 제외 +5.5%)·영업마진 29%(+110bp)<br>연간 조정EPS $8.57~8.62로 상향·바이오공정 수주 두자릿수</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">CME그룹 (CME)</span><span class="mv-p up">매출 사상 최대</span></div>
+      <div class="mv-r">매출 $1.74B(+13%)·조정EPS $3.02(예상 $2.98)<br>일평균 거래량 2,940만(+16%)·시장데이터 $243M(+20%)<br>주주환원 ~$10억(배당 $465M·자사주 $524M)</div>
+    </div>
+
+  </div>
+
+  <!-- ===== 오늘 밤 예정 ===== -->
+  <div class="card">
+    <div class="sec"><span class="sec-title">오늘 밤 실적 예정</span><span class="sec-note">한국시간 내일 새벽</span></div>
+    <div class="note">
+      · P&amp;G (PG) · 웨스턴디지털 (WDC)<br>
+      · 록히드마틴 (LMT) · 유니온퍼시픽 (UNP)
+    </div>
+  </div>
+
+  <div class="foot">경제 브리핑 · 실적 컨퍼런스콜</div>
+</div>
+</body>
+</html>
