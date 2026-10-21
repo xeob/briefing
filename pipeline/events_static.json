@@ -1,29 +1,9 @@
 {
- "generated": "2026-10-21",
+ "generated": "2026-10-22",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
  "ff_variants": {
-  "2026-09-30|core pce price index": {
-   "0.3": "m/m"
-  },
-  "2026-09-30|final gdp": {
-   "1.5": "q/q"
-  },
-  "2026-09-30|final gdp price index": {
-   "6.4": "q/q"
-  },
-  "2026-09-30|personal income": {
-   "0.5": "m/m"
-  },
-  "2026-09-30|personal spending": {
-   "1.0": "m/m",
-   "0.8": "m/m"
-  },
-  "2026-09-30|prelim wholesale inventories": {
-   "1.1": "m/m",
-   "0.5": "m/m"
-  },
   "2026-10-01|construction spending": {
    "0.1": "m/m",
    "0.0": "m/m"
@@ -144,6 +124,30 @@
    "keywords": [
     "GDP",
     "성장률"
+   ]
+  },
+  {
+   "date": "2026-10-29",
+   "time": "21:30",
+   "title": "신규 실업수당청구",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "실업수당",
+    "신규 실업"
+   ]
+  },
+  {
+   "date": "2026-11-03",
+   "time": "01:00",
+   "title": "ISM 제조업 PMI",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "ISM",
+    "제조업"
    ]
   }
  ]
