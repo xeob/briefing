@@ -1,13 +1,9 @@
 {
- "generated": "2026-10-22",
+ "generated": "2026-10-23",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
  "ff_variants": {
-  "2026-10-01|construction spending": {
-   "0.1": "m/m",
-   "0.0": "m/m"
-  },
   "2026-10-02|average hourly earnings": {
    "0.3": "m/m"
   },
@@ -65,18 +61,6 @@
   }
  },
  "events": [
-  {
-   "date": "2026-10-22",
-   "time": "21:30",
-   "title": "신규 실업수당청구",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "실업수당",
-    "신규 실업"
-   ]
-  },
   {
    "date": "2026-10-23",
    "time": "23:00",
@@ -136,6 +120,17 @@
    "keywords": [
     "실업수당",
     "신규 실업"
+   ]
+  },
+  {
+   "date": "2026-10-31",
+   "time": "01:00",
+   "title": "연준 데일리 발언",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "데일리"
    ]
   },
   {
