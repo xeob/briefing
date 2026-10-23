@@ -204,7 +204,9 @@ def _num(v):
 #   특히 $100~200B 구간은 상시 감시(메가캡 $200B+)에도 없어 완전 사각지대였고, 그날 록히드마틴 +6.96%가
 #   자격·A급 재료(실적 상회)에도 특징주에서 빠졌다.
 #   나스닥 스크리너는 시총 구간 전체를 1회 호출로 주므로($10B~$200B 약 886종목) 컷오프 개념이 사라진다.
-#   등락률 정확도: 야후 일봉과 LMT·CSX·ADBE·KLAC·LDOS·INTU 6종목 모두 0.00%p 일치(2026-10-23 확인).
+#   등락률 정확도: 2026-10-23 표본 6종목(LMT·CSX·ADBE·KLAC·LDOS·INTU)은 야후 일봉과 0.00%p 일치했으나,
+#   2026-10-24 실행에서는 스크리너가 준 851종목 중 747종목이 '직전 세션' 값이었다 — 날에 따라 지연된다.
+#   그래서 수집 후 야후 일봉으로 전 종목 등락률을 다시 계산한다(아래 '등락률 2소스 검증').
 def nasdaq_screen(group, min_cap_b=10.0):
     """나스닥 스크리너 시총 구간 전수 → [{symbol,name,pct,mktcap_b}]. 보통주 아닌 상품은 제외."""
     d = get(f"https://api.nasdaq.com/api/screener/stocks?tableonly=true&limit=3000&marketcap={group}")
@@ -284,6 +286,66 @@ for s in sorted(CORE_SCAN):
         time.sleep(0.15)
     except Exception as e:
         errors.append(f"chart {s}: {e}")
+
+# ── 등락률 2소스 검증(2026-10-24 신설) — 나스닥 스크리너 pctchange가 '직전 세션' 값으로 지연되는 사고를 막는다.
+#    실측(2026-10-24 06:40 KST 실행, 세션 10/23): 스크리너가 준 851종목 중 **747종목의 등락률이 10/22 값**이었다.
+#    ALLE +11.02%·ROP +9.73%·SPOT +11.10%로 들어왔지만 10/23 실제는 +1.39%·+0.44%·+0.10%였고, 그대로 쓰면
+#    브리핑의 특징주·묶음·섹터 집계가 통째로 전날 자료가 된다(verify.py는 movers.json과 HTML만 대조하므로 못 잡는다).
+#    같은 실행에서 야후 쪽(day_gainers/losers·core)은 정상이었다 — 즉 단일 소스를 믿을 수 없다는 뜻이다.
+#    그래서 수집이 끝난 뒤 **야후 일봉(공식 종가) 단일 기준으로 전 종목 등락률을 다시 계산**한다. 지수·지표가
+#    2소스 교차검증(market.py)을 받는 것과 같은 이유다 — 신뢰가 생명이고, 오차는 0이어야 한다.
+#    야후에 그 세션 일봉이 없는 종목은 '시세 미확인'이므로 후보에서 버린다(추측값으로 지면에 올리지 않는다).
+import concurrent.futures
+from zoneinfo import ZoneInfo
+
+def session_date_et():
+    """직전 '완료된' 미국 정규장 세션 날짜(ET) — S&P 일봉 기준. 장중 실행이면 미완성 봉은 제외한다."""
+    now_et = datetime.datetime.now(ZoneInfo("America/New_York"))
+    r = get("https://query1.finance.yahoo.com/v8/finance/chart/%5EGSPC?range=10d&interval=1d")["chart"]["result"][0]
+    days = []
+    for t, c in zip(r["timestamp"], r["indicators"]["quote"][0]["close"]):
+        if c is None:
+            continue
+        d = datetime.datetime.fromtimestamp(t, ZoneInfo("America/New_York")).date()
+        if d == now_et.date() and now_et.hour < 16:
+            continue
+        days.append(d)
+    if not days:
+        raise ValueError("완료된 세션 없음")
+    return sorted(days)[-1]
+
+def yahoo_day_pct(sym):
+    """야후 일봉 마지막 2개 종가로 그 세션 등락률. 세션 봉이 없으면 None(시세 미확인)."""
+    try:
+        r = get(f"https://query1.finance.yahoo.com/v8/finance/chart/{sym}?range=10d&interval=1d")["chart"]["result"][0]
+        seq = sorted((datetime.datetime.fromtimestamp(t, ZoneInfo("America/New_York")).date(), c)
+                     for t, c in zip(r["timestamp"], r["indicators"]["quote"][0]["close"]) if c)
+        if len(seq) < 2 or seq[-1][0] != SESSION_ET:
+            return sym, None
+        return sym, round((seq[-1][1] / seq[-2][1] - 1) * 100, 2)
+    except Exception:
+        return sym, None
+
+try:
+    SESSION_ET = session_date_et()
+    fixed = dropped = 0
+    with concurrent.futures.ThreadPoolExecutor(max_workers=12) as ex:
+        for sym, pct in ex.map(yahoo_day_pct, list(out.keys())):
+            if pct is None:
+                out.pop(sym, None)
+                dropped += 1
+            elif abs(pct - out[sym]["pct"]) > 0.15:
+                out[sym]["pct_collected"] = out[sym]["pct"]   # 감사용: 수집 소스가 준 값
+                out[sym]["pct"] = pct
+                fixed += 1
+            else:
+                out[sym]["pct"] = pct
+    if fixed:
+        errors.append(f"등락률 재계산({SESSION_ET} 야후 일봉): 수집값 수정 {fixed}건 · 시세 미확인 제외 {dropped}건 "
+                      "— 수집 소스(주로 나스닥 스크리너) 지연 의심, pct_collected에 원래 값 보존")
+    print(f"등락률 검증(야후 일봉 {SESSION_ET}): 수정 {fixed} · 제외 {dropped}")
+except Exception as e:
+    errors.append(f"등락률 재계산 실패: {str(e)[:60]} — 수집값 그대로 사용(세션 지연 가능, 수치 재확인 필요)")
 
 def tier(r):
     """0=M7, 1=메가캡($200B+), 2=그 외 — 자격 기준·우선순위 겸용"""
