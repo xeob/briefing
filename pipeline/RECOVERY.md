@@ -228,13 +228,16 @@ cd $TMP/r && git add -A && git commit -m restore && git push
   - **일정·발표지표 데이터 = `python3 events.py` (→ out/events.json)**: 실제 캘린더(Nasdaq 경제캘린더 + IPO + events_manual.txt)에서 수집. **모델이 날짜를 추측하지 말고 이 값을 쓴다.** 구조: `must_include`(1순위·반드시 일정 표에 포함 — 누락 시 verify.py가 게시 차단), `optional`(2순위·자리 남으면), `released`(직전 세션 발표지표: 지표명·actual·forecast), `passed`(생성 시각 기준 이미 지난 일정 — 표에서 제외됨, 시장 서술용). 미국 관련이 아닌 특수 이벤트(한국 상장 등)는 events_manual.txt에 수동 추가.
   - 시장 지표 **6종 고정, 2행×3열 그리드(가로 스크롤 금지)**: 윗줄 美10년물·달러인덱스·원/달러 / 아랫줄 WTI·비트코인·금 (값은 out/market.json의 indicators 그대로)
   - 섹터 강세/약세: **강세는 강한 순, 약세는 약한 순**으로 나열. 색 태그(강세=초록 t-strong, 약세=빨강 t-weak) + 이유 설명은 회색 노트(sector-note)
-  - **특징주(핵심!) — 확정 규칙 (2026-07-02 사용자와 합의)**: 먼저 `python3 movers.py` 실행 → `out/movers.json`의 `qualified_up`/`qualified_down`(기본 25, **M7·메가캡 전원 + 일반 티어 |7%|+ 전원 강제 포함 — 이들은 25를 넘어도 잘리지 않음**).
+  - **특징주(핵심!) — 확정 규칙 (2026-07-02 사용자와 합의)**: 먼저 `python3 movers.py` 실행 — **수집은 전수**다(2026-10-23): 나스닥 스크리너로 **$200B+ 전 종목 + $10B~$200B 전 종목(약 886개)**을 받고 야후 day_gainers/losers·CORE_SCAN을 합친다. 예전엔 야후 '상위 100개'에만 의존해 컷오프가 매일 달라졌고(10/22 실측 급등 +5.72%·급락 −8.27%) **자격 통과 240건 중 161건이 수집조차 안 됐다** — 이 구멍은 메워졌으니 **후보 목록에 없는 종목을 모델이 임의로 보태지 말고, 반대로 `all[].qualified=true`인데 후보에 없는 종목은 감사 기록 대상**이다. → `out/movers.json`의 `qualified_up`/`qualified_down`(**M7·메가캡 전원 + 그 세션 실적 발표 종목 전원 + 일반 티어 |등락률| 상위 20**). 구 규칙 '일반 |7%|+ 전원 강제'는 **2026-10-23 폐기** — 전수 수집이 되자 변동 큰 날 7%+가 75건까지 나오는데 그날 개별 상위 10 컷오프는 −11.5%여서 7~11% 종목은 개별 자리에 닿지 못했다(조사 시간만 늘고 결과는 동일). **잘린 자격 종목은 `all[].qualified=true`로 남아 묶음 구성·감사 기록의 대상**이며, 상한을 되돌리려면 movers.py `GEN_CAP`만 키우면 된다.
+      - **재료 조사 순서**: |등락률| 큰 순으로 내려가며 **개별 상위 10 자리가 확정되는 지점까지** 조사하고, 그 아래 자격 종목은 조사 대신 **감사 집계**로 처리한다. 단 **메가캡·그 세션 실적 발표 종목은 몇 건이든 전원 조사**(누락이 가장 잘 숨는 두 부류 — verify #15가 실적 쪽을 기계로 재확인).
     - **① 수집**: Yahoo 스크리너 급등/급락 상위(시총 $10B+) ∪ **CORE_SCAN 상시 감시** — 스크리너가 못 잡는 'M7 +2%대'·'메가캡 +3~4%대' 같은 작지만 자격 있는 대형주 이동을 보장 (구 watchlist.txt 폐지). **CORE_SCAN = M7 + 고정 메가캡 명단 + Nasdaq에서 매 실행 받아오는 $200B+ 전 종목(자동 갱신)** — 신규 상장·시총 성장이 자동 반영된다. (실측 2026-09-18: 고정 명단만 쓰던 시절 7/10 상장한 **SK하이닉스 ADR(SKHY, $1.33T)** 이 +4.64%·고유 재료(인텔과 미국 메모리 생산 협의)에도 누락, 같은 날 마벨·델도 누락 — $200B+ 78개 중 28개가 감시 밖이었다.) **해외 ADR(SK하이닉스·TSMC·HSBC·도요타 등)도 미국 상장이면 동일 기준으로 포함.**
     - **② 자격 (황금 등락률)**: M7 ±2% / 메가캡($200B+) ±3% / 그 외 ±4%
     - **③ 2차 재료 게이트 (비메가캡 전원 적용 — 재료 없으면 등락률 불문 개별 제외)**: 후보 전 종목을 철저히 조사(수집·검토·팩트체크)해 재료를 찾는다. **재료 등급**: **A급(확정 사실·1차 정보)** = 실적/가이던스 발표·M&A 확정/공식 제안·규제/FDA/판결 결과·대형 계약·수주 공시·파산/신용등급·지수 편입/제외·CEO 교체·사고/리콜·자사주/배당/증자 공시·공매도 리포트 등 / **B급(2차 정보·의견)** = 투자의견·목표가 변경·애널 리포트·단독 보도/루머·간접 수혜/피해 보도 / **C급(막연한 서술)** = "업황 기대감"·"AI 수혜"·"차익실현"·"저가 매수"·섹터 동반 — **C급은 재료 없음으로 취급.**
       - **통과 기준**: A·B급 통과. **시총 $50B 이하는 A급만 통과.** 재료 없으면(C급 포함) **|7%| 이상이라도 개별 제외** — 예외 없음(정말 핵심 특징주만). 지어내기 절대 금지.
       - **★ M7·메가캡은 게이트 면제(재료 없어도 후보 유지·거시 사유 서술 허용)하되 사유 조사는 필수**: 거시·섹터 사유도 **반드시 출처 있는 사실 기반**(예: "고용 쇼크 보도에 금리인하 기대 — 대형기술주 동반 강세"). 근거 없는 "시장 따라 상승"류 서술 금지. 끝내 못 찾으면 M7·메가캡에 한해서만 "이유 미확인" 표기 허용(날조 방지 최후 폴백). 단 **배치 단계에서 M7과 메가캡의 대우가 다름** — ⑤ 참조.
-      - **감사 기록(브리핑에는 미게재)**: ⓐ재료가 없어 개별 제외된 |7%| 이상 종목 ⓑ등락률순 10위 밖으로 잘린 재료 보유 종목 ⓒ**거시 사유뿐이라 개별·묶음 어디에도 못 실린 메가캡**을 **루틴 실행 보고에 한 줄로 기록**(예: "제외: XYZ +9.2% 재료없음 / KO +3.5% 거시·단독") — 소리 없는 소멸 방지, 사후 검증 가능.
+      - **감사 기록(브리핑에는 미게재)**: **ⓐ 자격을 통과했는데 개별·묶음 어디에도 싣지 않은 종목 전원**(사유 병기) ⓑ등락률순 10위 밖으로 잘린 재료 보유 종목 ⓒ**거시 사유뿐이라 개별·묶음 어디에도 못 실린 메가캡**을 **루틴 실행 보고에 기록**(예: "제외: XYZ +9.2% 재료없음 / KO +3.5% 거시·단독") — 소리 없는 소멸 방지, 사후 검증 가능.
+        - **ⓐ에 등락률 문턱을 두지 말 것(2026-10-23 변경).** 구 규칙은 "|7%|+"만 기록해서 **4~7% 구간이 보고서에서 통째로 사라졌다** — 2026-10-22 세션에 록히드마틴 +6.96%(자격 통과·실적 상회 A급)가 특징주에서 누락됐는데 보고서에 한 줄도 남지 않았다(그 구간 자격 통과 24건 전부 미기록).
+        - 자격 통과가 많은 날은 **|등락률| 상위 20건은 개별로 적고 나머지는 집계 한 줄**("그 외 자격 통과 n건 미게재 — 재료 없음 n·거시 단독 n"). 단 **그 세션 실적 발표 종목과 메가캡은 몇 건이든 전원 개별 기록**(누락이 가장 잘 숨는 두 부류).
       - 제외 종목의 행선지: **업종 동반 이동의 일부면 묶음행으로 수용**(업종 동반이 그 종목의 이유 — 재료 없는 고등락률 종목도 묶음엔 정당하게 들어감) / 동반도 아니면 완전 제외.
       - **촉매 "명확" 판정 기준**: **본질 = ⓐ그 종목 자체의 구체적 사건 + ⓑ기사·공시 출처로 확인 가능 — 이 두 조건을 충족하면 아래 예시에 없는 유형이라도 명확으로 분류한다.** 예시: 실적·가이던스 발표, 투자의견/목표가 변경, M&A·인수설(보도 확인), 대형 계약·수주(취소 포함), 규제·소송·FDA 결과, 신제품/기술 발표, 지수 편입/제외, 증자/자사주, CEO 교체·내부자 매매, 사고·리콜·해킹, 감원·구조조정, 공매도 리포트, 파산·신용등급 변경, 경쟁사 사건의 직접 수혜/피해(해당 종목 특정 보도 시) 등. **"불명확"** = 종목 자체 사건이 아닌 막연한 서술 — "업황 기대감", "AI 수혜", "차익실현", "저가 매수" 등 근거 기사 없이 붙일 수 있는 말. 업종 동반 이동은 개별 촉매가 아니라 **묶음 사유**다.
     - **⑤ 3차 배치 (단순·재현 가능)**: 2차 통과 종목을 **등락률순(동률은 시총순)으로 정렬해 상위 10개**를 개별 특징주로 배치. 예외 규정:
@@ -798,6 +801,38 @@ def live_megacaps():
             best[key] = (rank, sym, round(cap, 1))
     return {s.replace("/", "-"): c for _, s, c in best.values()}
 
+def _num(v):
+    s = str(v or "").replace(",", "").replace("$", "").replace("%", "").strip()
+    try:
+        return float(s)
+    except ValueError:
+        return None
+
+# 후보 수집 전수화(2026-10-23) — 야후 day_gainers/losers는 '등락률 상위 100개'만 주므로 컷오프가 매일 달라진다.
+#   실측(2026-10-22 세션): 급등 컷 +5.72% · 급락 컷 −8.27% → 시총 $10B+ 자격 통과 240건 중 **161건이
+#   수집조차 되지 않았다**(코닝 −8.10%/$107B · 씨게이트 −7.86%/$147B · 암페놀 −7.74%/$180B · 서던코퍼 −7.31%/$153B).
+#   특히 $100~200B 구간은 상시 감시(메가캡 $200B+)에도 없어 완전 사각지대였고, 그날 록히드마틴 +6.96%가
+#   자격·A급 재료(실적 상회)에도 특징주에서 빠졌다.
+#   나스닥 스크리너는 시총 구간 전체를 1회 호출로 주므로($10B~$200B 약 886종목) 컷오프 개념이 사라진다.
+#   등락률 정확도: 야후 일봉과 LMT·CSX·ADBE·KLAC·LDOS·INTU 6종목 모두 0.00%p 일치(2026-10-23 확인).
+def nasdaq_screen(group, min_cap_b=10.0):
+    """나스닥 스크리너 시총 구간 전수 → [{symbol,name,pct,mktcap_b}]. 보통주 아닌 상품은 제외."""
+    d = get(f"https://api.nasdaq.com/api/screener/stocks?tableonly=true&limit=3000&marketcap={group}")
+    rows = ((d.get("data") or {}).get("table") or {}).get("rows") or []
+    got = []
+    for x in rows:
+        name = x.get("name") or ""
+        if any(k in name.lower() for k in EXCLUDE_KW):
+            continue
+        pct, cap = _num(x.get("pctchange")), _num(x.get("marketCap"))
+        if pct is None or cap is None or cap / 1e9 < min_cap_b:
+            continue
+        got.append({"symbol": x["symbol"].strip().upper().replace("/", "-"), "name": name,
+                    "pct": round(pct, 2), "mktcap_b": round(cap / 1e9, 1)})
+    if not got:
+        raise ValueError("스크리너 행 0건")
+    return got
+
 out, errors = {}, []
 try:
     LIVE_MEGA = live_megacaps()
@@ -824,6 +859,17 @@ for scr in ("day_gainers", "day_losers"):
                                 "vol_ratio": vr, "src": scr}
     except Exception as e:
         errors.append(f"screener {scr}: {e}")
+
+# 나스닥 전수 수집($10B~$200B) — 야후 상위 100 컷오프 밖의 자격 종목을 메운다.
+# 야후 항목이 먼저 들어온 종목은 그대로 둔다(거래량비 vol_ratio가 야후에만 있다).
+try:
+    for r in nasdaq_screen("large"):
+        if r["symbol"] in out:
+            continue
+        out[r["symbol"]] = {"symbol": r["symbol"], "name": r["name"], "pct": r["pct"],
+                            "mktcap_b": r["mktcap_b"], "vol_ratio": None, "src": "nasdaq_large"}
+except Exception as e:
+    errors.append(f"nasdaq large screener: {str(e)[:60]} — 야후 상위 100만으로 수집(컷오프 아래 자격 종목 누락 가능)")
 
 for s in sorted(CORE_SCAN):
     if s in out:
@@ -867,14 +913,40 @@ for r in rows:
 
 qual = sorted([r for r in rows if r["qualified"]], key=lambda x: (x["tier"], -abs(x["pct"])))
 
+def ah_roster():
+    """그 세션 실적 발표 종목(earnings.json must_cover). 파일이 없으면 earnings.py를 직접 한 번 돌린다 —
+    루틴의 스크립트 실행 순서에 의존하지 않기 위해(실적 발표 종목이야말로 시간외가 크게 움직이는 쪽이다).
+    이미 있으면 그대로 읽고, 실패하면 빈 집합(섹션은 CORE_SCAN·자격 종목만으로 돌아간다)."""
+    for attempt in (1, 2):
+        try:
+            if attempt == 1 and time.time() - os.path.getmtime("out/earnings.json") > 12 * 3600:
+                raise ValueError("earnings.json 12시간 초과 — 어제 로스터일 수 있어 다시 수집")
+            return {e["symbol"] for e in json.load(open("out/earnings.json")).get("must_cover", []) if e.get("symbol")}
+        except Exception:
+            if attempt == 2:
+                return set()
+            try:
+                import sys
+                subprocess.run([sys.executable, "earnings.py"], capture_output=True, timeout=180, check=False)
+            except Exception:
+                return set()
+
+REPORTERS = ah_roster()   # 그 세션 실적 발표 종목 — 후보 구성·시간외 감시 공통
+
+GEN_CAP = 20   # 일반 티어 후보 상한(방향별). 되돌리려면 이 값만 키우면 된다.
+
 def candidates(side):
-    """후보 목록: M7·메가캡 전원 + 일반 티어 |7%|+ 전원 강제 포함, 나머지로 25까지 채움.
-    (과거엔 전체를 [:25]로 잘라, 메가캡이 많은 날 일반 7%+가 잘릴 수 있었다 — 감시 대상 확대(2026-09-18)로
-     그 위험이 커져 보장을 코드로 강제. 상한 25는 '일반 7% 미만'에만 적용되어 초과될 수 있다.)"""
+    """후보 = M7·메가캡 전원 + 그 세션 실적 발표 종목(자격 통과) 전원 + 일반 티어 |등락률| 상위 GEN_CAP.
+    side는 (티어 → |등락률|) 정렬 상태로 들어온다.
+    2026-10-23 변경: 수집이 전수가 되면서 구 규칙 '일반 |7%|+ 전원 강제 포함'이 역효과를 냈다 — 변동 큰 날
+    7%+가 75건까지 나오는데(10/22 실측) 그날 개별 상위 10 컷오프는 −11.5%여서 7~11% 종목은 애초에 개별
+    자리에 닿지 못한다. 전원 조사는 실행시간만 늘리고(한 번에 79종목) 결과는 같다.
+    잘린 종목도 all[].qualified=true로 남아 **묶음 구성·감사 기록의 대상**이며, 누락이 가장 잘 숨는 두 부류
+    (메가캡·실적 발표 종목)는 몇 건이든 전원 후보에 넣는다 — verify #15가 실적 쪽을 기계로 재확인한다."""
     m7mega = [r for r in side if r["tier"] <= 1]
-    gen_big = [r for r in side if r["tier"] == 2 and abs(r["pct"]) >= 7]
-    gen_rest = [r for r in side if r["tier"] == 2 and abs(r["pct"]) < 7]
-    return m7mega + gen_big + gen_rest[:max(0, 25 - len(m7mega) - len(gen_big))]
+    rep = [r for r in side if r["tier"] == 2 and r["symbol"] in REPORTERS]
+    rest = [r for r in side if r["tier"] == 2 and r["symbol"] not in REPORTERS]
+    return m7mega + rep + rest[:GEN_CAP]
 
 q_up = candidates([r for r in qual if r["pct"] > 0])
 q_down = candidates([r for r in qual if r["pct"] < 0])
@@ -951,28 +1023,10 @@ AH_STALE_MIN = 15       # 마지막 봉이 기준시각보다 이만큼 이상 �
 AH_BUDGET_S = 90        # 조회 전체 시간예산(초) — 초과분은 조회하지 않고 실패로 집계
 AH_MAX_FAIL = 0.2       # 실패율이 이보다 크면 불완전 스캔으로 보고 섹션 생략
 
-def ah_roster():
-    """그 세션 실적 발표 종목(earnings.json must_cover). 파일이 없으면 earnings.py를 직접 한 번 돌린다 —
-    루틴의 스크립트 실행 순서에 의존하지 않기 위해(실적 발표 종목이야말로 시간외가 크게 움직이는 쪽이다).
-    이미 있으면 그대로 읽고, 실패하면 빈 집합(섹션은 CORE_SCAN·자격 종목만으로 돌아간다)."""
-    for attempt in (1, 2):
-        try:
-            if attempt == 1 and time.time() - os.path.getmtime("out/earnings.json") > 12 * 3600:
-                raise ValueError("earnings.json 12시간 초과 — 어제 로스터일 수 있어 다시 수집")
-            return {e["symbol"] for e in json.load(open("out/earnings.json")).get("must_cover", []) if e.get("symbol")}
-        except Exception:
-            if attempt == 2:
-                return set()
-            try:
-                import sys
-                subprocess.run([sys.executable, "earnings.py"], capture_output=True, timeout=180, check=False)
-            except Exception:
-                return set()
-
 def ah_universe():
     """감시 대상 = CORE_SCAN ∪ 그날 정규장 자격 종목 ∪ 그 세션 실적 발표 로스터.
     SKHY는 전용 상시 블록이 20시→종가 괴리로 따로 다루므로 제외(중복·verify #13 충돌 방지)."""
-    u = set(CORE_SCAN) | {r["symbol"] for r in qual} | ah_roster()
+    u = set(CORE_SCAN) | {r["symbol"] for r in qual} | set(REPORTERS)
     return sorted(s for s in u if s and s != KR_ADR)
 
 def afterhours_block(now_et=None):
@@ -1085,12 +1139,22 @@ if ah.get("status") in ("error", "partial"):
 os.makedirs("out", exist_ok=True)
 json.dump({"generated_kst": time.strftime("%Y-%m-%d %H:%M"), "errors": errors, "skhy": skhy,
            "rule": "자격: M7 ±2% / 메가캡 ±3% / 그외 ±4% · 우선순위: 티어→|등락률| · 최종 표시는 |등락률|순",
-           "qualified_up": q_up, "qualified_down": q_down, "afterhours": ah, "all": rows},
+           "qualified_up": q_up, "qualified_down": q_down, "afterhours": ah,
+           "qualified_total": {"up": len([r for r in qual if r["pct"] > 0]),
+                               "down": len([r for r in qual if r["pct"] < 0]),
+                               "후보_up": len(q_up), "후보_down": len(q_down),
+                               "note": "후보에 담기지 않은 자격 통과 종목도 all[].qualified=true로 남는다 "
+                                       "— 감사 기록(RUN.md ⑦)은 '자격 통과했는데 안 실린 종목'을 모두 대상으로 한다"},
+           "all": rows},
           open("out/movers.json", "w"), ensure_ascii=False, indent=1)
 
 TN = {0: "M7", 1: "메가캡", 2: "일반"}
 print(f"상시 감시 {len(CORE_SCAN)}종목 (고정 {len(M7 | MEGA_HINT)} + 실시간 $200B+ 신규 {len(set(LIVE_MEGA) - M7 - MEGA_HINT)})")
-print(f"전체 {len(rows)}건 → 자격 통과 급등 {len([r for r in qual if r['pct']>0])} / 급락 {len([r for r in qual if r['pct']<0])} (오류 {len(errors)})")
+_src = {}
+for r in rows:
+    _src[r.get("src", "?")] = _src.get(r.get("src", "?"), 0) + 1
+print(f"수집 {len(rows)}건 {_src} → 자격 통과 급등 {len([r for r in qual if r['pct']>0])} / 급락 {len([r for r in qual if r['pct']<0])}"
+      f" → 후보 급등 {len(q_up)} / 급락 {len(q_down)} (오류 {len(errors)})")
 print("=== 급등 후보 (우선순위: 티어→등락률) ===")
 for r in q_up:
     print(f"{r['symbol']:6} {r['pct']:+7.2f}%  [{TN[r['tier']]:3}] cap:{r.get('mktcap_b')}B  {(r.get('name') or '')[:24]}")
@@ -1819,6 +1883,31 @@ if ah_sec:
         if sym not in want:
             issues.append(f"[시간외] {sym} 행은 afterhours.rows에 없음 — 임의 추가 금지"
                           "(기준 미달·거래대금 미달·2소스 미확인 중 하나로 걸러진 종목)")
+
+# 15) 실적 발표 종목이 자격까지 통과했으면 특징주 개별 행 필수 (2026-10-23 신설)
+#     2026-10-22 세션 사고: 록히드마틴 +6.96%(시총 $136B → 일반 티어 기준 4% 통과, 실적 상회 = A급 재료)가
+#     '실적 발표' 섹션에만 실리고 특징주에서 빠졌다. 급등 개별이 8행뿐이라 자리도 있었는데 누락됐고,
+#     감사 기록 ⓐ가 |7%|+만 대상이라 보고서에도 남지 않았다.
+#     기계로 판정 가능한 교집합(그 세션 실적 발표 ∩ 자격 통과)만 강제한다 — 재료 유무 판단이 필요 없다.
+#     해당 파트가 이미 10행(상위 10 규칙 상한)이면 밀려난 것이 정당하므로 차단하지 않는다.
+if ea:
+    qual_pct = {r["symbol"]: r["pct"] for r in mv.get("all", []) if r.get("qualified") and r.get("symbol")}
+    up_sec15 = seg("특징주 · 급등", "특징주 · 급락")
+    dn_sec15 = seg("특징주 · 급락", AH_LBL, "발표된 지표")
+    IND = r'mv-n">[^<(]*\(([A-Z][A-Z.\-]{0,5})\)</span><span class="mv-p'
+    rows15 = {"up": re.findall(IND, up_sec15), "down": re.findall(IND, dn_sec15)}
+    for e in ea.get("must_cover", []):
+        sym = e.get("symbol", "")
+        if sym not in qual_pct:
+            continue                        # 자격 미달이면 개별 의무 없음
+        pct = qual_pct[sym]
+        side = "up" if pct > 0 else "down"
+        side_ko = "급등" if side == "up" else "급락"
+        if sym in rows15[side] or len(rows15[side]) >= 10:
+            continue
+        issues.append(f"[특징주] '{e.get('name_ko', sym)} ({sym})' {pct:+.2f}% 누락 — 그 세션 실적 발표 종목이 "
+                      f"자격을 통과했고 {side_ko} 파트가 {len(rows15[side])}행(10행 미만)이라 자리가 있다. "
+                      "실적(확정 공시)은 A급 재료이므로 개별 행으로 게재할 것(묶음행·실적 발표 섹션만으로는 불충분)")
 
 if issues:
     print(f"❌ 검증 실패 {len(issues)}건 — 수정 후 재검증:")

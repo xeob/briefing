@@ -257,6 +257,31 @@ if ah_sec:
             issues.append(f"[시간외] {sym} 행은 afterhours.rows에 없음 — 임의 추가 금지"
                           "(기준 미달·거래대금 미달·2소스 미확인 중 하나로 걸러진 종목)")
 
+# 15) 실적 발표 종목이 자격까지 통과했으면 특징주 개별 행 필수 (2026-10-23 신설)
+#     2026-10-22 세션 사고: 록히드마틴 +6.96%(시총 $136B → 일반 티어 기준 4% 통과, 실적 상회 = A급 재료)가
+#     '실적 발표' 섹션에만 실리고 특징주에서 빠졌다. 급등 개별이 8행뿐이라 자리도 있었는데 누락됐고,
+#     감사 기록 ⓐ가 |7%|+만 대상이라 보고서에도 남지 않았다.
+#     기계로 판정 가능한 교집합(그 세션 실적 발표 ∩ 자격 통과)만 강제한다 — 재료 유무 판단이 필요 없다.
+#     해당 파트가 이미 10행(상위 10 규칙 상한)이면 밀려난 것이 정당하므로 차단하지 않는다.
+if ea:
+    qual_pct = {r["symbol"]: r["pct"] for r in mv.get("all", []) if r.get("qualified") and r.get("symbol")}
+    up_sec15 = seg("특징주 · 급등", "특징주 · 급락")
+    dn_sec15 = seg("특징주 · 급락", AH_LBL, "발표된 지표")
+    IND = r'mv-n">[^<(]*\(([A-Z][A-Z.\-]{0,5})\)</span><span class="mv-p'
+    rows15 = {"up": re.findall(IND, up_sec15), "down": re.findall(IND, dn_sec15)}
+    for e in ea.get("must_cover", []):
+        sym = e.get("symbol", "")
+        if sym not in qual_pct:
+            continue                        # 자격 미달이면 개별 의무 없음
+        pct = qual_pct[sym]
+        side = "up" if pct > 0 else "down"
+        side_ko = "급등" if side == "up" else "급락"
+        if sym in rows15[side] or len(rows15[side]) >= 10:
+            continue
+        issues.append(f"[특징주] '{e.get('name_ko', sym)} ({sym})' {pct:+.2f}% 누락 — 그 세션 실적 발표 종목이 "
+                      f"자격을 통과했고 {side_ko} 파트가 {len(rows15[side])}행(10행 미만)이라 자리가 있다. "
+                      "실적(확정 공시)은 A급 재료이므로 개별 행으로 게재할 것(묶음행·실적 발표 섹션만으로는 불충분)")
+
 if issues:
     print(f"❌ 검증 실패 {len(issues)}건 — 수정 후 재검증:")
     for i in issues:
