@@ -1856,7 +1856,10 @@ def num(s):
 #   · #2에 그대로 걸리면 정규장 등락률과 달라 오탐으로 게시가 막힌다(실적일엔 낮·밤 둘 다 움직인다).
 #   · #11은 "(티커)가 페이지 어디든 있으면 통과"라서, 시간외 행이 실적 섹션 누락을 가려준다.
 #   섹션이 없는 날엔 ah_sec="" → html_main은 html과 동일해 기존 동작이 그대로 유지된다.
-AH_LBL = "시간외 특징주"
+L_UP, L_DN = 'class="lbl">특징주 · 급등', 'class="lbl">특징주 · 급락'
+L_AH, L_REL = 'class="lbl">시간외 특징주', 'class="lbl">발표된 지표'
+L_EARN, L_SCHED = 'class="lbl">실적 발표', 'class="lbl">미국장 주요 일정'
+AH_LBL = L_AH
 
 def seg(start, *ends):
     """start 다음부터 ends 중 '가장 먼저' 나오는 경계 앞까지. 경계가 하나도 없으면 끝까지."""
@@ -1868,7 +1871,7 @@ def seg(start, *ends):
 
 # 개별 행 헤더: 종목명 (티커) [+ 업종 꼬리표 mv-t] + 등락률(mv-p) — 꼬리표는 2026-10-23 신설이라 '있어도/없어도' 통과
 TAG = r'(?:<span class="mv-t">[^<]*</span>)?'
-ah_sec = seg(AH_LBL, "발표된 지표")
+ah_sec = seg(L_AH, L_REL)
 html_main = html.replace(ah_sec, "") if ah_sec else html
 
 # 1) 지수 카드: 이름/종가/등락률 대조
@@ -2036,8 +2039,8 @@ if ea:
 #     있어야 하고, 헤더 등락률·20시·괴리 수치가 원본과 일치해야 한다(2026-09-18 결정 — 한국 하이닉스와 직결).
 sk = mv.get("skhy")
 if sk:
-    up_sec = seg("특징주 · 급등", "특징주 · 급락")
-    dn_sec = seg("특징주 · 급락", AH_LBL, "발표된 지표")
+    up_sec = seg(L_UP, L_DN)
+    dn_sec = seg(L_DN, L_AH, L_REL)
     want, other = (up_sec, dn_sec) if sk["side"] == "up" else (dn_sec, up_sec)
     side_ko = "급등" if sk["side"] == "up" else "급락"
     if "(SKHY)" not in want:
@@ -2106,8 +2109,8 @@ if ah_sec:
 #     해당 파트가 이미 10행(상위 10 규칙 상한)이면 밀려난 것이 정당하므로 차단하지 않는다.
 if ea:
     qual_pct = {r["symbol"]: r["pct"] for r in mv.get("all", []) if r.get("qualified") and r.get("symbol")}
-    up_sec15 = seg("특징주 · 급등", "특징주 · 급락")
-    dn_sec15 = seg("특징주 · 급락", AH_LBL, "발표된 지표")
+    up_sec15 = seg(L_UP, L_DN)
+    dn_sec15 = seg(L_DN, L_AH, L_REL)
     IND = r'mv-n">[^<(]*\(([A-Z][A-Z.\-]{0,5})\)</span>' + TAG + r'<span class="mv-p'
     rows15 = {"up": re.findall(IND, up_sec15), "down": re.findall(IND, dn_sec15)}
     for e in ea.get("must_cover", []):
@@ -2168,7 +2171,7 @@ if sc.get("sectors") is not None:
 allpct = {r["symbol"]: r["pct"] for r in mv.get("all", []) if r.get("symbol")}
 allsec = {r["symbol"]: r.get("sector_short") for r in mv.get("all", []) if r.get("symbol")}
 reps = ((mv.get("afterhours") or {}).get("reporters")) or {}
-earn_sec = seg("실적 발표", "미국장 주요 일정")
+earn_sec = seg(L_EARN, L_SCHED)
 if ea and earn_sec:
     tim = {e.get("symbol"): (e.get("timing") or "") for e in ea.get("must_cover", [])}
     for m in re.finditer(r'mv-n">[^<(]*\(([A-Z][A-Z.\-]{0,5})\)</span>(.*?)<div class="mv-r">(.*?)</div>',
@@ -2191,8 +2194,8 @@ if ea and earn_sec:
             issues.append(f"[실적] {sym} 시간외 HTML {num(shown.group(1)):+.2f}% ≠ 원본 {r_ah['pct']:+.2f}%")
         elif not shown and after_close and r_ah.get("confirmed") and abs(r_ah.get("pct") or 0) >= 1:
             issues.append(f"[실적] {sym}(마감 후 발표) 시간외 {r_ah['pct']:+.2f}% 누락 — 본문 첫 줄에 병기")
-for part_name, part in (("급등", seg("특징주 · 급등", "특징주 · 급락")),
-                        ("급락", seg("특징주 · 급락", AH_LBL, "발표된 지표"))):
+for part_name, part in (("급등", seg(L_UP, L_DN)),
+                        ("급락", seg(L_DN, L_AH, L_REL))):
     for m in re.finditer(r'mv-n">[^<(]*\(([A-Z][A-Z.\-]{0,5})\)</span>(' + TAG + r')<span class="mv-p', part):
         sym, tag = m.group(1), m.group(2)
         got = re.sub(r'<[^>]+>', '', tag).strip()
