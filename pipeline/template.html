@@ -180,13 +180,17 @@ a{color:inherit;text-decoration:none;}
 
     <div class="divide"></div>
     <div class="lbl">섹터</div>
-    <!-- 강세는 강한 순, 약세는 약한 순으로 나열. 이유 설명은 회색 노트(sector-note) -->
+    <!-- ★ 업종은 모델이 고르지 않는다 — out/movers.json 의 sectors.strong / sectors.weak 를 그 순서대로 쓴다(verify #16 대조).
+         각 업종명 뒤에 그 업종의 중위 등락률(sectors[].median)을 up/down 색으로 병기하고, 업종명과 수치 사이는 &nbsp;.
+         strong(또는 weak)이 빈 날은 그 줄에 업종명 대신 "뚜렷한 업종 없음" 한 줄 — 억지로 채우지 않는다.
+         sector-note = 그 업종들이 왜 그렇게 움직였는지(⑦ 사유 품질 규칙 적용, 40자 이내).
+         집계는 '지수 대비 초과 + 방향일치'라 급락일에 +1%대로 버틴 역행 업종도 상단에 올라온다. -->
     <div class="field"><span class="tag t-strong">강세</span>
-      <div class="sector-names">섹터1 · 섹터2 · 섹터3</div>
+      <div class="sector-names">업종1&nbsp;<span class="up">+0.0%</span> · 업종2&nbsp;<span class="up">+0.0%</span> · 업종3&nbsp;<span class="up">+0.0%</span></div>
       <div class="sector-note">강했던 이유 한 줄 (40자 이내)</div>
     </div>
     <div class="field" style="margin-bottom:0;"><span class="tag t-weak">약세</span>
-      <div class="sector-names">섹터1 · 섹터2 · 섹터3</div>
+      <div class="sector-names">업종1&nbsp;<span class="down">−0.0%</span> · 업종2&nbsp;<span class="down">−0.0%</span> · 업종3&nbsp;<span class="down">−0.0%</span></div>
       <div class="sector-note">약했던 이유 한 줄 (40자 이내)</div>
     </div>
 

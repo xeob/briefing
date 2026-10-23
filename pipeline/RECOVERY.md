@@ -227,7 +227,18 @@ cd $TMP/r && git add -A && git commit -m restore && git push
   - **수치 = 스크립트 2소스 교차검증 (방안 A, 신뢰가 생명)**: `python3 market.py` 로 `out/market.json` 생성. 지수 4종·지표 6종이 **Yahoo + CNBC 2소스 교차검증**(국채금리 3자리, 지표는 CNBC realtime 1차). **두 독립 소스가 일치하면 그게 확정값 — market.json 값을 그대로 쓴다.** 달러인덱스처럼 investing.com과 소수 둘째 자리에서 미세하게 달라도 **2소스 합의값을 유지**한다(investing.com은 Cloudflare로 스크립트 불가라 강제 참조 대상 아님). market.json의 errors·notes에 불일치·이상치가 있을 때만 웹으로 재확인. market.json 값이 상식 밖(지수 하루 ±10%)이거나 스크립트 완전 실패 시에만 웹 대체. **요약 기사 속 수치 사용 금지**(오차 실증: 7/1 SOX 기사 13,478 vs 실제 13,353).
   - **일정·발표지표 데이터 = `python3 events.py` (→ out/events.json)**: 실제 캘린더(Nasdaq 경제캘린더 + IPO + events_manual.txt)에서 수집. **모델이 날짜를 추측하지 말고 이 값을 쓴다.** 구조: `must_include`(1순위·반드시 일정 표에 포함 — 누락 시 verify.py가 게시 차단), `optional`(2순위·자리 남으면), `released`(직전 세션 발표지표: 지표명·actual·forecast), `passed`(생성 시각 기준 이미 지난 일정 — 표에서 제외됨, 시장 서술용). 미국 관련이 아닌 특수 이벤트(한국 상장 등)는 events_manual.txt에 수동 추가.
   - 시장 지표 **6종 고정, 2행×3열 그리드(가로 스크롤 금지)**: 윗줄 美10년물·달러인덱스·원/달러 / 아랫줄 WTI·비트코인·금 (값은 out/market.json의 indicators 그대로)
-  - 섹터 강세/약세: **강세는 강한 순, 약세는 약한 순**으로 나열. 색 태그(강세=초록 t-strong, 약세=빨강 t-weak) + 이유 설명은 회색 노트(sector-note)
+  - **섹터 강세/약세 — 모델이 고르지 않는다(2026-10-23 변경)**: `out/movers.json`의 `sectors.strong`/`sectors.weak`를 **그 순서대로** 쓴다. 색 태그(강세=초록 t-strong, 약세=빨강 t-weak) + 이유는 회색 노트(sector-note).
+    - **집계 방식**: 업종별 **중위 등락률**과 **지수(S&P 500) 대비 초과**를 movers.py가 계산한다. 후보 = 종목 5개 이상 · **방향일치 60% 이상** · **|지수 대비 초과| 1.5%p 이상** → 강세 = 초과 상위 3 / 약세 = 하위 3. (급락일에 +1%대로 버틴 역행 업종이 상단에 올라오게 하려고 '절대 등락률'이 아니라 '지수 대비 초과'를 쓴다. 중위만 보면 소수 종목이 끌어올린 업종이 올라오므로 방향일치를 함께 본다.)
+    - **표기**: `업종명&nbsp;<span class="up">+0.0%</span>` 형식으로 **업종별 중위 등락률 병기**(`sectors[].median` 그대로). 후보가 없는 쪽은 업종명 대신 **"뚜렷한 업종 없음"** 한 줄 — 억지로 채우지 말 것.
+    - **왜 바뀌었나**: 2026-10-22 세션(S&P −1.21%)에 데이터 상위는 건설·주택 +7.1%p · 필수소비재 +5.4%p · 소매·유통 +5.3%p였는데, 브리핑은 강세로 '필수소비재·금융·유틸리티'를 적었다. '금융'은 자산운용·증권(+4.0%p)과 은행(+1.2%p)이 섞인 말이고, 약세로 적은 '에너지'는 그날 지수보다 선방(초과 +0.5%p)해 하위 3과 거리가 멀었다.
+    - **섹터 파트 ↔ 묶음행 ↔ 개별 행의 역할 분담(헷갈리기 쉬움)**:
+      - **섹터 파트 = 그날 자금 흐름의 서술**(업종 단위·중위 수치). 선정은 위 집계 규칙으로 기계 결정.
+      - **묶음행 = 개별 10에 못 든 종목들의 수치 보존**. 성립 조건은 ④ 그대로(멤버 5개 + 잔여 앵커 |5%|+ 3개) — **섹터 집계와 무관하게 판정**한다.
+      - 둘 다 성립하면 **둘 다 쓴다**(섹터 파트엔 업종명+중위, 묶음행엔 개별 종목 수치). 단 **같은 문장을 재사용하지 말 것** — 섹터 노트는 '자금이 왜 그 업종으로/에서 움직였나', 묶음 이유는 '그 업종을 움직인 구체적 사건'.
+      - **섹터 상위인데 묶음 미성립**(완만하게 함께 오른 업종 — 예: 2026-10-22 방산 중위 +1.8%·초과 +3.0%지만 5%+가 1개뿐): 묶음행을 만들지 말고 **섹터 노트에 대표 종목 1~2개와 등락률을 적어 수치를 보존**한다.
+      - **묶음 성립인데 섹터 상위 밖**(예: 10/22 가상자산 초과 −3.9%로 하위 4위): **묶음행만** 쓰고 섹터 파트에 억지로 넣지 않는다.
+      - 개별 특징주에 이미 실린 종목을 섹터 노트의 대표 종목으로 다시 인용하는 것은 허용(수치는 반드시 동일 — verify가 대조).
+    - verify #16이 **선정 업종·개수·중위 수치·'뚜렷한 업종 없음' 처리**를 기계 대조한다.
   - **특징주(핵심!) — 확정 규칙 (2026-07-02 사용자와 합의)**: 먼저 `python3 movers.py` 실행 — **수집은 전수**다(2026-10-23): 나스닥 스크리너로 **$200B+ 전 종목 + $10B~$200B 전 종목(약 886개)**을 받고 야후 day_gainers/losers·CORE_SCAN을 합친다. 예전엔 야후 '상위 100개'에만 의존해 컷오프가 매일 달라졌고(10/22 실측 급등 +5.72%·급락 −8.27%) **자격 통과 240건 중 161건이 수집조차 안 됐다** — 이 구멍은 메워졌으니 **후보 목록에 없는 종목을 모델이 임의로 보태지 말고, 반대로 `all[].qualified=true`인데 후보에 없는 종목은 감사 기록 대상**이다. → `out/movers.json`의 `qualified_up`/`qualified_down`(**M7·메가캡 전원 + 그 세션 실적 발표 종목 전원 + 일반 티어 |등락률| 상위 20**). 구 규칙 '일반 |7%|+ 전원 강제'는 **2026-10-23 폐기** — 전수 수집이 되자 변동 큰 날 7%+가 75건까지 나오는데 그날 개별 상위 10 컷오프는 −11.5%여서 7~11% 종목은 개별 자리에 닿지 못했다(조사 시간만 늘고 결과는 동일). **잘린 자격 종목은 `all[].qualified=true`로 남아 묶음 구성·감사 기록의 대상**이며, 상한을 되돌리려면 movers.py `GEN_CAP`만 키우면 된다.
       - **재료 조사 순서**: |등락률| 큰 순으로 내려가며 **개별 상위 10 자리가 확정되는 지점까지** 조사하고, 그 아래 자격 종목은 조사 대신 **감사 집계**로 처리한다. 단 **메가캡·그 세션 실적 발표 종목은 몇 건이든 전원 조사**(누락이 가장 잘 숨는 두 부류 — verify #15가 실적 쪽을 기계로 재확인).
     - **① 수집**: Yahoo 스크리너 급등/급락 상위(시총 $10B+) ∪ **CORE_SCAN 상시 감시** — 스크리너가 못 잡는 'M7 +2%대'·'메가캡 +3~4%대' 같은 작지만 자격 있는 대형주 이동을 보장 (구 watchlist.txt 폐지). **CORE_SCAN = M7 + 고정 메가캡 명단 + Nasdaq에서 매 실행 받아오는 $200B+ 전 종목(자동 갱신)** — 신규 상장·시총 성장이 자동 반영된다. (실측 2026-09-18: 고정 명단만 쓰던 시절 7/10 상장한 **SK하이닉스 ADR(SKHY, $1.33T)** 이 +4.64%·고유 재료(인텔과 미국 메모리 생산 협의)에도 누락, 같은 날 마벨·델도 누락 — $200B+ 78개 중 28개가 감시 밖이었다.) **해외 ADR(SK하이닉스·TSMC·HSBC·도요타 등)도 미국 상장이면 동일 기준으로 포함.**
@@ -504,13 +515,17 @@ a{color:inherit;text-decoration:none;}
 
     <div class="divide"></div>
     <div class="lbl">섹터</div>
-    <!-- 강세는 강한 순, 약세는 약한 순으로 나열. 이유 설명은 회색 노트(sector-note) -->
+    <!-- ★ 업종은 모델이 고르지 않는다 — out/movers.json 의 sectors.strong / sectors.weak 를 그 순서대로 쓴다(verify #16 대조).
+         각 업종명 뒤에 그 업종의 중위 등락률(sectors[].median)을 up/down 색으로 병기하고, 업종명과 수치 사이는 &nbsp;.
+         strong(또는 weak)이 빈 날은 그 줄에 업종명 대신 "뚜렷한 업종 없음" 한 줄 — 억지로 채우지 않는다.
+         sector-note = 그 업종들이 왜 그렇게 움직였는지(⑦ 사유 품질 규칙 적용, 40자 이내).
+         집계는 '지수 대비 초과 + 방향일치'라 급락일에 +1%대로 버틴 역행 업종도 상단에 올라온다. -->
     <div class="field"><span class="tag t-strong">강세</span>
-      <div class="sector-names">섹터1 · 섹터2 · 섹터3</div>
+      <div class="sector-names">업종1&nbsp;<span class="up">+0.0%</span> · 업종2&nbsp;<span class="up">+0.0%</span> · 업종3&nbsp;<span class="up">+0.0%</span></div>
       <div class="sector-note">강했던 이유 한 줄 (40자 이내)</div>
     </div>
     <div class="field" style="margin-bottom:0;"><span class="tag t-weak">약세</span>
-      <div class="sector-names">섹터1 · 섹터2 · 섹터3</div>
+      <div class="sector-names">업종1&nbsp;<span class="down">−0.0%</span> · 업종2&nbsp;<span class="down">−0.0%</span> · 업종3&nbsp;<span class="down">−0.0%</span></div>
       <div class="sector-note">약했던 이유 한 줄 (40자 이내)</div>
     </div>
 
@@ -801,6 +816,68 @@ def live_megacaps():
             best[key] = (rank, sym, round(cap, 1))
     return {s.replace("/", "-"): c for _, s, c in best.values()}
 
+# 업종 집계용 라벨 맵 (2026-10-23 신설) — 섹터 파트를 '서술 판단'에서 '데이터'로 옮기기 위한 분류.
+#   나스닥 기본 섹터(11개)는 쓸 수 없다: 방산이 industrials에 묻혀 2026-10-22 세션엔 industrials가 '약세'로
+#   집계됐지만 방산 중위는 +1.6%(지수 −1.21% 대비 +2.8%p)로 역행 강세였다. 브리핑이 쓰는 라벨 단위가 필요하다.
+#   맵에 없는 종목은 집계에 참여하지 않는다(라벨 추가는 한 줄). 시총 $10B+ 수집분만 대상.
+SECTOR_GROUPS = {
+ "반도체·메모리": ["NVDA", "AMD", "MU", "AVGO", "QCOM", "TXN", "ADI", "INTC", "MRVL", "SNDK", "STX", "WDC",
+                "TSM", "ARM", "NXPI", "ON", "SWKS", "MCHP", "LSCC", "CRUS", "AMKR", "UMC", "ASX", "SMCI",
+                "GFS", "RMBS", "SKHY", "ALAB", "CRDO"],
+ "반도체장비": ["AMAT", "LRCX", "KLAC", "ASML", "TER", "ENTG", "MKSI", "ONTO", "ACMR", "AEIS", "COHU",
+             "NVMI", "CAMT", "FORM", "VECO", "KLIC", "IPGP"],
+ "광통신·네트워크": ["ANET", "CIEN", "LITE", "COHR", "FN", "KEYS", "JNPR", "CSCO", "ERIC", "NOK", "VIAV",
+                 "INFN", "CALX", "EXTR", "HLIT", "MTSI"],
+ "전력기기·데이터센터설비": ["GEV", "PWR", "VRT", "ETN", "PH", "HUBB", "NVT", "EMR", "ABB", "BE", "PLUG",
+                      "TLN", "VST", "CEG", "NRG", "FIX", "MOD", "AAON", "CARR", "TT", "JCI", "INNV"],
+ "소프트웨어·AI": ["MSFT", "ORCL", "CRM", "NOW", "ADBE", "PLTR", "SNOW", "DDOG", "MDB", "PANW", "CRWD",
+               "ZS", "NET", "HUBS", "TEAM", "WDAY", "INTU", "SAP", "ADSK", "FTNT", "OKTA", "GTLB", "S",
+               "CFLT", "APP", "IT", "CTSH", "ACN", "CHKP", "GDDY", "TRU", "EFX"],
+ "인터넷·플랫폼": ["GOOGL", "META", "AMZN", "NFLX", "SPOT", "UBER", "ABNB", "DASH", "BKNG", "PINS", "SNAP",
+               "RDDT", "SHOP", "SE", "BABA", "PDD", "JD", "MELI", "TCOM", "EBAY", "ETSY", "CPNG", "TRI"],
+ "방산": ["LMT", "RTX", "NOC", "GD", "LHX", "HII", "LDOS", "BWXT", "CW", "AVAV", "KTOS", "TXT", "RKLB"],
+ "항공우주부품": ["HWM", "TDG", "HEI", "SPR", "MOG-A", "DCO"],
+ "항공사": ["DAL", "UAL", "AAL", "LUV", "ALK", "SKYW", "RYAAY", "CPA", "VLRS"],
+ "은행": ["JPM", "BAC", "WFC", "C", "GS", "MS", "USB", "PNC", "TFC", "COF", "BK", "STT", "FITB", "MTB",
+        "HBAN", "RF", "KEY", "CFG", "ZION", "ALLY", "NTRS", "HSBC", "RY", "TD", "MUFG", "SAN", "BBVA",
+        "ITUB", "BAP", "BMO", "BNS", "CM"],
+ "보험": ["BRK-B", "PGR", "CB", "AIG", "MET", "PRU", "ALL", "TRV", "AFL", "HIG", "GL", "L", "CINF",
+        "WRB", "ACGL", "EG", "MKL", "AIZ", "UNM", "LNC"],
+ "자산운용·증권": ["BLK", "BX", "KKR", "APO", "ARES", "OWL", "TPG", "CG", "BAM", "AMP", "TROW", "BEN",
+               "IVZ", "SCHW", "HOOD", "IBKR", "VIRT", "MKTX", "NDAQ", "CME", "ICE", "CBOE", "FRHC"],
+ "에너지": ["XOM", "CVX", "COP", "EOG", "SLB", "PSX", "MPC", "VLO", "OXY", "HES", "DVN", "FANG", "HAL",
+         "BKR", "WMB", "KMI", "OKE", "TRGP", "APA", "CTRA", "EQT", "AR", "SU", "CNQ", "CVE", "SHEL",
+         "BP", "TTE", "E", "PBR", "YPF", "EC", "SSL", "VG"],
+ "유틸리티": ["NEE", "SO", "DUK", "AEP", "D", "EXC", "SRE", "XEL", "ED", "WEC", "ES", "AWK", "PEG",
+           "EIX", "PPL", "FE", "AEE", "CMS", "DTE", "ATO", "CNP", "NI", "LNT", "EVRG", "WTRG", "AES"],
+ "제약·헬스케어": ["LLY", "JNJ", "MRK", "ABBV", "PFE", "BMY", "AMGN", "GILD", "NVO", "AZN", "NVS", "SNY",
+               "GSK", "TAK", "ZTS", "VTRS", "OGN", "JAZZ", "TEVA"],
+ "바이오텍": ["VRTX", "REGN", "BIIB", "MRNA", "BNTX", "ALNY", "INCY", "SRPT", "NBIX", "EXEL", "RARE",
+           "CRSP", "NTLA", "BEAM", "VIR", "SMMT", "IRON", "CORT", "HALO", "UTHR", "NTRA", "TEM", "GMAB"],
+ "의료기기·서비스": ["ABT", "TMO", "DHR", "SYK", "BSX", "MDT", "ISRG", "EW", "ZBH", "BDX", "BAX", "RMD",
+                "DXCM", "PODD", "ALGN", "HOLX", "STE", "WAT", "A", "IQV", "UNH", "ELV", "CI", "CVS",
+                "HUM", "CNC", "MCK", "COR", "CAH", "HCA", "EHC"],
+ "필수소비재": ["PG", "KO", "PEP", "CL", "KMB", "GIS", "K", "HSY", "STZ", "MDLZ", "KHC", "SYY", "MO",
+            "PM", "BF-B", "BF-A", "CHD", "CLX", "TAP", "KDP", "MNST", "CELH", "BUD", "DEO", "UL", "KVUE"],
+ "소매·유통": ["WMT", "COST", "TGT", "KR", "HD", "LOW", "TJX", "ROST", "DG", "DLTR", "BJ", "ORLY", "AZO",
+            "BBY", "ULTA", "W", "CHWY", "BURL", "TSCO", "WSM", "DKS", "LULU"],
+ "자동차": ["TSLA", "GM", "F", "STLA", "TM", "HMC", "RIVN", "LCID", "NIO", "XPEV", "LI", "APTV", "BWA",
+          "LEA", "MGA", "ALSN"],
+ "리츠·부동산": ["PLD", "AMT", "EQIX", "WELL", "SPG", "O", "PSA", "CCI", "DLR", "VTR", "AVB", "EQR",
+             "INVH", "MAA", "ESS", "ARE", "BXP", "KIM", "REG", "HST", "IRM", "SBAC", "CBRE", "CSGP"],
+ "운송·물류": ["UNP", "CSX", "NSC", "CP", "CNI", "UPS", "FDX", "ODFL", "JBHT", "XPO", "SAIA", "CHRW",
+            "EXPD", "LSTR", "MATX", "ZIM", "GXO", "R", "WERN"],
+ "금속·광업": ["BHP", "RIO", "VALE", "SCCO", "FCX", "NEM", "GOLD", "AEM", "KGC", "AU", "AGI", "CDE",
+            "HL", "MP", "AA", "X", "NUE", "STLD", "CLF", "TECK", "SID", "GGB", "ATI", "CRS"],
+ "건설·주택": ["DHI", "LEN", "LEN-B", "PHM", "NVR", "TOL", "KBH", "TMHC", "MTH", "BLD", "BLDR", "MAS",
+            "MHK", "OC", "AWI", "TREX", "AZEK", "WMS"],
+ "가상자산": ["COIN", "MSTR", "HOOD", "BMNR", "CRCL", "MARA", "RIOT", "CLSK", "HUT", "CIFR", "WULF",
+           "IREN", "GLXY", "BITF", "CORZ", "STKE"],
+}
+SEC_MIN_N = 5        # 집계에 쓰려면 시세 확보 종목 수
+SEC_BREADTH = 60     # 중위 방향과 같은 방향인 종목 비율(%) — '함께 움직였나'
+SEC_EXCESS = 1.5     # 지수 대비 초과(%p) 하한
+
 def _num(v):
     s = str(v or "").replace(",", "").replace("$", "").replace("%", "").strip()
     try:
@@ -1004,6 +1081,49 @@ except Exception as e:
     skhy = None
     errors.append(f"skhy block: {str(e)[:60]}")
 
+# 업종 집계(2026-10-23 신설) — 섹터 파트를 데이터에 묶는다.
+#   그날 자금 흐름은 '큰 폭 몇 종목'이 아니라 '업종 전체가 어느 쪽으로 얼마나'로 드러난다. 그래서 중위 등락률과
+#   **지수 대비 초과**를 쓴다(급락일에 +1%대로 버틴 업종은 절대값으로는 평범하지만 그날의 역행 주인공이다).
+#   실측(2026-10-22 세션·S&P −1.21%): 데이터 상위는 건설·주택 +6.5%p·필수소비재 +5.3%p·소매·유통 +5.0%p였고
+#   그날 브리핑이 강세로 적은 '금융'은 자산운용·증권(+4.0%p)과 은행(+1.1%p)이 섞인 서술이었다.
+#   '방향일치(breadth)'를 함께 보는 이유: 중위만 보면 소수 종목이 끌어올린 업종이 올라온다.
+def sector_block():
+    import statistics
+    try:
+        r = get("https://query1.finance.yahoo.com/v8/finance/chart/%5EGSPC?range=5d&interval=1d")["chart"]["result"][0]
+        c = [x for x in r["indicators"]["quote"][0]["close"] if x]
+        index_pct = round((c[-1] / c[-2] - 1) * 100, 2)
+    except Exception as e:
+        raise ValueError(f"S&P 조회 실패({str(e)[:30]})")
+    secs = []
+    for label, syms in SECTOR_GROUPS.items():
+        v = [(s, out[s]["pct"]) for s in syms if s in out and out[s].get("pct") is not None]
+        if len(v) < SEC_MIN_N:
+            continue
+        med = statistics.median(p for _, p in v)
+        same = sum(1 for _, p in v if (p > 0) == (med > 0))
+        big = [x for x in v if abs(x[1]) >= 5 and (x[1] > 0) == (med > 0)]
+        secs.append({"label": label, "n": len(v), "median": round(med, 2),
+                     "excess": round(med - index_pct, 2), "breadth": round(same / len(v) * 100),
+                     "big5": len(big),
+                     "top": [{"symbol": s, "pct": round(p, 2)} for s, p in sorted(v, key=lambda x: -abs(x[1]))[:3]]})
+    secs.sort(key=lambda x: -x["excess"])
+    ok = [x for x in secs if x["n"] >= SEC_MIN_N and x["breadth"] >= SEC_BREADTH and abs(x["excess"]) >= SEC_EXCESS]
+    strong = [x["label"] for x in ok if x["excess"] > 0][:3]
+    weak = [x["label"] for x in sorted([x for x in ok if x["excess"] < 0], key=lambda x: x["excess"])][:3]
+    for x in secs:
+        x["pick"] = "강세" if x["label"] in strong else ("약세" if x["label"] in weak else "")
+    return {"index": "S&P 500", "index_pct": index_pct, "strong": strong, "weak": weak,
+            "rule": f"후보 = 종목 {SEC_MIN_N}개+ · 방향일치 {SEC_BREADTH}%+ · |지수 대비 초과| {SEC_EXCESS}%p+ "
+                    "· 강세=초과 상위 3 / 약세=하위 3 · 후보 없으면 '뚜렷한 업종 없음'(억지 채움 금지)",
+            "sectors": secs}
+
+try:
+    sectors = sector_block()
+except Exception as e:
+    sectors = {"status": "error", "reason": f"sector block: {str(e)[:60]}"}
+    errors.append(f"sector block: {str(e)[:60]}")
+
 # 시간외 특징주 — 정규장 종료 후 '브리핑 제작 직전까지'의 움직임(2026-10-19 결정).
 #   자격 기준은 정규장과 동일(M7 ±2% / 메가캡 ±3% / 그 외 ±4%)이지만, 시간외엔 1주 단위 허수 체결이 흔해
 #   그대로 쓰면 날조에 가까운 수치가 실린다. 실측(2026-09-16~10-15 22세션·메가캡 62종목):
@@ -1137,7 +1257,7 @@ if ah.get("status") in ("error", "partial"):
     errors.append(f"afterhours: {ah.get('reason')}")   # 비차단 — 아침 브리핑은 그대로 발행된다
 
 os.makedirs("out", exist_ok=True)
-json.dump({"generated_kst": time.strftime("%Y-%m-%d %H:%M"), "errors": errors, "skhy": skhy,
+json.dump({"generated_kst": time.strftime("%Y-%m-%d %H:%M"), "errors": errors, "skhy": skhy, "sectors": sectors,
            "rule": "자격: M7 ±2% / 메가캡 ±3% / 그외 ±4% · 우선순위: 티어→|등락률| · 최종 표시는 |등락률|순",
            "qualified_up": q_up, "qualified_down": q_down, "afterhours": ah,
            "qualified_total": {"up": len([r for r in qual if r["pct"] > 0]),
@@ -1166,6 +1286,13 @@ if skhy:
     print(f"=== SK하이닉스 ADR 상시 블록 (세션 {skhy['session_et']}) — {'급등' if skhy['side']=='up' else '급락'} 파트 ===")
     print(f"  20시({skhy['p20_kst'] or '-'} KST) ${skhy['p20']} {f(skhy['pct_20'])} → 미장 종가 ${skhy['close']} {f(skhy['pct_close'])}"
           f" · 한국장 마감 후 {f(skhy['gap'])}  {'' if skhy['kr_trading'] is not False else '(한국 휴장)'}")
+if sectors.get("sectors"):
+    print(f"=== 업종 집계 (S&P {sectors['index_pct']:+.2f}%) — 강세 {sectors['strong']} / 약세 {sectors['weak']} ===")
+    print(f"  {'업종':20}{'종목':>4}{'중위':>8}{'지수대비':>9}{'방향일치':>7}{'5%+':>5}  대표 종목")
+    for x in sectors["sectors"]:
+        t = " · ".join(f"{d['symbol']} {d['pct']:+.1f}%" for d in x["top"])
+        mark = {"강세": "▲", "약세": "▼"}.get(x["pick"], " ")
+        print(f"{mark} {x['label']:20}{x['n']:>4}{x['median']:+8.2f}{x['excess']:+9.2f}{x['breadth']:>6}%{x['big5']:>5}  {t[:46]}")
 print(f"=== 시간외 특징주 [{ah.get('status')}] ===")
 if ah.get("status") == "ok":
     print(f"  세션 {ah['session_et']} · 창 {ah['window_et']} ET ({ah['cut_kst_hm']} KST) · 감시 {ah['scanned']}종목(실패 {ah['failed']})")
@@ -1908,6 +2035,43 @@ if ea:
         issues.append(f"[특징주] '{e.get('name_ko', sym)} ({sym})' {pct:+.2f}% 누락 — 그 세션 실적 발표 종목이 "
                       f"자격을 통과했고 {side_ko} 파트가 {len(rows15[side])}행(10행 미만)이라 자리가 있다. "
                       "실적(확정 공시)은 A급 재료이므로 개별 행으로 게재할 것(묶음행·실적 발표 섹션만으로는 불충분)")
+
+# 16) 섹터 파트 ↔ movers.json sectors (2026-10-23 신설)
+#     섹터 선정이 모델의 서술 판단이던 탓에 2026-10-22 세션엔 데이터 상위(건설·주택 +7.1%p·소매·유통 +5.3%p)가
+#     빠지고 '금융'(자산운용 +4.0%p와 은행 +1.2%p가 섞인 말)이 강세로 적혔다. 집계 결과에 묶어 기계 대조한다.
+sc = mv.get("sectors") or {}
+if sc.get("sectors") is not None:
+    med = {x["label"]: x["median"] for x in sc["sectors"]}
+    for tag, key, ko in (("t-strong", "strong", "강세"), ("t-weak", "weak", "약세")):
+        m = re.search(tag + r'">[^<]*</span>\s*<div class="sector-names">(.*?)</div>', html, re.S)
+        if not m:
+            issues.append(f"[섹터] {ko} 줄을 찾을 수 없음 — 템플릿 형식(sector-names) 그대로 작성")
+            continue
+        field = m.group(1)
+        want = sc.get(key) or []
+        if not want:
+            if re.search(r'[-+−][\d.]+%', field):
+                issues.append(f"[섹터] {ko} 후보가 없는 날인데 업종이 적혀 있음 — '뚜렷한 업종 없음' 한 줄로 "
+                              f"(기준: {sc.get('rule', '')[:40]}…)")
+            continue
+        got = []
+        for chunk in re.split(r'\s+·\s+', field.strip()):
+            mm = re.search(r'^(.*?)&nbsp;<span class="(?:up|down)">([-+−][\d.]+)%</span>', chunk.strip(), re.S)
+            if mm:
+                got.append((re.sub(r'<[^>]+>', '', mm.group(1)).strip(), mm.group(2)))
+        got_lbl = [g[0] for g in got]
+        if len(got_lbl) != len(want):
+            issues.append(f"[섹터] {ko} 업종 수 {len(got_lbl)}개 ≠ 집계 {len(want)}개 "
+                          f"({' · '.join(want)}) — sectors.{key} 그대로, 업종명&nbsp;수치 형식")
+        for lb in want:
+            if lb not in got_lbl:
+                issues.append(f"[섹터] {ko}에 '{lb}'({med.get(lb, 0):+.2f}%) 누락 — sectors.{key} 전부 게재")
+        for lb, pv in got:
+            lb = lb.strip()
+            if lb not in want:
+                issues.append(f"[섹터] {ko}의 '{lb}'는 집계 선정 밖 — sectors.{key}({' · '.join(want)})만 쓸 것")
+            elif abs(num(pv) - med[lb]) > 0.15:
+                issues.append(f"[섹터] '{lb}' 중위 등락률 HTML {num(pv):+.2f}% ≠ 원본 {med[lb]:+.2f}%")
 
 if issues:
     print(f"❌ 검증 실패 {len(issues)}건 — 수정 후 재검증:")

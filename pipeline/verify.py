@@ -282,6 +282,43 @@ if ea:
                       f"자격을 통과했고 {side_ko} 파트가 {len(rows15[side])}행(10행 미만)이라 자리가 있다. "
                       "실적(확정 공시)은 A급 재료이므로 개별 행으로 게재할 것(묶음행·실적 발표 섹션만으로는 불충분)")
 
+# 16) 섹터 파트 ↔ movers.json sectors (2026-10-23 신설)
+#     섹터 선정이 모델의 서술 판단이던 탓에 2026-10-22 세션엔 데이터 상위(건설·주택 +7.1%p·소매·유통 +5.3%p)가
+#     빠지고 '금융'(자산운용 +4.0%p와 은행 +1.2%p가 섞인 말)이 강세로 적혔다. 집계 결과에 묶어 기계 대조한다.
+sc = mv.get("sectors") or {}
+if sc.get("sectors") is not None:
+    med = {x["label"]: x["median"] for x in sc["sectors"]}
+    for tag, key, ko in (("t-strong", "strong", "강세"), ("t-weak", "weak", "약세")):
+        m = re.search(tag + r'">[^<]*</span>\s*<div class="sector-names">(.*?)</div>', html, re.S)
+        if not m:
+            issues.append(f"[섹터] {ko} 줄을 찾을 수 없음 — 템플릿 형식(sector-names) 그대로 작성")
+            continue
+        field = m.group(1)
+        want = sc.get(key) or []
+        if not want:
+            if re.search(r'[-+−][\d.]+%', field):
+                issues.append(f"[섹터] {ko} 후보가 없는 날인데 업종이 적혀 있음 — '뚜렷한 업종 없음' 한 줄로 "
+                              f"(기준: {sc.get('rule', '')[:40]}…)")
+            continue
+        got = []
+        for chunk in re.split(r'\s+·\s+', field.strip()):
+            mm = re.search(r'^(.*?)&nbsp;<span class="(?:up|down)">([-+−][\d.]+)%</span>', chunk.strip(), re.S)
+            if mm:
+                got.append((re.sub(r'<[^>]+>', '', mm.group(1)).strip(), mm.group(2)))
+        got_lbl = [g[0] for g in got]
+        if len(got_lbl) != len(want):
+            issues.append(f"[섹터] {ko} 업종 수 {len(got_lbl)}개 ≠ 집계 {len(want)}개 "
+                          f"({' · '.join(want)}) — sectors.{key} 그대로, 업종명&nbsp;수치 형식")
+        for lb in want:
+            if lb not in got_lbl:
+                issues.append(f"[섹터] {ko}에 '{lb}'({med.get(lb, 0):+.2f}%) 누락 — sectors.{key} 전부 게재")
+        for lb, pv in got:
+            lb = lb.strip()
+            if lb not in want:
+                issues.append(f"[섹터] {ko}의 '{lb}'는 집계 선정 밖 — sectors.{key}({' · '.join(want)})만 쓸 것")
+            elif abs(num(pv) - med[lb]) > 0.15:
+                issues.append(f"[섹터] '{lb}' 중위 등락률 HTML {num(pv):+.2f}% ≠ 원본 {med[lb]:+.2f}%")
+
 if issues:
     print(f"❌ 검증 실패 {len(issues)}건 — 수정 후 재검증:")
     for i in issues:

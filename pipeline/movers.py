@@ -84,6 +84,68 @@ def live_megacaps():
             best[key] = (rank, sym, round(cap, 1))
     return {s.replace("/", "-"): c for _, s, c in best.values()}
 
+# 업종 집계용 라벨 맵 (2026-10-23 신설) — 섹터 파트를 '서술 판단'에서 '데이터'로 옮기기 위한 분류.
+#   나스닥 기본 섹터(11개)는 쓸 수 없다: 방산이 industrials에 묻혀 2026-10-22 세션엔 industrials가 '약세'로
+#   집계됐지만 방산 중위는 +1.6%(지수 −1.21% 대비 +2.8%p)로 역행 강세였다. 브리핑이 쓰는 라벨 단위가 필요하다.
+#   맵에 없는 종목은 집계에 참여하지 않는다(라벨 추가는 한 줄). 시총 $10B+ 수집분만 대상.
+SECTOR_GROUPS = {
+ "반도체·메모리": ["NVDA", "AMD", "MU", "AVGO", "QCOM", "TXN", "ADI", "INTC", "MRVL", "SNDK", "STX", "WDC",
+                "TSM", "ARM", "NXPI", "ON", "SWKS", "MCHP", "LSCC", "CRUS", "AMKR", "UMC", "ASX", "SMCI",
+                "GFS", "RMBS", "SKHY", "ALAB", "CRDO"],
+ "반도체장비": ["AMAT", "LRCX", "KLAC", "ASML", "TER", "ENTG", "MKSI", "ONTO", "ACMR", "AEIS", "COHU",
+             "NVMI", "CAMT", "FORM", "VECO", "KLIC", "IPGP"],
+ "광통신·네트워크": ["ANET", "CIEN", "LITE", "COHR", "FN", "KEYS", "JNPR", "CSCO", "ERIC", "NOK", "VIAV",
+                 "INFN", "CALX", "EXTR", "HLIT", "MTSI"],
+ "전력기기·데이터센터설비": ["GEV", "PWR", "VRT", "ETN", "PH", "HUBB", "NVT", "EMR", "ABB", "BE", "PLUG",
+                      "TLN", "VST", "CEG", "NRG", "FIX", "MOD", "AAON", "CARR", "TT", "JCI", "INNV"],
+ "소프트웨어·AI": ["MSFT", "ORCL", "CRM", "NOW", "ADBE", "PLTR", "SNOW", "DDOG", "MDB", "PANW", "CRWD",
+               "ZS", "NET", "HUBS", "TEAM", "WDAY", "INTU", "SAP", "ADSK", "FTNT", "OKTA", "GTLB", "S",
+               "CFLT", "APP", "IT", "CTSH", "ACN", "CHKP", "GDDY", "TRU", "EFX"],
+ "인터넷·플랫폼": ["GOOGL", "META", "AMZN", "NFLX", "SPOT", "UBER", "ABNB", "DASH", "BKNG", "PINS", "SNAP",
+               "RDDT", "SHOP", "SE", "BABA", "PDD", "JD", "MELI", "TCOM", "EBAY", "ETSY", "CPNG", "TRI"],
+ "방산": ["LMT", "RTX", "NOC", "GD", "LHX", "HII", "LDOS", "BWXT", "CW", "AVAV", "KTOS", "TXT", "RKLB"],
+ "항공우주부품": ["HWM", "TDG", "HEI", "SPR", "MOG-A", "DCO"],
+ "항공사": ["DAL", "UAL", "AAL", "LUV", "ALK", "SKYW", "RYAAY", "CPA", "VLRS"],
+ "은행": ["JPM", "BAC", "WFC", "C", "GS", "MS", "USB", "PNC", "TFC", "COF", "BK", "STT", "FITB", "MTB",
+        "HBAN", "RF", "KEY", "CFG", "ZION", "ALLY", "NTRS", "HSBC", "RY", "TD", "MUFG", "SAN", "BBVA",
+        "ITUB", "BAP", "BMO", "BNS", "CM"],
+ "보험": ["BRK-B", "PGR", "CB", "AIG", "MET", "PRU", "ALL", "TRV", "AFL", "HIG", "GL", "L", "CINF",
+        "WRB", "ACGL", "EG", "MKL", "AIZ", "UNM", "LNC"],
+ "자산운용·증권": ["BLK", "BX", "KKR", "APO", "ARES", "OWL", "TPG", "CG", "BAM", "AMP", "TROW", "BEN",
+               "IVZ", "SCHW", "HOOD", "IBKR", "VIRT", "MKTX", "NDAQ", "CME", "ICE", "CBOE", "FRHC"],
+ "에너지": ["XOM", "CVX", "COP", "EOG", "SLB", "PSX", "MPC", "VLO", "OXY", "HES", "DVN", "FANG", "HAL",
+         "BKR", "WMB", "KMI", "OKE", "TRGP", "APA", "CTRA", "EQT", "AR", "SU", "CNQ", "CVE", "SHEL",
+         "BP", "TTE", "E", "PBR", "YPF", "EC", "SSL", "VG"],
+ "유틸리티": ["NEE", "SO", "DUK", "AEP", "D", "EXC", "SRE", "XEL", "ED", "WEC", "ES", "AWK", "PEG",
+           "EIX", "PPL", "FE", "AEE", "CMS", "DTE", "ATO", "CNP", "NI", "LNT", "EVRG", "WTRG", "AES"],
+ "제약·헬스케어": ["LLY", "JNJ", "MRK", "ABBV", "PFE", "BMY", "AMGN", "GILD", "NVO", "AZN", "NVS", "SNY",
+               "GSK", "TAK", "ZTS", "VTRS", "OGN", "JAZZ", "TEVA"],
+ "바이오텍": ["VRTX", "REGN", "BIIB", "MRNA", "BNTX", "ALNY", "INCY", "SRPT", "NBIX", "EXEL", "RARE",
+           "CRSP", "NTLA", "BEAM", "VIR", "SMMT", "IRON", "CORT", "HALO", "UTHR", "NTRA", "TEM", "GMAB"],
+ "의료기기·서비스": ["ABT", "TMO", "DHR", "SYK", "BSX", "MDT", "ISRG", "EW", "ZBH", "BDX", "BAX", "RMD",
+                "DXCM", "PODD", "ALGN", "HOLX", "STE", "WAT", "A", "IQV", "UNH", "ELV", "CI", "CVS",
+                "HUM", "CNC", "MCK", "COR", "CAH", "HCA", "EHC"],
+ "필수소비재": ["PG", "KO", "PEP", "CL", "KMB", "GIS", "K", "HSY", "STZ", "MDLZ", "KHC", "SYY", "MO",
+            "PM", "BF-B", "BF-A", "CHD", "CLX", "TAP", "KDP", "MNST", "CELH", "BUD", "DEO", "UL", "KVUE"],
+ "소매·유통": ["WMT", "COST", "TGT", "KR", "HD", "LOW", "TJX", "ROST", "DG", "DLTR", "BJ", "ORLY", "AZO",
+            "BBY", "ULTA", "W", "CHWY", "BURL", "TSCO", "WSM", "DKS", "LULU"],
+ "자동차": ["TSLA", "GM", "F", "STLA", "TM", "HMC", "RIVN", "LCID", "NIO", "XPEV", "LI", "APTV", "BWA",
+          "LEA", "MGA", "ALSN"],
+ "리츠·부동산": ["PLD", "AMT", "EQIX", "WELL", "SPG", "O", "PSA", "CCI", "DLR", "VTR", "AVB", "EQR",
+             "INVH", "MAA", "ESS", "ARE", "BXP", "KIM", "REG", "HST", "IRM", "SBAC", "CBRE", "CSGP"],
+ "운송·물류": ["UNP", "CSX", "NSC", "CP", "CNI", "UPS", "FDX", "ODFL", "JBHT", "XPO", "SAIA", "CHRW",
+            "EXPD", "LSTR", "MATX", "ZIM", "GXO", "R", "WERN"],
+ "금속·광업": ["BHP", "RIO", "VALE", "SCCO", "FCX", "NEM", "GOLD", "AEM", "KGC", "AU", "AGI", "CDE",
+            "HL", "MP", "AA", "X", "NUE", "STLD", "CLF", "TECK", "SID", "GGB", "ATI", "CRS"],
+ "건설·주택": ["DHI", "LEN", "LEN-B", "PHM", "NVR", "TOL", "KBH", "TMHC", "MTH", "BLD", "BLDR", "MAS",
+            "MHK", "OC", "AWI", "TREX", "AZEK", "WMS"],
+ "가상자산": ["COIN", "MSTR", "HOOD", "BMNR", "CRCL", "MARA", "RIOT", "CLSK", "HUT", "CIFR", "WULF",
+           "IREN", "GLXY", "BITF", "CORZ", "STKE"],
+}
+SEC_MIN_N = 5        # 집계에 쓰려면 시세 확보 종목 수
+SEC_BREADTH = 60     # 중위 방향과 같은 방향인 종목 비율(%) — '함께 움직였나'
+SEC_EXCESS = 1.5     # 지수 대비 초과(%p) 하한
+
 def _num(v):
     s = str(v or "").replace(",", "").replace("$", "").replace("%", "").strip()
     try:
@@ -287,6 +349,49 @@ except Exception as e:
     skhy = None
     errors.append(f"skhy block: {str(e)[:60]}")
 
+# 업종 집계(2026-10-23 신설) — 섹터 파트를 데이터에 묶는다.
+#   그날 자금 흐름은 '큰 폭 몇 종목'이 아니라 '업종 전체가 어느 쪽으로 얼마나'로 드러난다. 그래서 중위 등락률과
+#   **지수 대비 초과**를 쓴다(급락일에 +1%대로 버틴 업종은 절대값으로는 평범하지만 그날의 역행 주인공이다).
+#   실측(2026-10-22 세션·S&P −1.21%): 데이터 상위는 건설·주택 +6.5%p·필수소비재 +5.3%p·소매·유통 +5.0%p였고
+#   그날 브리핑이 강세로 적은 '금융'은 자산운용·증권(+4.0%p)과 은행(+1.1%p)이 섞인 서술이었다.
+#   '방향일치(breadth)'를 함께 보는 이유: 중위만 보면 소수 종목이 끌어올린 업종이 올라온다.
+def sector_block():
+    import statistics
+    try:
+        r = get("https://query1.finance.yahoo.com/v8/finance/chart/%5EGSPC?range=5d&interval=1d")["chart"]["result"][0]
+        c = [x for x in r["indicators"]["quote"][0]["close"] if x]
+        index_pct = round((c[-1] / c[-2] - 1) * 100, 2)
+    except Exception as e:
+        raise ValueError(f"S&P 조회 실패({str(e)[:30]})")
+    secs = []
+    for label, syms in SECTOR_GROUPS.items():
+        v = [(s, out[s]["pct"]) for s in syms if s in out and out[s].get("pct") is not None]
+        if len(v) < SEC_MIN_N:
+            continue
+        med = statistics.median(p for _, p in v)
+        same = sum(1 for _, p in v if (p > 0) == (med > 0))
+        big = [x for x in v if abs(x[1]) >= 5 and (x[1] > 0) == (med > 0)]
+        secs.append({"label": label, "n": len(v), "median": round(med, 2),
+                     "excess": round(med - index_pct, 2), "breadth": round(same / len(v) * 100),
+                     "big5": len(big),
+                     "top": [{"symbol": s, "pct": round(p, 2)} for s, p in sorted(v, key=lambda x: -abs(x[1]))[:3]]})
+    secs.sort(key=lambda x: -x["excess"])
+    ok = [x for x in secs if x["n"] >= SEC_MIN_N and x["breadth"] >= SEC_BREADTH and abs(x["excess"]) >= SEC_EXCESS]
+    strong = [x["label"] for x in ok if x["excess"] > 0][:3]
+    weak = [x["label"] for x in sorted([x for x in ok if x["excess"] < 0], key=lambda x: x["excess"])][:3]
+    for x in secs:
+        x["pick"] = "강세" if x["label"] in strong else ("약세" if x["label"] in weak else "")
+    return {"index": "S&P 500", "index_pct": index_pct, "strong": strong, "weak": weak,
+            "rule": f"후보 = 종목 {SEC_MIN_N}개+ · 방향일치 {SEC_BREADTH}%+ · |지수 대비 초과| {SEC_EXCESS}%p+ "
+                    "· 강세=초과 상위 3 / 약세=하위 3 · 후보 없으면 '뚜렷한 업종 없음'(억지 채움 금지)",
+            "sectors": secs}
+
+try:
+    sectors = sector_block()
+except Exception as e:
+    sectors = {"status": "error", "reason": f"sector block: {str(e)[:60]}"}
+    errors.append(f"sector block: {str(e)[:60]}")
+
 # 시간외 특징주 — 정규장 종료 후 '브리핑 제작 직전까지'의 움직임(2026-10-19 결정).
 #   자격 기준은 정규장과 동일(M7 ±2% / 메가캡 ±3% / 그 외 ±4%)이지만, 시간외엔 1주 단위 허수 체결이 흔해
 #   그대로 쓰면 날조에 가까운 수치가 실린다. 실측(2026-09-16~10-15 22세션·메가캡 62종목):
@@ -420,7 +525,7 @@ if ah.get("status") in ("error", "partial"):
     errors.append(f"afterhours: {ah.get('reason')}")   # 비차단 — 아침 브리핑은 그대로 발행된다
 
 os.makedirs("out", exist_ok=True)
-json.dump({"generated_kst": time.strftime("%Y-%m-%d %H:%M"), "errors": errors, "skhy": skhy,
+json.dump({"generated_kst": time.strftime("%Y-%m-%d %H:%M"), "errors": errors, "skhy": skhy, "sectors": sectors,
            "rule": "자격: M7 ±2% / 메가캡 ±3% / 그외 ±4% · 우선순위: 티어→|등락률| · 최종 표시는 |등락률|순",
            "qualified_up": q_up, "qualified_down": q_down, "afterhours": ah,
            "qualified_total": {"up": len([r for r in qual if r["pct"] > 0]),
@@ -449,6 +554,13 @@ if skhy:
     print(f"=== SK하이닉스 ADR 상시 블록 (세션 {skhy['session_et']}) — {'급등' if skhy['side']=='up' else '급락'} 파트 ===")
     print(f"  20시({skhy['p20_kst'] or '-'} KST) ${skhy['p20']} {f(skhy['pct_20'])} → 미장 종가 ${skhy['close']} {f(skhy['pct_close'])}"
           f" · 한국장 마감 후 {f(skhy['gap'])}  {'' if skhy['kr_trading'] is not False else '(한국 휴장)'}")
+if sectors.get("sectors"):
+    print(f"=== 업종 집계 (S&P {sectors['index_pct']:+.2f}%) — 강세 {sectors['strong']} / 약세 {sectors['weak']} ===")
+    print(f"  {'업종':20}{'종목':>4}{'중위':>8}{'지수대비':>9}{'방향일치':>7}{'5%+':>5}  대표 종목")
+    for x in sectors["sectors"]:
+        t = " · ".join(f"{d['symbol']} {d['pct']:+.1f}%" for d in x["top"])
+        mark = {"강세": "▲", "약세": "▼"}.get(x["pick"], " ")
+        print(f"{mark} {x['label']:20}{x['n']:>4}{x['median']:+8.2f}{x['excess']:+9.2f}{x['breadth']:>6}%{x['big5']:>5}  {t[:46]}")
 print(f"=== 시간외 특징주 [{ah.get('status')}] ===")
 if ah.get("status") == "ok":
     print(f"  세션 {ah['session_et']} · 창 {ah['window_et']} ET ({ah['cut_kst_hm']} KST) · 감시 {ah['scanned']}종목(실패 {ah['failed']})")
