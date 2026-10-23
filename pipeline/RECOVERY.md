@@ -92,7 +92,7 @@ curl -X POST "https://kauth.kakao.com/oauth/token" \
 |---|---|
 | 이름 | Daily Briefing |
 | 스케줄 | 매일 06:30 KST (cron `30 21 * * *` UTC) |
-| 모델 | claude-opus-4-8 |
+| 모델 | claude-opus-5 (2차 컨콜 루틴은 claude-opus-4-8 — §4.5b) |
 | 소스 | git 2개: https://github.com/xeob/briefing + https://github.com/xeob/briefing-secrets |
 | 세션 유지 | 끔 |
 

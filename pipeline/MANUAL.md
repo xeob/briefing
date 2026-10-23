@@ -17,7 +17,7 @@ v2.0 · 2026-07-05 · 저장소·루틴 배포 상태와 1:1 일치 · **복구 
 
 ### 1.3 아키텍처 흐름
 ```
-[클라우드 루틴 06:30 KST, Fable 5]
+[클라우드 루틴 06:30 KST, Opus 5]
   → repo 2개 클론 (xeob/briefing 공개 + xeob/briefing-secrets 비공개)
   → RUN.md 숙지
   → market.py / movers.py / events.py 실행  (결정적 데이터 3종)
@@ -36,7 +36,7 @@ v2.0 · 2026-07-05 · 저장소·루틴 배포 상태와 1:1 일치 · **복구 
 |---|---|
 | 루틴 이름 / ID | "Daily Briefing" / trig_01FucA5Xkkzyn9ZJfkhttMeM |
 | 스케줄 | cron `30 21 * * *` UTC = **매일 06:30 KST** (지터 ~2분) |
-| 모델 | **claude-opus-4-8** (실행 20~40분 → 카톡 도착 보통 07:00 전후) |
+| 모델 | **claude-opus-5** (실행 20~40분 → 카톡 도착 보통 07:00 전후) |
 | 2차 루틴(실적 컨콜) | "Earnings Call Brief" · cron `30 23 * * *` UTC = **매일 08:30 KST** · `publish_calls.sh` · 다룰 컨콜 없으면 **발송 안 함** |
 | 2차 루틴 원칙 | **그 자체로 완결** — 아침 브리핑과 수치가 겹쳐도 **반드시 다시 표기**(아침=요약, 컨콜=상세: 부문별 매출·세부 가이던스). 2026-08-21 결정 |
 | 환경 | env_01PB33HNQi33RBpK3eYeXi23 (네트워크 개방) |
