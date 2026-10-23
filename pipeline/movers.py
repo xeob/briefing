@@ -91,58 +91,103 @@ def live_megacaps():
 SECTOR_GROUPS = {
  "반도체·메모리": ["NVDA", "AMD", "MU", "AVGO", "QCOM", "TXN", "ADI", "INTC", "MRVL", "SNDK", "STX", "WDC",
                 "TSM", "ARM", "NXPI", "ON", "SWKS", "MCHP", "LSCC", "CRUS", "AMKR", "UMC", "ASX", "SMCI",
-                "GFS", "RMBS", "SKHY", "ALAB", "CRDO"],
+                "GFS", "RMBS", "SKHY", "ALAB", "CRDO",
+            "SMTC", "TSEM", "CBRS", "WOLF", "POWI", "SITM", "ALGM", "DIOD", "SLAB", "MPWR", "QRVO"],
  "반도체장비": ["AMAT", "LRCX", "KLAC", "ASML", "TER", "ENTG", "MKSI", "ONTO", "ACMR", "AEIS", "COHU",
-             "NVMI", "CAMT", "FORM", "VECO", "KLIC", "IPGP"],
+             "NVMI", "CAMT", "FORM", "VECO", "KLIC", "IPGP",
+            "CDNS", "SNPS", "ASMLF", "AEHR", "UCTT", "ICHR", "PLAB"],
  "광통신·네트워크": ["ANET", "CIEN", "LITE", "COHR", "FN", "KEYS", "JNPR", "CSCO", "ERIC", "NOK", "VIAV",
-                 "INFN", "CALX", "EXTR", "HLIT", "MTSI"],
+                 "INFN", "CALX", "EXTR", "HLIT", "MTSI",
+            "GLW", "MSI", "UI", "NTGR", "DZSI"],
  "전력기기·데이터센터설비": ["GEV", "PWR", "VRT", "ETN", "PH", "HUBB", "NVT", "EMR", "ABB", "BE", "PLUG",
-                      "TLN", "VST", "CEG", "NRG", "FIX", "MOD", "AAON", "CARR", "TT", "JCI", "INNV"],
+                      "TLN", "VST", "CEG", "NRG", "FIX", "MOD", "AAON", "CARR", "TT", "JCI", "INNV",
+            "GNRC", "INIO", "ROK", "IR", "DOV", "FTV", "AME", "AOS", "WCC", "SPXC", "POWL", "ATKR"],
  "소프트웨어·AI": ["MSFT", "ORCL", "CRM", "NOW", "ADBE", "PLTR", "SNOW", "DDOG", "MDB", "PANW", "CRWD",
                "ZS", "NET", "HUBS", "TEAM", "WDAY", "INTU", "SAP", "ADSK", "FTNT", "OKTA", "GTLB", "S",
-               "CFLT", "APP", "IT", "CTSH", "ACN", "CHKP", "GDDY", "TRU", "EFX"],
+               "CFLT", "APP", "IT", "CTSH", "ACN", "CHKP", "GDDY", "TRU", "EFX",
+            "ROP", "TYL", "PTC", "ANSS", "MANH", "DT", "ESTC", "PCTY", "PAYC", "VEEV", "TWLO", "ZM", "DOCU", "BOX", "NTNX", "PSTG", "SMAR", "FROG", "AI", "BBAI", "SOUN"],
  "인터넷·플랫폼": ["GOOGL", "META", "AMZN", "NFLX", "SPOT", "UBER", "ABNB", "DASH", "BKNG", "PINS", "SNAP",
-               "RDDT", "SHOP", "SE", "BABA", "PDD", "JD", "MELI", "TCOM", "EBAY", "ETSY", "CPNG", "TRI"],
- "방산": ["LMT", "RTX", "NOC", "GD", "LHX", "HII", "LDOS", "BWXT", "CW", "AVAV", "KTOS", "TXT", "RKLB"],
- "항공우주부품": ["HWM", "TDG", "HEI", "SPR", "MOG-A", "DCO"],
+               "RDDT", "SHOP", "SE", "BABA", "PDD", "JD", "MELI", "TCOM", "EBAY", "ETSY", "CPNG", "TRI",
+            "DIS", "CMCSA", "WBD", "PARA", "LYV", "MTCH", "YELP", "ZG", "TRIP", "EXPE", "MAR", "HLT", "RCL", "CCL", "NCLH", "DKNG", "FLUT"],
+ "방산": ["LMT", "RTX", "NOC", "GD", "LHX", "HII", "LDOS", "BWXT", "CW", "AVAV", "KTOS", "TXT", "RKLB",
+            "SPCX", "LUNR", "ASTS", "PL", "VSAT"],
+ "항공우주부품": ["HWM", "TDG", "HEI", "MOG-A", "DCO",
+            "BA", "GE", "SPR", "HXL", "WWD"],
  "항공사": ["DAL", "UAL", "AAL", "LUV", "ALK", "SKYW", "RYAAY", "CPA", "VLRS"],
  "은행": ["JPM", "BAC", "WFC", "C", "GS", "MS", "USB", "PNC", "TFC", "COF", "BK", "STT", "FITB", "MTB",
         "HBAN", "RF", "KEY", "CFG", "ZION", "ALLY", "NTRS", "HSBC", "RY", "TD", "MUFG", "SAN", "BBVA",
-        "ITUB", "BAP", "BMO", "BNS", "CM"],
+        "ITUB", "BAP", "BMO", "BNS", "CM",
+            "BNY", "UBS", "SMFG", "MFG", "ING", "LYG", "HDB", "IBN", "DB", "CS", "NU", "BSBR", "KB", "SHG", "WF"],
  "보험": ["BRK-B", "PGR", "CB", "AIG", "MET", "PRU", "ALL", "TRV", "AFL", "HIG", "GL", "L", "CINF",
-        "WRB", "ACGL", "EG", "MKL", "AIZ", "UNM", "LNC"],
+        "WRB", "ACGL", "EG", "MKL", "AIZ", "UNM", "LNC",
+            "MRSH", "AON", "AJG", "BRO", "RYAN", "CNA", "AFG", "ORI", "RGA", "PFG"],
  "자산운용·증권": ["BLK", "BX", "KKR", "APO", "ARES", "OWL", "TPG", "CG", "BAM", "AMP", "TROW", "BEN",
-               "IVZ", "SCHW", "HOOD", "IBKR", "VIRT", "MKTX", "NDAQ", "CME", "ICE", "CBOE", "FRHC"],
+               "IVZ", "SCHW", "IBKR", "VIRT", "MKTX", "NDAQ", "CME", "ICE", "CBOE", "FRHC",
+            "BN", "MCO", "SPGI", "FI", "FIS", "GPN", "JEF", "RJF", "LPLA", "EVR", "MC", "PJT", "HLI", "STEP", "BLX"],
  "에너지": ["XOM", "CVX", "COP", "EOG", "SLB", "PSX", "MPC", "VLO", "OXY", "HES", "DVN", "FANG", "HAL",
          "BKR", "WMB", "KMI", "OKE", "TRGP", "APA", "CTRA", "EQT", "AR", "SU", "CNQ", "CVE", "SHEL",
-         "BP", "TTE", "E", "PBR", "YPF", "EC", "SSL", "VG"],
+         "BP", "TTE", "E", "PBR", "YPF", "EC", "SSL", "VG",
+            "EQNR", "EPD", "ET", "MPLX", "PAA", "WES", "DINO", "PARR", "NFE", "FLNG", "GLNG"],
  "유틸리티": ["NEE", "SO", "DUK", "AEP", "D", "EXC", "SRE", "XEL", "ED", "WEC", "ES", "AWK", "PEG",
-           "EIX", "PPL", "FE", "AEE", "CMS", "DTE", "ATO", "CNP", "NI", "LNT", "EVRG", "WTRG", "AES"],
+           "EIX", "PPL", "FE", "AEE", "CMS", "DTE", "ATO", "CNP", "NI", "LNT", "EVRG", "WTRG", "AES",
+            "NGG", "PCG", "NEP", "OGE", "POR", "IDA", "BKH", "NWE", "AVA", "SWX", "SR"],
  "제약·헬스케어": ["LLY", "JNJ", "MRK", "ABBV", "PFE", "BMY", "AMGN", "GILD", "NVO", "AZN", "NVS", "SNY",
-               "GSK", "TAK", "ZTS", "VTRS", "OGN", "JAZZ", "TEVA"],
+               "GSK", "TAK", "ZTS", "VTRS", "OGN", "JAZZ", "TEVA",
+            "CTLT", "PRGO", "AMRX", "HIMS"],
  "바이오텍": ["VRTX", "REGN", "BIIB", "MRNA", "BNTX", "ALNY", "INCY", "SRPT", "NBIX", "EXEL", "RARE",
            "CRSP", "NTLA", "BEAM", "VIR", "SMMT", "IRON", "CORT", "HALO", "UTHR", "NTRA", "TEM", "GMAB"],
  "의료기기·서비스": ["ABT", "TMO", "DHR", "SYK", "BSX", "MDT", "ISRG", "EW", "ZBH", "BDX", "BAX", "RMD",
                 "DXCM", "PODD", "ALGN", "HOLX", "STE", "WAT", "A", "IQV", "UNH", "ELV", "CI", "CVS",
-                "HUM", "CNC", "MCK", "COR", "CAH", "HCA", "EHC"],
+                "HUM", "CNC", "MCK", "COR", "CAH", "HCA", "EHC",
+            "SOLV", "GEHC", "PHG", "XRAY", "NVST", "TFX", "MASI", "ICUI", "CYH", "UHS", "THC", "SEM", "ACHC"],
  "필수소비재": ["PG", "KO", "PEP", "CL", "KMB", "GIS", "K", "HSY", "STZ", "MDLZ", "KHC", "SYY", "MO",
-            "PM", "BF-B", "BF-A", "CHD", "CLX", "TAP", "KDP", "MNST", "CELH", "BUD", "DEO", "UL", "KVUE"],
+            "PM", "BF-B", "BF-A", "CHD", "CLX", "TAP", "KDP", "MNST", "CELH", "BUD", "DEO", "UL", "KVUE",
+            "BTI", "KOF", "FMX", "CCEP", "SAM", "POST", "FLO", "CAG", "CPB", "SJM", "HRL", "TSN", "USFD", "PFGC"],
  "소매·유통": ["WMT", "COST", "TGT", "KR", "HD", "LOW", "TJX", "ROST", "DG", "DLTR", "BJ", "ORLY", "AZO",
-            "BBY", "ULTA", "W", "CHWY", "BURL", "TSCO", "WSM", "DKS", "LULU"],
+            "BBY", "ULTA", "W", "CHWY", "BURL", "TSCO", "WSM", "DKS", "LULU",
+            "MCD", "SBUX", "CMG", "YUM", "QSR", "DRI", "WEN", "TXRH", "EAT", "CAVA", "SG", "WSO", "QXO", "POOL", "GPC", "AAP"],
  "자동차": ["TSLA", "GM", "F", "STLA", "TM", "HMC", "RIVN", "LCID", "NIO", "XPEV", "LI", "APTV", "BWA",
-          "LEA", "MGA", "ALSN"],
+          "LEA", "MGA", "ALSN",
+            "RACE", "PCAR", "CMI", "AXL", "DAN", "ADNT", "GPI", "AN", "LAD", "PAG", "KMX", "CVNA"],
  "리츠·부동산": ["PLD", "AMT", "EQIX", "WELL", "SPG", "O", "PSA", "CCI", "DLR", "VTR", "AVB", "EQR",
-             "INVH", "MAA", "ESS", "ARE", "BXP", "KIM", "REG", "HST", "IRM", "SBAC", "CBRE", "CSGP"],
+             "INVH", "MAA", "ESS", "ARE", "BXP", "KIM", "REG", "HST", "IRM", "SBAC", "CBRE", "CSGP",
+            "WY", "PCH", "RYN", "LAMR", "OUT", "EXR", "CUBE", "NSA", "LSI", "UDR", "CPT", "AIV", "ELS", "SUI", "AMH", "DOC", "OHI", "CTRE", "SBRA"],
  "운송·물류": ["UNP", "CSX", "NSC", "CP", "CNI", "UPS", "FDX", "ODFL", "JBHT", "XPO", "SAIA", "CHRW",
-            "EXPD", "LSTR", "MATX", "ZIM", "GXO", "R", "WERN"],
+            "EXPD", "LSTR", "MATX", "ZIM", "GXO", "R", "WERN",
+            "KNX", "HTLD", "MRTN", "SNDR", "TFII", "RXO", "FWRD", "ULH", "PTSI"],
  "금속·광업": ["BHP", "RIO", "VALE", "SCCO", "FCX", "NEM", "GOLD", "AEM", "KGC", "AU", "AGI", "CDE",
-            "HL", "MP", "AA", "X", "NUE", "STLD", "CLF", "TECK", "SID", "GGB", "ATI", "CRS"],
- "건설·주택": ["DHI", "LEN", "LEN-B", "PHM", "NVR", "TOL", "KBH", "TMHC", "MTH", "BLD", "BLDR", "MAS",
-            "MHK", "OC", "AWI", "TREX", "AZEK", "WMS"],
+            "HL", "MP", "AA", "X", "NUE", "STLD", "CLF", "TECK", "SID", "GGB", "ATI", "CRS",
+            "WPM", "FNV", "RGLD", "PAAS", "EXK", "FSM", "BTG", "NGD", "EQX", "IAG", "OR", "SSRM", "HBM", "ERO", "MTRN", "HAYN"],
+ "주택건설": ["DHI", "LEN", "LEN-B", "PHM", "NVR", "TOL", "KBH", "TMHC", "MTH", "IBP", "BLD",
+            "BLDR", "FND", "WMS", "MAS"],
+ "건설엔지니어링": ["ACM", "J", "EME", "MTZ", "DY", "STRL", "ROAD", "PRIM"],
+ "건자재·시멘트": ["SHW", "VMC", "MLM", "CRH", "CX", "EXP", "SUM", "JHX", "OC", "AWI", "TREX",
+               "AZEK", "CSL", "TGLS", "MHK", "ALLE"],
  "가상자산": ["COIN", "MSTR", "HOOD", "BMNR", "CRCL", "MARA", "RIOT", "CLSK", "HUT", "CIFR", "WULF",
-           "IREN", "GLXY", "BITF", "CORZ", "STKE"],
+           "IREN", "GLXY", "BITF", "CORZ", "STKE",
+            "BTBT", "SDIG", "APLD", "GREE", "NCTY"],
+
+ "산업기계·장비": ["GGG", "CR", "MMM", "ITW", "SWK", "LECO", "NDSN", "IEX", "XYL", "FLS", "GTLS", "TKR", "RRX", "THRM"],
+ "환경·위생서비스": ["WM", "RSG", "WCN", "RTO", "CWST", "VLTO", "CTAS", "ECL", "NVRI", "CLH"],
+ "서버·EMS·클라우드인프라": ["SMCI2", "DELL", "HPE", "HPQ", "NTAP", "CLS", "FLEX", "SANM", "BHE", "PLXS", "CRWV", "NBIS", "APLD2", "IREN2", "DOCN", "AKAM", "FSLY"],
+ "농기계·중장비": ["DE", "CAT", "AGCO", "TEX", "OSK", "ASTE", "ALG", "LNN", "CNH"],
+ "통신": ["VZ", "T", "TMUS", "LUMN", "USM", "TDS", "IDT", "SATS", "VOD", "TU", "BCE", "AMX", "TEF", "TLK", "CHT", "SKM", "KT"],
+ "소비전자·완제품": ["SONY", "GPRO", "SONO", "VZIO", "KODK", "WHR", "NWL", "HAS", "MAT", "PTON", "YETI", "SN"],
+ "데이터·분석서비스": ["ADP", "PAYX", "VRSK", "FICO", "NLSN", "EXLS", "G", "CSGP2", "FDS", "MORN", "TRU2"],
 }
-SEC_MIN_N = 5        # 집계에 쓰려면 시세 확보 종목 수
+# 특징주 행 꼬리표에 쓰는 짧은 표시명(모바일 390px 기준 — 긴 라벨은 줄바꿈을 만든다)
+SECTOR_SHORT = {
+ "반도체·메모리": "반도체", "반도체장비": "반도체장비", "광통신·네트워크": "광통신",
+ "전력기기·데이터센터설비": "전력설비", "소프트웨어·AI": "소프트웨어", "인터넷·플랫폼": "플랫폼",
+ "방산": "방산", "항공우주부품": "항공우주", "항공사": "항공", "은행": "은행", "보험": "보험",
+ "자산운용·증권": "자산운용", "에너지": "에너지", "유틸리티": "유틸리티", "제약·헬스케어": "제약",
+ "바이오텍": "바이오", "의료기기·서비스": "의료", "필수소비재": "필수소비재", "소매·유통": "소매",
+ "자동차": "자동차", "리츠·부동산": "리츠", "운송·물류": "운송", "금속·광업": "금속·광업",
+ "주택건설": "주택건설", "건설엔지니어링": "건설E&C", "건자재·시멘트": "건자재", "가상자산": "가상자산", "산업기계·장비": "산업기계",
+ "환경·위생서비스": "환경서비스", "서버·EMS·클라우드인프라": "서버·클라우드", "농기계·중장비": "중장비",
+ "통신": "통신", "소비전자·완제품": "소비전자", "데이터·분석서비스": "데이터서비스",
+}
+SEC_MIN_N = 6        # 집계에 쓰려면 시세 확보 종목 수(5면 한 종목이 중위를 흔든다 — 2026-10-23 실측에서 n=5 그룹이 1위로 올라왔다)
 SEC_BREADTH = 60     # 중위 방향과 같은 방향인 종목 비율(%) — '함께 움직였나'
 SEC_EXCESS = 1.5     # 지수 대비 초과(%p) 하한
 
@@ -251,10 +296,14 @@ def tier(r):
 
 THRESH = {0: 2.0, 1: 3.0, 2: 4.0}
 
+SYM_SECTOR = {s: g for g, v in SECTOR_GROUPS.items() for s in v}
 rows = list(out.values())
 for r in rows:
     r["tier"] = tier(r)
     r["qualified"] = abs(r["pct"]) >= THRESH[r["tier"]]
+    g = SYM_SECTOR.get(r["symbol"])
+    if g:                                  # 맵에 없으면 필드를 만들지 않는다 → 꼬리표 생략(모델 임의 부여 금지)
+        r["sector"], r["sector_short"] = g, SECTOR_SHORT.get(g, g)
 
 qual = sorted([r for r in rows if r["qualified"]], key=lambda x: (x["tier"], -abs(x["pct"])))
 
@@ -508,11 +557,34 @@ def afterhours_block(now_et=None):
                             "value_m": round(value_m, 1), "src_diff": round(diff, 2),
                             "last_bar_et": c["y_t"].strftime("%H:%M")})
     rows_ah.sort(key=lambda r: -abs(r["pct"]))
+    # 실적 발표 섹션 표기용 — 그 세션 발표 종목의 시간외 등락률(자격 미달이어도 필요하다).
+    # 장 시작 전 발표분은 거의 0%라 표기하지 않고, 마감 후 발표분만 쓴다(RUN.md 실적 섹션 규칙).
+    reporters = {}
+    for d in data:
+        if d["symbol"] not in REPORTERS or d["session"] != sess:
+            continue
+        win = [(t, c) for t, c in d["bars"] if open_et <= t <= cut]
+        if not win:
+            continue
+        e = {"yahoo_pct": round((win[-1][1] / d["close"] - 1) * 100, 2), "pct": None,
+             "confirmed": False, "last_bar_et": win[-1][0].strftime("%H:%M")}
+        try:
+            t = get(f"https://api.nasdaq.com/api/quote/{d['symbol']}/extended-trading"
+                    f"?assetclass=stocks&markettype=post&time=0")["data"]["infoTable"]["rows"][0]
+            n_last = float(str(t["consolidated"]).split()[0].replace("$", "").replace(",", ""))
+            diff = abs(n_last / win[-1][1] - 1) * 100
+            if diff <= AH_SRC_TOL:
+                e.update(pct=round((n_last / d["close"] - 1) * 100, 2), confirmed=True, src_diff=round(diff, 2))
+            else:
+                e["reason"] = f"2소스 불일치 {diff:.2f}% — 표기 금지"
+        except Exception as ex:
+            e["reason"] = f"나스닥 조회 실패({str(ex)[:24]}) — 표기 금지"
+        reporters[d["symbol"]] = e
     cut_kst = cut.astimezone(KST)
     return {"status": "ok", "session_et": sess.isoformat(), "window_et": f"16:00~{cut:%H:%M}",
             "cut_et_hm": f"{cut:%H:%M}", "cut_kst_hm": f"{cut_kst:%H:%M}",
             "cut_kst": cut_kst.strftime("%Y-%m-%d %H:%M"), "scanned": len(data), "failed": len(failed),
-            "rows": rows_ah, "dropped": dropped[:10], "errors": failed[:5],
+            "rows": rows_ah, "reporters": reporters, "dropped": dropped[:10], "errors": failed[:5],
             "rule": f"정규장과 동일 자격(M7 ±2%/메가캡 ±3%/그외 ±4%) · 마지막 {AH_BARS}개 5분봉 전부 통과 · "
                     f"거래대금 ${AH_MIN_VALUE_M:.0f}M+ · 야후↔나스닥 {AH_SRC_TOL}% 이내 · 표시값=나스닥 체결가 "
                     f"· 거래대금·고저폭은 지면 비표시"}

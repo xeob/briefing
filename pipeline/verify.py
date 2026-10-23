@@ -27,6 +27,8 @@ def seg(start, *ends):
     cuts = [s.index(e) for e in ends if e in s]
     return s[:min(cuts)] if cuts else s
 
+# 개별 행 헤더: 종목명 (티커) [+ 업종 꼬리표 mv-t] + 등락률(mv-p) — 꼬리표는 2026-10-23 신설이라 '있어도/없어도' 통과
+TAG = r'(?:<span class="mv-t">[^<]*</span>)?'
 ah_sec = seg(AH_LBL, "발표된 지표")
 html_main = html.replace(ah_sec, "") if ah_sec else html
 
@@ -52,7 +54,7 @@ for m in re.finditer(r'idx-name">(.*?)</div>\s*<div class="idx-val">(.*?)</div>\
 
 # 2) 특징주: (티커) + 등락률 → movers.json 대조
 allmv = {r["symbol"]: r["pct"] for r in mv.get("all", [])}
-for m in re.finditer(r'mv-n">[^<(]*\(([A-Z]{1,6})\)</span><span class="mv-p[^"]*">([-+−][\d.]+)%', html_main):
+for m in re.finditer(r'mv-n">[^<(]*\(([A-Z]{1,6})\)</span>' + TAG + r'<span class="mv-p[^"]*">([-+−][\d.]+)%', html_main):
     tk, pct = m.group(1), num(m.group(2))
     if tk in allmv and abs(pct - allmv[tk]) > 0.15:
         issues.append(f"[특징주] {tk} 등락률 HTML {pct:+.2f}% ≠ 원본 {allmv[tk]:+.2f}%")
@@ -205,7 +207,7 @@ if sk:
         issues.append(f"[하이닉스] SK하이닉스 ADR (SKHY) 행이 {where} — 특징주 자격과 무관하게 매일 표시"
                       f"(ADR {sk['pct_close']:+.2f}% → {side_ko} 파트: 자격 충족 시 본 순위, 아니면 맨 아래)")
     else:
-        m = re.search(r'\(SKHY\)</span><span class="mv-p[^"]*">([-+−]?[\d.]+)%</span></div><div class="mv-r">(.*?)</div>',
+        m = re.search(r'\(SKHY\)</span>' + TAG + r'<span class="mv-p[^"]*">([-+−]?[\d.]+)%</span></div><div class="mv-r">(.*?)</div>',
                       want, re.S)
         if not m:
             issues.append("[하이닉스] SKHY 행 형식을 인식할 수 없음 — 템플릿 형식(mv-n/mv-p/mv-r) 그대로 작성")
@@ -267,7 +269,7 @@ if ea:
     qual_pct = {r["symbol"]: r["pct"] for r in mv.get("all", []) if r.get("qualified") and r.get("symbol")}
     up_sec15 = seg("특징주 · 급등", "특징주 · 급락")
     dn_sec15 = seg("특징주 · 급락", AH_LBL, "발표된 지표")
-    IND = r'mv-n">[^<(]*\(([A-Z][A-Z.\-]{0,5})\)</span><span class="mv-p'
+    IND = r'mv-n">[^<(]*\(([A-Z][A-Z.\-]{0,5})\)</span>' + TAG + r'<span class="mv-p'
     rows15 = {"up": re.findall(IND, up_sec15), "down": re.findall(IND, dn_sec15)}
     for e in ea.get("must_cover", []):
         sym = e.get("symbol", "")
@@ -318,6 +320,50 @@ if sc.get("sectors") is not None:
                 issues.append(f"[섹터] {ko}의 '{lb}'는 집계 선정 밖 — sectors.{key}({' · '.join(want)})만 쓸 것")
             elif abs(num(pv) - med[lb]) > 0.15:
                 issues.append(f"[섹터] '{lb}' 중위 등락률 HTML {num(pv):+.2f}% ≠ 원본 {med[lb]:+.2f}%")
+
+# 17) 실적 발표 섹션 수치 + 업종 꼬리표 (2026-10-23 신설)
+#     ⓐ 실적 섹션 헤더 등락률 = 그 세션 정규장 등락률(movers.json all[].pct)
+#     ⓑ 마감 후 발표 종목은 본문에 '시간외 ±%'(afterhours.reporters[].pct, confirmed만) 표기 — 장 전 발표분은 표기 안 함
+#        (실측 2026-10-22: 장 전 발표 LMT의 시간외는 −0.20%로 무의미, 마감 후 발표 WDC는 −5.71%로 그게 본반응)
+#     ⓒ 개별 행 업종 꼬리표(mv-t) = movers.json all[].sector_short 그대로, 맵에 없으면 꼬리표 금지
+allpct = {r["symbol"]: r["pct"] for r in mv.get("all", []) if r.get("symbol")}
+allsec = {r["symbol"]: r.get("sector_short") for r in mv.get("all", []) if r.get("symbol")}
+reps = ((mv.get("afterhours") or {}).get("reporters")) or {}
+earn_sec = seg("실적 발표", "미국장 주요 일정")
+if ea and earn_sec:
+    tim = {e.get("symbol"): (e.get("timing") or "") for e in ea.get("must_cover", [])}
+    for m in re.finditer(r'mv-n">[^<(]*\(([A-Z][A-Z.\-]{0,5})\)</span>(.*?)<div class="mv-r">(.*?)</div>',
+                         earn_sec, re.S):
+        sym, head, body = m.group(1), m.group(2), m.group(3)
+        hp = re.search(r'class="mv-p[^"]*">\s*([-+−][\d.]+)%', head)
+        if sym in allpct:
+            if not hp:
+                issues.append(f"[실적] {sym} 헤더에 정규장 등락률 없음 — movers.json 값 {allpct[sym]:+.2f}% 병기"
+                              "(헤더 mv-p, 서프라이즈 라벨은 본문으로)")
+            elif abs(num(hp.group(1)) - allpct[sym]) > 0.15:
+                issues.append(f"[실적] {sym} 헤더 등락률 HTML {num(hp.group(1)):+.2f}% ≠ 원본 {allpct[sym]:+.2f}%")
+        r_ah = reps.get(sym) or {}
+        shown = re.search(r'시간외\s*([-+−][\d.]+)%', re.sub(r'<[^>]+>', ' ', body))
+        after_close = "after" in tim.get(sym, "")
+        if shown and not (r_ah.get("confirmed") and r_ah.get("pct") is not None):
+            issues.append(f"[실적] {sym} '시간외 {shown.group(1)}%'는 원본 없음/미확인 — "
+                          f"afterhours.reporters 확인값만 표기({r_ah.get('reason', '데이터 없음')})")
+        elif shown and abs(num(shown.group(1)) - r_ah["pct"]) > 0.15:
+            issues.append(f"[실적] {sym} 시간외 HTML {num(shown.group(1)):+.2f}% ≠ 원본 {r_ah['pct']:+.2f}%")
+        elif not shown and after_close and r_ah.get("confirmed") and abs(r_ah.get("pct") or 0) >= 1:
+            issues.append(f"[실적] {sym}(마감 후 발표) 시간외 {r_ah['pct']:+.2f}% 누락 — 본문 첫 줄에 병기")
+for part_name, part in (("급등", seg("특징주 · 급등", "특징주 · 급락")),
+                        ("급락", seg("특징주 · 급락", AH_LBL, "발표된 지표"))):
+    for m in re.finditer(r'mv-n">[^<(]*\(([A-Z][A-Z.\-]{0,5})\)</span>(' + TAG + r')<span class="mv-p', part):
+        sym, tag = m.group(1), m.group(2)
+        got = re.sub(r'<[^>]+>', '', tag).strip()
+        want = allsec.get(sym)
+        if want and got != want:
+            issues.append(f"[특징주] {part_name} {sym} 업종 꼬리표 '{got or '없음'}' ≠ 원본 '{want}' "
+                          "— movers.json all[].sector_short 그대로")
+        if got and not want:
+            issues.append(f"[특징주] {part_name} {sym} 업종 꼬리표 '{got}'는 업종 맵에 없는 종목 — 꼬리표 생략"
+                          "(임의 분류 금지, 맵 보강은 movers.py SECTOR_GROUPS)")
 
 if issues:
     print(f"❌ 검증 실패 {len(issues)}건 — 수정 후 재검증:")
