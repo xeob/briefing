@@ -105,6 +105,9 @@ SECTOR_GROUPS = {
  "소프트웨어·AI": ["MSFT", "ORCL", "CRM", "NOW", "ADBE", "PLTR", "SNOW", "DDOG", "MDB", "PANW", "CRWD",
                "ZS", "NET", "HUBS", "TEAM", "WDAY", "INTU", "SAP", "ADSK", "FTNT", "OKTA", "GTLB", "S",
                "CFLT", "APP", "IT", "CTSH", "ACN", "CHKP", "GDDY", "TRU", "EFX",
+               # 2026-10-25 보강 — PHP 취약점 랠리 때 SAIL +8.62%·RBRK +6.62%가 맵에 없어
+               # 묶음 멤버십을 모델 판단에 맡겨야 했다. 보안 소프트웨어 피어를 등록.
+               "SAIL", "RBRK", "TENB", "QLYS", "CYBR", "VRNS",
             "ROP", "TYL", "PTC", "ANSS", "MANH", "DT", "ESTC", "PCTY", "PAYC", "VEEV", "TWLO", "ZM", "DOCU", "BOX", "NTNX", "PSTG", "SMAR", "FROG", "AI", "BBAI", "SOUN"],
  "인터넷·플랫폼": ["GOOGL", "META", "AMZN", "NFLX", "SPOT", "UBER", "ABNB", "DASH", "BKNG", "PINS", "SNAP",
                "RDDT", "SHOP", "SE", "BABA", "PDD", "JD", "MELI", "TCOM", "EBAY", "ETSY", "CPNG", "TRI",
@@ -127,6 +130,9 @@ SECTOR_GROUPS = {
  "에너지": ["XOM", "CVX", "COP", "EOG", "SLB", "PSX", "MPC", "VLO", "OXY", "HES", "DVN", "FANG", "HAL",
          "BKR", "WMB", "KMI", "OKE", "TRGP", "APA", "CTRA", "EQT", "AR", "SU", "CNQ", "CVE", "SHEL",
          "BP", "TTE", "E", "PBR", "YPF", "EC", "SSL", "VG",
+            # 2026-10-25 보강 — 10/23 세션에 ±4%+로 자격 통과했으나 맵에 없어 섹터 집계·묶음에서
+            # 빠졌다(LNG +4.06·FTI +4.59·PR +4.47·OVV +4.29). 같은 계열 피어도 함께 등록.
+            "LNG", "FTI", "PR", "OVV", "CHRD", "MTDR", "NOV", "WFRD", "CHX",
             "EQNR", "EPD", "ET", "MPLX", "PAA", "WES", "DINO", "PARR", "NFE", "FLNG", "GLNG"],
  "유틸리티": ["NEE", "SO", "DUK", "AEP", "D", "EXC", "SRE", "XEL", "ED", "WEC", "ES", "AWK", "PEG",
            "EIX", "PPL", "FE", "AEE", "CMS", "DTE", "ATO", "CNP", "NI", "LNT", "EVRG", "WTRG", "AES",
