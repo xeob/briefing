@@ -205,6 +205,36 @@ def _num(v):
 #   자격·A급 재료(실적 상회)에도 특징주에서 빠졌다.
 #   나스닥 스크리너는 시총 구간 전체를 1회 호출로 주므로($10B~$200B 약 886종목) 컷오프 개념이 사라진다.
 #   등락률 정확도: 야후 일봉과 LMT·CSX·ADBE·KLAC·LDOS·INTU 6종목 모두 0.00%p 일치(2026-10-23 확인).
+# 야후 일봉 배치 조회 — 나스닥 스크리너 등락률의 2소스 대조용(아래 nasdaq_screen 참조).
+def yahoo_session_pct(symbols, chunk=20):   # 야후 spark 상한 = 호출당 20종목
+    """{심볼: (직전 완료 세션 등락률, 세션일)} — 야후 spark 일봉 2개로 계산. 실패 종목은 빠진다."""
+    from zoneinfo import ZoneInfo
+    ET = ZoneInfo("America/New_York")
+    now_et = datetime.datetime.now(ET)
+    found = {}
+    for i in range(0, len(symbols), chunk):
+        part = [s for s in symbols[i:i + chunk] if s]
+        if not part:
+            continue
+        try:
+            d = get("https://query1.finance.yahoo.com/v8/finance/spark?symbols="
+                    + ",".join(part) + "&range=5d&interval=1d")
+        except Exception:
+            continue
+        for sym, v in (d or {}).items():
+            try:
+                bars = [(datetime.datetime.fromtimestamp(t, ET).date(), c)
+                        for t, c in zip(v["timestamp"], v["close"]) if c is not None]
+                bars = [b for b in bars if not (b[0] == now_et.date() and now_et.hour < 16)]
+                if len(bars) < 2:
+                    continue
+                found[sym] = (round((bars[-1][1] / bars[-2][1] - 1) * 100, 2), bars[-1][0])
+            except Exception:
+                continue
+        time.sleep(0.2)
+    return found
+
+
 def nasdaq_screen(group, min_cap_b=10.0):
     """나스닥 스크리너 시총 구간 전수 → [{symbol,name,pct,mktcap_b}]. 보통주 아닌 상품은 제외."""
     d = get(f"https://api.nasdaq.com/api/screener/stocks?tableonly=true&limit=3000&marketcap={group}")
@@ -221,7 +251,30 @@ def nasdaq_screen(group, min_cap_b=10.0):
                     "pct": round(pct, 2), "mktcap_b": round(cap / 1e9, 1)})
     if not got:
         raise ValueError("스크리너 행 0건")
-    return got
+    # ★ 등락률 2소스 대조(2026-10-25 신설) — 나스닥 스크리너는 비거래일에 **직전 세션 스냅샷을 그대로**
+    #   돌려준다. 실측(2026-10-25 일요일 실행): 응답 asof = "Last price as of Oct 22, 2026"으로 다뤄야 할
+    #   10/23 세션이 아닌 10/22 등락률이 전 행에 담겼다(테라다인 −10.63%는 10/22 몫, 실제 10/23은 +0.03%).
+    #   그대로 쓰면 섹터 선정·묶음·특징주가 통째로 한 세션 밀린다(같은 세션을 다룬 10/24 브리핑은 반도체장비를
+    #   강세 +1.02%로 적었는데 이 데이터는 약세 −7.8%로 뒤집혀 나왔다). 전 행을 야후 일봉으로 대조해
+    #   바로잡고, 확인 못 한 행은 **버린다**(틀린 수치보다 누락이 낫다).
+    asof = str(((d.get("data") or {}).get("asof")) or "").strip()
+    ver = yahoo_session_pct([g["symbol"] for g in got])
+    keep, fixed, dropped = [], 0, 0
+    for g in got:
+        v = ver.get(g["symbol"])
+        if v is None:
+            dropped += 1
+            continue
+        if abs(v[0] - g["pct"]) > 0.1:
+            g["pct"] = v[0]
+            fixed += 1
+        keep.append(g)
+    if not keep:
+        raise ValueError(f"스크리너 등락률 2소스 대조 전건 실패 (asof={asof})")
+    sess = max((v[1] for v in ver.values()), default=None)
+    errors.append(f"나스닥 스크리너({group}) 등락률 야후 일봉 대조: {len(got)}건 중 "
+                  f"보정 {fixed} · 미확인 폐기 {dropped} · 세션 {sess} (스크리너 {asof})")
+    return keep
 
 out, errors = {}, []
 try:

@@ -3,6 +3,11 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
+# ★ 브리핑은 KST 산출물 — 컨테이너 TZ이 UTC면 verify.py의 datetime.now()가 하루 전이 되어
+#   헤더 날짜 검사(#3)와 뉴스 시간창 검사(#5)가 어긋난다(2026-10-25 실측: 헤더 10/25인데 오늘=10/24로 차단).
+#   아래 TODAY·MD·WDATE가 이미 TZ=Asia/Seoul인 것과 맞춰 셸 전체를 KST로 고정한다.
+export TZ=Asia/Seoul
+
 # .env가 있으면 로드, 없으면 이미 export된 환경변수 사용(클라우드: briefing-secrets/.env를 미리 source)
 [ -f .env ] && { set -a; source .env; set +a; }
 : "${GH_PAT:?GH_PAT 필요}"; : "${GH_REPO:?GH_REPO 필요}"; : "${SITE_URL:?SITE_URL 필요}"
