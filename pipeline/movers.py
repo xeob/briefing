@@ -261,6 +261,81 @@ try:
 except Exception as e:
     errors.append(f"nasdaq large screener: {str(e)[:60]} — 야후 상위 100만으로 수집(컷오프 아래 자격 종목 누락 가능)")
 
+# ── 세션 정합 보정 (2026-10-26 신설) ──────────────────────────────────────────
+# 나스닥 스크리너 pctchange는 자체 스냅샷 기준이라 **주말·장 마감 한참 뒤 실행에서 한 세션
+# 뒤처진 값**을 준다. 실측(2026-10-25 21:40 UTC = 10/26 06:40 KST 실행, 직전 세션 10/23):
+#   GIS +8.01% · LEN +8.69% · KMB +5.33% · CRS −20.62% · MRNA −17.57% 가 전부 **10/22 세션** 값
+#   (10/23 실제값은 −2.25% · +0.56% · −1.93% · −2.60% · −1.25%).
+# 반면 야후 day_gainers/losers·CORE_SCAN 일봉은 10/23로 정상이라 **한 파일 안에 두 세션이
+# 섞였고**, 그대로 쓰면 섹터 집계(10/22 종목 등락률 ÷ 10/23 지수)·특징주·묶음이 전부 틀어진다.
+# events.py가 이미 같은 성질의 'Nasdaq 오프셋 +1일'을 보정하고 있다 — 여기서도 같게 막는다.
+# 방법: 야후 일봉의 '직전 완료 세션'을 기준일로 잡고 앵커 비교 → 어긋나면 스크리너 수집분
+# 전 종목의 등락률을 야후 일봉으로 재계산(확인 불가 종목은 제외 — 틀린 값보다 누락이 낫다).
+def _yahoo_sessions(sym, now_et=None):
+    """{세션일: 종가} — 정규장이 끝나지 않은 당일 미완성 봉은 제외."""
+    from zoneinfo import ZoneInfo
+    ET = ZoneInfo("America/New_York")
+    now_et = now_et or datetime.datetime.now(ET)
+    r = get(f"https://query1.finance.yahoo.com/v8/finance/chart/{sym}?range=10d&interval=1d")["chart"]["result"][0]
+    closes = {}
+    for t, c in zip(r["timestamp"], r["indicators"]["quote"][0]["close"]):
+        day = datetime.datetime.fromtimestamp(t, ET).date()
+        if c is None or (day == now_et.date() and now_et.hour < 16):
+            continue
+        closes[day] = c
+    return closes
+
+def yahoo_pct_on(sym, session_day):
+    """session_day 세션의 종가 등락률. 그 세션 봉이 없으면 None."""
+    try:
+        closes = _yahoo_sessions(sym)
+        days = sorted(closes)
+        if session_day not in closes:
+            return None
+        i = days.index(session_day)
+        if i == 0:
+            return None
+        return round((closes[session_day] / closes[days[i - 1]] - 1) * 100, 2)
+    except Exception:
+        return None
+
+def target_session_day():
+    """직전 완료 미국 세션일 — S&P 일봉 기준(지수는 상장폐지·거래정지가 없다)."""
+    days = sorted(_yahoo_sessions("%5EGSPC"))
+    return days[-1] if days else None
+
+def align_nasdaq_session(rows_by_sym, session_day, errors):
+    """스크리너 수집분(src=nasdaq_large)의 등락률이 session_day 세션인지 앵커로 확인하고,
+    어긋나면 전 종목 야후 일봉으로 재계산. 반환 = (보정건수, 제외건수)."""
+    import concurrent.futures as cf
+    targets = [s for s, r in rows_by_sym.items() if r.get("src") == "nasdaq_large"]
+    if not session_day or not targets:
+        return 0, 0
+    anchors = sorted(targets, key=lambda s: -abs(rows_by_sym[s]["pct"]))[:8]
+    bad = 0
+    for s in anchors:
+        p = yahoo_pct_on(s, session_day)
+        if p is None or abs(p - rows_by_sym[s]["pct"]) > 0.3:
+            bad += 1
+    if bad < 4:                      # 과반 일치 → 스크리너가 같은 세션. 보정 불필요.
+        return 0, 0
+    errors.append(f"나스닥 스크리너 세션 불일치(앵커 {bad}/8) — {session_day} 세션 야후 일봉으로 등락률 재계산")
+    fixed = dropped = 0
+    with cf.ThreadPoolExecutor(max_workers=8) as ex:
+        for s, p in zip(targets, ex.map(lambda x: yahoo_pct_on(x, session_day), targets)):
+            if p is None:
+                rows_by_sym.pop(s, None)
+                dropped += 1
+            else:
+                rows_by_sym[s]["pct"] = p
+                fixed += 1
+    return fixed, dropped
+
+SESSION_DAY = target_session_day()
+_fixed, _dropped = align_nasdaq_session(out, SESSION_DAY, errors)
+if _fixed or _dropped:
+    print(f"세션 정합 보정: 스크리너 {_fixed}종목 등락률 재계산 · {_dropped}종목 제외 (기준 세션 {SESSION_DAY})")
+
 for s in sorted(CORE_SCAN):
     if s in out:
         continue
