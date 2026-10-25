@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-25",
+ "generated": "2026-10-26",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
@@ -51,6 +51,39 @@
   "2026-10-22|cb leading index": {
    "-0.2": "m/m",
    "-0.1": "m/m"
+  },
+  "2026-10-27|core durable goods orders": {
+   "0.6": "m/m"
+  },
+  "2026-10-27|durable goods orders": {
+   "1.8": "m/m"
+  },
+  "2026-10-27|hpi": {
+   "0.1": "m/m"
+  },
+  "2026-10-27|s&p/cs composite-20 hpi": {
+   "2.7": "y/y"
+  },
+  "2026-10-28|prelim wholesale inventories": {
+   "0.4": "m/m"
+  },
+  "2026-10-29|advance gdp": {
+   "3.2": "q/q"
+  },
+  "2026-10-29|core pce price index": {
+   "0.3": "m/m"
+  },
+  "2026-10-29|advance gdp price index": {
+   "3.5": "q/q"
+  },
+  "2026-10-29|personal income": {
+   "0.3": "m/m"
+  },
+  "2026-10-29|personal spending": {
+   "0.6": "m/m"
+  },
+  "2026-10-30|employment cost index": {
+   "0.8": "q/q"
   }
  },
  "events": [
@@ -172,6 +205,18 @@
    "src": "static",
    "keywords": [
     "실업률"
+   ]
+  },
+  {
+   "date": "2026-11-07",
+   "time": "01:00",
+   "title": "미시간 기대인플레",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "기대인플레",
+    "미시간"
    ]
   }
  ]
