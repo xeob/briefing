@@ -205,6 +205,34 @@ def _num(v):
 #   자격·A급 재료(실적 상회)에도 특징주에서 빠졌다.
 #   나스닥 스크리너는 시총 구간 전체를 1회 호출로 주므로($10B~$200B 약 886종목) 컷오프 개념이 사라진다.
 #   등락률 정확도: 야후 일봉과 LMT·CSX·ADBE·KLAC·LDOS·INTU 6종목 모두 0.00%p 일치(2026-10-23 확인).
+def yahoo_day_pct(symbols, chunk=20):
+    """야후 spark로 '직전 거래일 종가 대비' 일간 등락률을 받아온다 — {심볼: pct}.
+    (spark는 한 번에 20종목까지 — 그 이상이면 Bad Request.)
+    나스닥 스크리너는 장 마감 직후엔 전 거래일 값을 돌려준다(2026-10-27 실측: asof="Last price as of
+    Oct 23, 2026"로 10/26 세션 종가가 아니었다 — ITUB가 Lula 재선 폭락 -20.4% 대신 +1.9%로 들어왔다).
+    스크리너는 '종목 universe + 시총'만 쓰고 등락률은 반드시 이 함수로 덮어쓴다."""
+    fresh = {}
+    syms = sorted(set(symbols))
+    for i in range(0, len(syms), chunk):
+        part = syms[i:i + chunk]
+        for _ in range(2):
+            try:
+                d = get("https://query1.finance.yahoo.com/v8/finance/spark?symbols=%s&range=5d&interval=1d"
+                        % ",".join(part))
+                break
+            except Exception:
+                d = None
+                time.sleep(1.0)
+        if not isinstance(d, dict):
+            continue
+        for sym in part:
+            cl = [c for c in ((d.get(sym) or {}).get("close") or []) if c]
+            if len(cl) >= 2:
+                fresh[sym] = round((cl[-1] / cl[-2] - 1) * 100, 2)
+        time.sleep(0.2)
+    return fresh
+
+
 def nasdaq_screen(group, min_cap_b=10.0):
     """나스닥 스크리너 시총 구간 전수 → [{symbol,name,pct,mktcap_b}]. 보통주 아닌 상품은 제외."""
     d = get(f"https://api.nasdaq.com/api/screener/stocks?tableonly=true&limit=3000&marketcap={group}")
@@ -221,7 +249,21 @@ def nasdaq_screen(group, min_cap_b=10.0):
                     "pct": round(pct, 2), "mktcap_b": round(cap / 1e9, 1)})
     if not got:
         raise ValueError("스크리너 행 0건")
-    return got
+    # 등락률은 스크리너 값을 믿지 않는다(위 yahoo_day_pct 주석의 asof 사고) — 야후 일봉으로 전량 교체.
+    fresh = yahoo_day_pct([g["symbol"] for g in got])
+    keep, miss = [], []
+    for g in got:
+        p = fresh.get(g["symbol"])
+        if p is None:
+            miss.append(g["symbol"])
+            continue
+        g["pct"] = p
+        keep.append(g)
+    if not keep:
+        raise ValueError("야후 일봉 교체 0건 — 스크리너 전일값만 남아 사용 불가")
+    if miss:
+        errors.append(f"nasdaq {group}: 야후 일봉 미확인 {len(miss)}건 제외 ({','.join(miss[:12])})")
+    return keep
 
 out, errors = {}, []
 try:
