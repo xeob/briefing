@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-26",
+ "generated": "2026-10-27",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
@@ -56,16 +56,20 @@
    "0.6": "m/m"
   },
   "2026-10-27|durable goods orders": {
-   "1.8": "m/m"
+   "1.8": "m/m",
+   "2.0": "m/m"
   },
   "2026-10-27|hpi": {
-   "0.1": "m/m"
+   "0.1": "m/m",
+   "0.2": "m/m"
   },
   "2026-10-27|s&p/cs composite-20 hpi": {
-   "2.7": "y/y"
+   "2.7": "y/y",
+   "2.6": "y/y"
   },
   "2026-10-28|prelim wholesale inventories": {
-   "0.4": "m/m"
+   "0.4": "m/m",
+   "0.5": "m/m"
   },
   "2026-10-29|advance gdp": {
    "3.2": "q/q"
@@ -74,7 +78,8 @@
    "0.3": "m/m"
   },
   "2026-10-29|advance gdp price index": {
-   "3.5": "q/q"
+   "3.5": "q/q",
+   "3.3": "q/q"
   },
   "2026-10-29|personal income": {
    "0.3": "m/m"
