@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>실적 컨퍼런스콜</title>
+<style>
+:root{
+  --bg:#f6f6f4; --card:#ffffff; --text:#1a1a19; --sub:#63625d; --muted:#9a9992;
+  --border:#e6e5e1; --up:#0a7d33; --down:#d21c1c; --accent:#2f6fd0;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#181817; --card:#242422; --text:#f0efec; --sub:#a7a6a0; --muted:#77766f;
+    --border:#38372f; --up:#3fb950; --down:#f5564a; --accent:#5a9bf0; }
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+  word-break:keep-all;-webkit-text-size-adjust:100%;}
+.wrap{max-width:520px;margin:0 auto;padding:20px 16px 24px;}
+a{color:inherit;text-decoration:none;}
+.head{padding-bottom:14px;border-bottom:1px solid var(--border);margin-bottom:18px;}
+.head-row{display:flex;justify-content:space-between;align-items:baseline;}
+.head-title{font-size:20px;font-weight:600;}
+.head-date{font-size:13px;color:var(--muted);}
+.head-sub{margin:6px 0 0;font-size:12px;color:var(--muted);}
+.card{background:var(--card);border:0.5px solid var(--border);border-radius:12px;padding:13px 15px;margin-bottom:12px;}
+.sec{display:flex;align-items:center;gap:7px;margin-bottom:11px;}
+.sec-title{font-size:13px;font-weight:600;color:var(--sub);}
+.sec-note{font-size:11px;color:var(--muted);}
+.tag{display:inline-block;font-size:11px;padding:1px 8px;border-radius:20px;}
+.s-earn{color:#c1660f;background:rgba(193,102,15,.13);}
+.s-fed{color:#7a4fd0;background:rgba(122,79,208,.14);}
+.divide{height:1px;background:var(--border);margin:12px 0;}
+.lbl{font-size:11px;color:var(--muted);margin-bottom:5px;}
+.mv{margin-bottom:13px;}
+.mv-h{display:flex;align-items:baseline;gap:8px;}
+.mv-n{font-size:14px;font-weight:600;}
+.mv-p{font-size:13px;font-weight:600;}
+.mv-r{font-size:12px;color:var(--sub);line-height:1.55;margin-top:3px;}
+.up{color:var(--up);} .down{color:var(--down);}
+.note{font-size:12px;color:var(--sub);line-height:1.7;}
+.foot{margin-top:16px;text-align:center;font-size:11px;color:var(--muted);}
+@media (max-width:390px){ .head-title{font-size:18px;} .mv-n{font-size:13px;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ===== 헤더 ===== -->
+  <div class="head">
+    <div class="head-row">
+      <div class="head-title">실적 컨퍼런스콜</div>
+      <div class="head-date">2026.10.28 (수)</div>
+    </div>
+    <p class="head-sub">간밤(미국 10/27) 실적 발표 · 컨퍼런스콜 주요 내용</p>
+  </div>
+
+  <!-- ===== 종목별 컨콜 ===== -->
+  <div class="card">
+    <div class="sec"><span class="sec-title">반도체 — 심화</span><span class="sec-note">한국시간 기준</span></div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">씨게이트 (STX)</span><span class="mv-p down">시간외 −6%</span></div>
+      <div class="mv-r">매출 $4.23B(+61% YoY) · 조정 EPS $7.68(예상 $7.40)<br>비GAAP 매출총이익률 57.8%(전분기比 +5.1%p) 사상 최고<br>모슬리 CEO: "데이터센터 수요 급증, HDD 공급 타이트"<br>가이던스: 다음 분기 매출 $4.8B · 조정 EPS $9.20<br>FCF $15억 · 분기배당 3% 올려 주당 $0.76</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">NXP반도체 (NXPI)</span><span class="mv-p down">시간외 하락</span></div>
+      <div class="mv-r">매출 $3.79B(+19% YoY) · 조정 EPS $4.20(예상 $4.11)<br>차량용 매출 분기 첫 $20억 돌파 · 산업·IoT $802M(+39%)<br>통신인프라·기타 $503M(+54%) — 데이터센터 견인<br>가이던스: 4Q 매출 $3.85B(+15% YoY)<br>신규 자사주 $50억 승인(총 한도 $63억)</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="sec"><span class="sec-title">주요 발언 · 특이사항</span><span class="sec-note">한국시간 기준</span></div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">비자 (V)</span><span class="mv-p down">시간외 −1.5%</span></div>
+      <div class="mv-r">매출 $12.1B(+13%) · 조정 EPS $3.48(예상 $3.43)<br>결제액 +9%(고정환율) · 국경간 거래 +14%<br>처리건수 +10% · 연간 매출 사상 첫 $460억(+15%)<br>회계연도 조정 EPS $13.27 — "이정표의 해"(CEO)</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">코카콜라 (KO)</span></div>
+      <div class="mv-r">매출 $13.4B(+7%) · 비교 EPS $0.91(예상 $0.88)<br>유기적 매출 +7% · 전세계 판매량 +5%<br>영업이익률 33.4%(전년 32.0%)<br>연간 가이던스 상향: 비교 EPS +11%↑ · FCF $130억↑<br>북미 수요 부진 언급 · 아프리카 보틀링 매각 4Q 가정</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">코닝 (GLW)</span></div>
+      <div class="mv-r">핵심 매출 $5.08B(+19%) · 핵심 EPS $0.91(예상 $0.88)<br>광통신 매출 $2.38B(+44%) — 생성형AI 제품 2배↑<br>핵심 매출총이익률 40.5%(+1.5%p)<br>가이던스: 4Q 핵심 매출 $5.2~5.3B · EPS $0.96~1.00<br>capex 확대 우려로 정규장 주가 하락</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">보잉 (BA)</span></div>
+      <div class="mv-r">매출 $24.2B(+4%) · 핵심 EPS −$0.34(예상 −$0.21, 손실 지속)<br>737 분기 124대 인도 · 월 47대 안정화 내년으로 연기<br>FCF +$4.64억(DOJ 합의금 $7억 반영)<br>2029년까지 연간 현금흐름 $100억 목표 제시</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">UPS (UPS)</span></div>
+      <div class="mv-r">매출 $22.9B(+6.7%) · 조정 EPS $1.69(예상 $1.63)<br>미국내 조정 영업이익 $10.3억(+14.3%) · 일평균 물량 감소<br>가격 전략으로 수익성 개선<br>연간 가이던스 상향: 매출 $926억 · 조정 EPS $7.28</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">S&amp;P글로벌 (SPGI)</span></div>
+      <div class="mv-r">매출 $3.68B(+7%) · 조정 EPS $4.58(예상 $4.43)<br>지수 부문 매출 +20% · 신용등급 +2%<br>연간 조정 EPS 가이던스 $17.70~17.95로 상향<br>Capital IQ·Kensho 분사 포함 전략 검토 착수<br>연간 자사주 $70억+ 매입 계획</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">HCA헬스케어 (HCA)</span></div>
+      <div class="mv-r">매출 $19.85B(+3.6%) · 조정 EPS $7.22(예상 $6.74)<br>조정 EBITDA $39.2억 · 동일시설 입원 +2.7%(22분기 연속↑)<br>거래소 보험 가입자 감소로 이익 ~$4억 감소<br>연간 실적 가이던스 상단부 전망<br>경영진: "2027년 실적 2026년과 유사"</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">노바티스 (NVS)</span></div>
+      <div class="mv-r">매출 $14.5B(+4% 고정환율) · 핵심 EPS $2.46(예상 $2.28)<br>핵심 영업이익 $60억(+10%) · 영업이익률 41.6%<br>del-desiran 자산 $19억 상각 → 보고 영업이익 −61%<br>연간 핵심 영업이익 가이던스 상향</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">HSBC (HSBC)</span></div>
+      <div class="mv-r">세전이익 $9.6B(+32%) · 매출 $18.6B(+5%)<br>일회성 제외 세전이익 ~$100억(+10%)<br>비용 −12% · 대손 −17% · CET1 비율 13.9%<br>최대 $10억 추가 자사주 · 3차 중간배당 주당 $0.10<br>매출 컨센서스 소폭 하회</div>
+    </div>
+  </div>
+
+  <!-- ===== 오늘 밤 예정 ===== -->
+  <div class="card">
+    <div class="sec"><span class="sec-title">오늘 밤 실적 예정</span></div>
+    <div class="note">
+      · 마이크로소프트 (MSFT) · 알파벳 (GOOGL) — M7, 한국시간 목요일 새벽<br>
+      · KLA (KLAC) · 서비스나우 (NOW) · T모바일 (TMUS) — 장 마감 후<br>
+      · GE버노바 (GEV) · UBS · GSK · ADP — 한국시간 밤
+    </div>
+  </div>
+
+  <div class="foot">경제 브리핑 · 실적 컨퍼런스콜</div>
+</div>
+</body>
+</html>
