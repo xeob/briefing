@@ -226,7 +226,7 @@ cd $TMP/r && git add -A && git commit -m restore && git push
   - 지수 4종(다우·나스닥·S&P·필라 반도체): 종가 + 등락폭 + 등락률
   - **수치 = 스크립트 2소스 교차검증 (방안 A, 신뢰가 생명)**: `python3 market.py` 로 `out/market.json` 생성. 지수 4종·지표 6종이 **Yahoo + CNBC 2소스 교차검증**(국채금리 3자리, 지표는 CNBC realtime 1차). **두 독립 소스가 일치하면 그게 확정값 — market.json 값을 그대로 쓴다.** 달러인덱스처럼 investing.com과 소수 둘째 자리에서 미세하게 달라도 **2소스 합의값을 유지**한다(investing.com은 Cloudflare로 스크립트 불가라 강제 참조 대상 아님). market.json의 errors·notes에 불일치·이상치가 있을 때만 웹으로 재확인. market.json 값이 상식 밖(지수 하루 ±10%)이거나 스크립트 완전 실패 시에만 웹 대체. **요약 기사 속 수치 사용 금지**(오차 실증: 7/1 SOX 기사 13,478 vs 실제 13,353).
   - **일정·발표지표 데이터 = `python3 events.py` (→ out/events.json)**: 실제 캘린더(Nasdaq 경제캘린더 + IPO + events_manual.txt)에서 수집. **모델이 날짜를 추측하지 말고 이 값을 쓴다.** 구조: `must_include`(1순위·반드시 일정 표에 포함 — 누락 시 verify.py가 게시 차단), `optional`(2순위·자리 남으면), `released`(직전 세션 발표지표: 지표명·actual·forecast), `passed`(생성 시각 기준 이미 지난 일정 — 표에서 제외됨, 시장 서술용). 미국 관련이 아닌 특수 이벤트(한국 상장 등)는 events_manual.txt에 수동 추가.
-  - 시장 지표 **6종 고정, 2행×3열 그리드(가로 스크롤 금지)**: 윗줄 美10년물·달러인덱스·원/달러 / 아랫줄 WTI·비트코인·금 (값은 out/market.json의 indicators 그대로)
+  - 시장 지표 **6종 고정, 2행×3열 그리드(가로 스크롤 금지)**: 윗줄 美10년물·달러인덱스·원/달러 / 아랫줄 WTI·비트코인·금 (값은 out/market.json의 indicators 그대로). **칩은 2단 — 윗줄 지표명, 아랫줄 레벨 + 등락률**(2026-10-27 신설). 등락률은 `indicator_chg[name].pct`를 **전부 %로 통일**해 소수 둘째 자리(+0.13% / −0.32%), up/down 색. 기준은 **전 세션 종가 대비**이고 레벨·등락률·기준가를 **CNBC 한 소스**로 받는다 — 야후 일봉은 24시간·FX 자산에서 봉이 비어 경계가 흔들린다(실측: 원/달러 10/23 봉 없음·BTC 10/26 봉 없음). verify #2b가 레벨과 등락률을 모두 대조한다.
   - **섹터 강세/약세 — 모델이 고르지 않는다(2026-10-23 변경)**: `out/movers.json`의 `sectors.strong`/`sectors.weak`를 **그 순서대로** 쓴다. 색 태그(강세=초록 t-strong, 약세=빨강 t-weak) + 이유는 회색 노트(sector-note).
     - **집계 방식**: 업종별 **중위 등락률**과 **지수(S&P 500) 대비 초과**를 movers.py가 계산한다. 후보 = 종목 5개 이상 · **방향일치 60% 이상** · **|지수 대비 초과| 1.5%p 이상** → 강세 = 초과 상위 3 / 약세 = 하위 3. (급락일에 +1%대로 버틴 역행 업종이 상단에 올라오게 하려고 '절대 등락률'이 아니라 '지수 대비 초과'를 쓴다. 중위만 보면 소수 종목이 끌어올린 업종이 올라오므로 방향일치를 함께 본다.)
     - **표기**: `업종명&nbsp;<span class="up">+0.0%</span>` 형식으로 **업종별 중위 등락률 병기**(`sectors[].median` 그대로). 후보가 없는 쪽은 업종명 대신 **"뚜렷한 업종 없음"** 한 줄 — 억지로 채우지 말 것.
@@ -416,7 +416,10 @@ a{color:inherit;text-decoration:none;}
 .up{color:var(--up);} .down{color:var(--down);}
 .lbl{font-size:11px;color:var(--muted);margin-bottom:5px;}
 .chips{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;}
-.chip{font-size:11px;white-space:nowrap;text-align:center;background:var(--bg);border:0.5px solid var(--border);padding:3px 4px;border-radius:20px;}
+.chip{font-size:11px;text-align:center;background:var(--bg);border:0.5px solid var(--border);padding:4px 4px 5px;border-radius:12px;line-height:1.3;}
+.chip .cn{display:block;font-size:10px;color:var(--muted);}
+.chip .cv{display:block;white-space:nowrap;font-weight:600;}
+.chip .cd{font-weight:400;font-size:10.5px;}
 .t-strong{color:#0a7d33;background:rgba(10,125,51,.13);}
 .t-weak{color:#d21c1c;background:rgba(210,28,28,.12);}
 .sector-names{margin-top:5px;font-size:13.5px;line-height:1.6;}
@@ -525,10 +528,14 @@ a{color:inherit;text-decoration:none;}
 
     <div class="divide"></div>
     <div class="lbl">시장 지표</div>
-    <!-- 6개 고정, 2행×3열 그리드(가로 스크롤 없음): 윗줄 10년물·달러인덱스·원/달러, 아랫줄 WTI·BTC·금 -->
+    <!-- 6개 고정, 2행×3열 그리드(가로 스크롤 없음): 윗줄 10년물·달러인덱스·원/달러, 아랫줄 WTI·BTC·금.
+         ★ 각 칩은 2단 — 윗줄 지표명(cn) / 아랫줄 레벨 + 등락률(cd, up/down 색).
+         레벨 = market.json indicators[name], 등락률 = market.json indicator_chg[name].pct 를
+         **전부 % 로 통일**해 소수 둘째 자리까지(예: −0.32%). 기준은 전 세션 종가 대비(CNBC 한 소스).
+         verify #2b가 레벨·등락률을 모두 대조한다 — 임의 계산·반올림 변경 금지. -->
     <div class="chips">
-      <span class="chip">美10년물 0.00%</span><span class="chip">달러인덱스 000</span><span class="chip">원/달러 0,000</span>
-      <span class="chip">WTI $00</span><span class="chip">BTC $00,000</span><span class="chip">금 $0,000</span>
+      <span class="chip"><span class="cn">美10년물</span><span class="cv">0.000% <span class="cd up">+0.00%</span></span></span><span class="chip"><span class="cn">달러인덱스</span><span class="cv">000.00 <span class="cd up">+0.00%</span></span></span><span class="chip"><span class="cn">원/달러</span><span class="cv">0,000.0 <span class="cd down">−0.00%</span></span></span>
+      <span class="chip"><span class="cn">WTI</span><span class="cv">$00.00 <span class="cd down">−0.00%</span></span></span><span class="chip"><span class="cn">BTC</span><span class="cv">$00,000 <span class="cd down">−0.00%</span></span></span><span class="chip"><span class="cn">금</span><span class="cv">$0,000.0 <span class="cd up">+0.00%</span></span></span>
     </div>
 
     <div class="divide"></div>
@@ -677,16 +684,25 @@ def get(sym):
 INDICES = [("다우", "^DJI"), ("나스닥", "^IXIC"), ("S&P 500", "^GSPC"), ("필라델피아 반도체", "^SOX")]
 CNBC = {"다우": ".DJI", "나스닥": ".IXIC", "S&P 500": ".SPX", "필라델피아 반도체": ".SOX"}
 
-def cnbc_close(sym):
-    """CNBC 2차 소스 종가 (교차검증용). 실패 시 None."""
+def cnbc_quote(sym):
+    """CNBC 시세 — 레벨·등락률·전일종가를 **한 소스로** 받는다(2026-10-27).
+    지표 6종은 24시간·FX 자산이라 야후 일봉은 경계가 흔들린다(실측: 원/달러는 10/23 봉이,
+    BTC는 10/26 봉이 없다). 레벨만 CNBC에서 받고 등락률을 야후로 계산하면 둘이 어긋나므로
+    change_pct·previous_day_closing을 같이 받아 쓴다. 실패 시 None → 야후 일봉 폴백."""
     try:
         r = subprocess.run(["curl", "-s", "-m", "12", "-H", "User-Agent: Mozilla/5.0",
                             f"https://quote.cnbc.com/quote-html-webservice/restQuote/symbolType/symbol?symbols={sym}&requestMethod=itv&noform=1&partnerId=2&output=json"],
                            capture_output=True, text=True, check=True)
         q = json.loads(r.stdout)["FormattedQuoteResult"]["FormattedQuote"][0]
-        return float(str(q["last"]).replace(",", "").replace("%", ""))
+        f = lambda k: float(str(q[k]).replace(",", "").replace("%", ""))
+        return {"last": f("last"), "pct": f("change_pct"), "prev": f("previous_day_closing")}
     except Exception:
         return None
+
+def cnbc_close(sym):
+    """CNBC 2차 소스 종가 (지수 교차검증용). 실패 시 None."""
+    q = cnbc_quote(sym)
+    return q["last"] if q else None
 # 지표: (라벨, 야후심볼, 포맷함수, CNBC심볼, 교차검증 허용오차)
 # 국채금리는 소수 3자리, CNBC(realtime)를 1차로 채택(투자닷컴과 더 근접)
 IND = [
@@ -698,7 +714,8 @@ IND = [
     ("금", "GC=F", lambda v: f"${v:,.1f}", "@GC.1", 12),
 ]
 
-out = {"generated_kst": time.strftime("%Y-%m-%d %H:%M"), "indices": {}, "indicators": {}, "errors": [], "notes": []}
+out = {"generated_kst": time.strftime("%Y-%m-%d %H:%M"), "indices": {}, "indicators": {},
+       "indicator_chg": {}, "errors": [], "notes": []}
 
 for name, sym in INDICES:
     try:
@@ -725,16 +742,22 @@ for name, sym in INDICES:
 
 for name, sym, fmt, csym, tol in IND:
     try:
-        yv = get(sym)[-1]
-        cv = cnbc_close(csym)  # CNBC realtime (투자닷컴과 근접) = 1차
-        if cv is None:
-            chosen = yv  # CNBC 실패 → 야후 폴백
+        ys = get(sym)
+        yv = ys[-1]
+        ypct = round((ys[-1] / ys[-2] - 1) * 100, 2) if len(ys) >= 2 and ys[-2] else None
+        q = cnbc_quote(csym)  # CNBC realtime (투자닷컴과 근접) = 1차
+        if q is None:
+            chosen, pct, prev, src = yv, ypct, (ys[-2] if len(ys) >= 2 else None), "야후 일봉"
             out["notes"].append(f"{name} CNBC 실패 → 야후 {fmt(yv)} 사용, 투자닷컴 웹 재확인 권장")
         else:
-            chosen = cv  # CNBC 채택
-            if abs(cv - yv) > tol:
-                out["notes"].append(f"{name} 야후 {fmt(yv)} vs CNBC {fmt(cv)} 차이 → CNBC 채택, 투자닷컴 웹 재확인 권장")
+            chosen, pct, prev, src = q["last"], round(q["pct"], 2), q["prev"], "CNBC"
+            if abs(q["last"] - yv) > tol:
+                out["notes"].append(f"{name} 야후 {fmt(yv)} vs CNBC {fmt(q['last'])} 차이 → CNBC 채택, 투자닷컴 웹 재확인 권장")
+            if ypct is not None and abs(pct - ypct) > 0.5:
+                out["notes"].append(f"{name} 등락률 CNBC {pct:+.2f}% vs 야후 일봉 {ypct:+.2f}% 차이 "
+                                    "→ CNBC 채택(24시간·FX 자산은 일봉 경계가 다르다)")
         out["indicators"][name] = fmt(chosen)
+        out["indicator_chg"][name] = {"pct": pct, "prev": fmt(prev) if prev is not None else None, "src": src}
         time.sleep(0.1)
     except Exception as e:
         out["errors"].append(f"{name}({sym}): {e}")
@@ -744,7 +767,8 @@ json.dump(out, open("out/market.json", "w"), ensure_ascii=False, indent=1)
 print(f"지수 {len(out['indices'])} / 지표 {len(out['indicators'])} (오류 {len(out['errors'])}) → out/market.json")
 for n, d in out["indices"].items():
     print(f"  {n}: {d['close']:,} ({d['chg']:+,.2f}, {d['pct']:+.2f}%)")
-print("  " + " · ".join(f"{n} {v}" for n, v in out["indicators"].items()))
+print("  " + " · ".join(f"{n} {v} ({out['indicator_chg'].get(n, {}).get('pct', 0):+.2f}%)"
+                            for n, v in out["indicators"].items()))
 for n in out["notes"]:
     print("  교차검증:", n)
 for e in out["errors"]:
@@ -1980,20 +2004,35 @@ for m in re.finditer(r'mv-n">[^<(]*\(([A-Z]{1,6})\)</span>' + TAG + r'<span clas
     if tk in allmv and abs(pct - allmv[tk]) > 0.15:
         issues.append(f"[특징주] {tk} 등락률 HTML {pct:+.2f}% ≠ 원본 {allmv[tk]:+.2f}%")
 
-# 2b) 시장 지표 6종 칩: HTML 값 ↔ market.json 대조 (전사 오류 검출)
-chips = re.findall(r'class="chip">([^<]+)</span>', html)
+# 2b) 시장 지표 6종 칩: HTML 레벨 + **등락률** ↔ market.json 대조 (전사 오류 검출)
+#     2026-10-27: 칩이 2단(지표명 / 레벨 + 등락률)으로 바뀌어 등락률까지 기계 대조한다.
+#     등락률은 전부 %(indicator_chg[name].pct) — 단위를 섞지 않는다(사용자 결정).
+chip_rows = re.findall(r'<span class="chip"><span class="cn">([^<]+)</span>'
+                       r'<span class="cv">([^<]*?)\s*(?:<span class="cd (?:up|down)">([^<]+)</span>)?</span>', html)
+got = {n.strip(): (v.strip(), (p or "").strip()) for n, v, p in chip_rows}
+chg_all = mk.get("indicator_chg", {})
 for name, val in mk.get("indicators", {}).items():
-    hit = [c.strip() for c in chips if c.strip().startswith(name)]
-    if not hit:
-        issues.append(f"[지표] '{name}' 칩이 HTML에 없음")
+    if name not in got:
+        issues.append(f"[지표] '{name}' 칩이 HTML에 없음 — 2단 형식(cn/cv/cd) 그대로 작성")
         continue
-    hv = hit[0][len(name):].strip()
+    hv, hp = got[name]
     try:
         if abs(num(hv) - num(val)) > max(abs(num(val)) * 0.001, 0.005):
             issues.append(f"[지표] {name} HTML '{hv}' ≠ 원본 '{val}'")
     except Exception:
         if hv.replace(" ", "") != str(val).replace(" ", ""):
             issues.append(f"[지표] {name} HTML '{hv}' ≠ 원본 '{val}'")
+    ref = (chg_all.get(name) or {}).get("pct")
+    if ref is None:
+        continue
+    if not hp:
+        issues.append(f"[지표] {name} 등락률 누락 — market.json indicator_chg {ref:+.2f}% 를 칩에 병기")
+    else:
+        try:
+            if abs(num(hp) - ref) > 0.015:
+                issues.append(f"[지표] {name} 등락률 HTML {num(hp):+.2f}% ≠ 원본 {ref:+.2f}%")
+        except Exception:
+            issues.append(f"[지표] {name} 등락률 '{hp}' 형식 인식 불가 — '+0.00%'/'−0.00%' 형식")
 
 # 3) 날짜: 헤더에 오늘 날짜(현지) 포함 여부
 today = datetime.datetime.now()

@@ -62,20 +62,35 @@ for m in re.finditer(r'mv-n">[^<(]*\(([A-Z]{1,6})\)</span>' + TAG + r'<span clas
     if tk in allmv and abs(pct - allmv[tk]) > 0.15:
         issues.append(f"[특징주] {tk} 등락률 HTML {pct:+.2f}% ≠ 원본 {allmv[tk]:+.2f}%")
 
-# 2b) 시장 지표 6종 칩: HTML 값 ↔ market.json 대조 (전사 오류 검출)
-chips = re.findall(r'class="chip">([^<]+)</span>', html)
+# 2b) 시장 지표 6종 칩: HTML 레벨 + **등락률** ↔ market.json 대조 (전사 오류 검출)
+#     2026-10-27: 칩이 2단(지표명 / 레벨 + 등락률)으로 바뀌어 등락률까지 기계 대조한다.
+#     등락률은 전부 %(indicator_chg[name].pct) — 단위를 섞지 않는다(사용자 결정).
+chip_rows = re.findall(r'<span class="chip"><span class="cn">([^<]+)</span>'
+                       r'<span class="cv">([^<]*?)\s*(?:<span class="cd (?:up|down)">([^<]+)</span>)?</span>', html)
+got = {n.strip(): (v.strip(), (p or "").strip()) for n, v, p in chip_rows}
+chg_all = mk.get("indicator_chg", {})
 for name, val in mk.get("indicators", {}).items():
-    hit = [c.strip() for c in chips if c.strip().startswith(name)]
-    if not hit:
-        issues.append(f"[지표] '{name}' 칩이 HTML에 없음")
+    if name not in got:
+        issues.append(f"[지표] '{name}' 칩이 HTML에 없음 — 2단 형식(cn/cv/cd) 그대로 작성")
         continue
-    hv = hit[0][len(name):].strip()
+    hv, hp = got[name]
     try:
         if abs(num(hv) - num(val)) > max(abs(num(val)) * 0.001, 0.005):
             issues.append(f"[지표] {name} HTML '{hv}' ≠ 원본 '{val}'")
     except Exception:
         if hv.replace(" ", "") != str(val).replace(" ", ""):
             issues.append(f"[지표] {name} HTML '{hv}' ≠ 원본 '{val}'")
+    ref = (chg_all.get(name) or {}).get("pct")
+    if ref is None:
+        continue
+    if not hp:
+        issues.append(f"[지표] {name} 등락률 누락 — market.json indicator_chg {ref:+.2f}% 를 칩에 병기")
+    else:
+        try:
+            if abs(num(hp) - ref) > 0.015:
+                issues.append(f"[지표] {name} 등락률 HTML {num(hp):+.2f}% ≠ 원본 {ref:+.2f}%")
+        except Exception:
+            issues.append(f"[지표] {name} 등락률 '{hp}' 형식 인식 불가 — '+0.00%'/'−0.00%' 형식")
 
 # 3) 날짜: 헤더에 오늘 날짜(현지) 포함 여부
 today = datetime.datetime.now()
