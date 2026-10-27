@@ -127,11 +127,25 @@ for m in re.finditer(r'mv-n">(그 외[^<]*동반[^<]*)</span>', html):
         issues.append(f"[특징주] 묶음 라벨 '{label.strip()}'에 금지어({','.join(hits)}) — 실제 업종명(반도체·은행·방산 등)으로만 묶을 것")
 
 # 7b) 묶음행 실속(앵커) 검사: 각 묶음행에는 |5%| 이상 종목이 3개 이상 있어야 함(성립 조건 ⓑ)
+#     예외(2026-10-27): **섹터 집계 강세/약세 1~2위 업종**의 묶음은 `2종목 이상 + 최상위 |5%|+`면 통과.
+#     그날 자금 흐름의 주역 업종인데 큰 폭 종목이 개별 행으로 올라가면 잔여 앵커가 1~2개로 줄어 묶음이 서지 않고,
+#     그러면 나머지 자격 종목의 수치가 지면에서 사라진다(2026-10-26 실측: 광통신 강세 1위인데 루멘텀·노키아·시스코가
+#     개별로 가고 코히런트 +5.83%·시에나 +4.89%가 어디에도 안 실렸다). 20세션 측정 추가 묶음 +0.65행/일.
+_sec_top2 = []
+if isinstance(mv.get("sectors"), dict):
+    _sec_top2 = (mv["sectors"].get("strong") or [])[:2] + (mv["sectors"].get("weak") or [])[:2]
 for m in re.finditer(r'mv-n">(그 외[^<]*동반[^<]*)</span></div><div class="mv-r">(.*?)</div>', html):
     label, body = m.group(1).strip(), m.group(2)
     pcts = [abs(num(x)) for x in re.findall(r'class="(?:up|down)">([+\-−][\d.]+)%', body)]
+    if not pcts:
+        continue
     big = sum(1 for p in pcts if p >= 5)
-    if pcts and big < 3:
+    lead = any(lb and lb in label for lb in _sec_top2)      # 섹터 1~2위 업종의 묶음인가
+    if lead:
+        if len(pcts) < 2 or max(pcts) < 5:
+            issues.append(f"[특징주] 묶음 '{label}'(섹터 상위 업종)은 2종목 이상이고 최상위가 |5%|+여야 함 "
+                          f"— 현재 {len(pcts)}종목·최상위 {max(pcts):.2f}%")
+    elif big < 3:
         issues.append(f"[특징주] 묶음 '{label}'의 |5%|+ 종목이 {big}개(<3) — 성립 조건 미달, 묶음 해체(멤버는 섹터 파트·감사기록으로) 또는 재구성")
 
 # 8) 일정 1순위 누락 차단: events.json의 must_include가 미국장 주요 일정 표에 있는지(키워드 매칭)
