@@ -384,6 +384,38 @@ for part_name, part in (("급등", seg(L_UP, L_DN)),
             issues.append(f"[특징주] {part_name} {sym} 업종 꼬리표 '{got}'는 업종 맵에 없는 종목 — 꼬리표 생략"
                           "(임의 분류 금지, 맵 보강은 movers.py SECTOR_GROUPS)")
 
+# 18) 감사 대상 자동 집계(비차단 — 출력만) : '자격을 통과했는데 지면 어디에도 없는 종목'을 매일 보여준다.
+#     2026-10-26 세션 사고: 전력기기·데이터센터설비가 방향일치 96%·지수 대비 +1.58%p로 동반 상승했는데
+#     묶음 성립 ⓐ(멤버 5개)에 1개 모자라 묶음이 안 서고, 섹터 선정도 상위 3 컷(6위)에 밀려
+#     INIO +9.34%(자격 급등 2위)·FIX +7.18%(5위)·BE +5.49%가 지면에서 통째로 사라졌다.
+#     재료 등급은 기계가 판정할 수 없으니 차단하지 않는다 — 대신 목록을 강제로 띄워서
+#     감사 기록(RUN.md ⑦ⓐ)을 눈대중으로 쓰지 못하게 한다. 묶음행은 티커를 안 쓰므로 등락률 문자열로도 대조한다.
+_grp_bodies = " ".join(re.findall(r'mv-n">그 외[^<]*</span></div><div class="mv-r">(.*?)</div>', html))
+
+def _on_page(sym, pct):
+    if "(%s)" % sym in html:
+        return True
+    for f in ("%+.2f%%" % pct, "%+.1f%%" % pct):
+        if f.replace("-", "\u2212") in _grp_bodies:
+            return True
+    return False
+
+_absent = [r for r in (mv.get("all") or [])
+           if r.get("qualified") and isinstance(r.get("pct"), (int, float))
+           and not _on_page(r["symbol"], r["pct"])]
+_absent.sort(key=lambda r: -abs(r["pct"]))
+if _absent:
+    print("ℹ️  감사 대상 %d건 — 자격 통과했는데 지면에 없는 종목(RUN.md ⑦ⓐ: 전원 등급 판정 근거와 함께 실행 보고에 기록)" % len(_absent))
+    for r in _absent[:20]:
+        cap = r.get("mktcap_b")
+        print("   - %-6s %+7.2f%%  %-8s %-10s %s" % (
+            r["symbol"], r["pct"],
+            ("$%.1fB" % cap) if cap else "시총?",
+            r.get("sector_short") or "업종맵밖",
+            "★$50B 초과 — 고유 B급이면 개별 통과 대상" if (cap and cap > 50) else ""))
+    if len(_absent) > 20:
+        print("   … 외 %d건(전원이 감사 기록 대상)" % (len(_absent) - 20))
+
 if issues:
     print(f"❌ 검증 실패 {len(issues)}건 — 수정 후 재검증:")
     for i in issues:

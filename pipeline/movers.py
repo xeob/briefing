@@ -489,11 +489,18 @@ def sector_block():
     ok = [x for x in secs if x["n"] >= SEC_MIN_N and x["breadth"] >= SEC_BREADTH and abs(x["excess"]) >= SEC_EXCESS]
     strong = [x["label"] for x in ok if x["excess"] > 0][:3]
     weak = [x["label"] for x in sorted([x for x in ok if x["excess"] < 0], key=lambda x: x["excess"])][:3]
+    # cand = 후보 조건(n·방향일치·초과)을 데이터로 충족한 업종 전체. 상위 3 컷에 밀려 섹터 파트에
+    # 못 올라도 '진짜 함께 움직인 업종'이므로 묶음 성립 ⓐ(멤버 5개)를 면제한다 — RUN.md ④.
+    # (2026-10-26 실측: 전력기기·데이터센터설비가 방향일치 96%·초과 +1.58%p인데 6위로 밀려 선정 밖,
+    #  멤버는 4개여서 묶음도 안 섰고 INIO +9.34%·FIX +7.18%·BE +5.49%가 지면에서 전부 사라졌다.)
+    cand = [x["label"] for x in ok]
     for x in secs:
+        x["cand"] = x["label"] in cand
         x["pick"] = "강세" if x["label"] in strong else ("약세" if x["label"] in weak else "")
-    return {"index": "S&P 500", "index_pct": index_pct, "strong": strong, "weak": weak,
+    return {"index": "S&P 500", "index_pct": index_pct, "strong": strong, "weak": weak, "cand": cand,
             "rule": f"후보 = 종목 {SEC_MIN_N}개+ · 방향일치 {SEC_BREADTH}%+ · |지수 대비 초과| {SEC_EXCESS}%p+ "
-                    "· 강세=초과 상위 3 / 약세=하위 3 · 후보 없으면 '뚜렷한 업종 없음'(억지 채움 금지)",
+                    "· 강세=초과 상위 3 / 약세=하위 3 · 후보 없으면 '뚜렷한 업종 없음'(억지 채움 금지) "
+                    "· cand=후보 전체(묶음 ⓐ 면제 대상)",
             "sectors": secs}
 
 try:
