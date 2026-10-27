@@ -239,7 +239,7 @@ cd $TMP/r && git add -A && git commit -m restore && git push
       - **묶음 성립인데 섹터 상위 밖**(예: 10/22 가상자산 초과 −3.9%로 하위 4위): **묶음행만** 쓰고 섹터 파트에 억지로 넣지 않는다.
       - 개별 특징주에 이미 실린 종목을 섹터 노트의 대표 종목으로 다시 인용하는 것은 허용(수치는 반드시 동일 — verify가 대조).
     - verify #16이 **선정 업종·개수·중위 수치·'뚜렷한 업종 없음' 처리**를 기계 대조한다.
-  - **특징주(핵심!) — 확정 규칙 (2026-07-02 사용자와 합의)**: 먼저 `python3 movers.py` 실행 — **수집은 전수**다(2026-10-23): 나스닥 스크리너로 **$200B+ 전 종목 + $10B~$200B 전 종목(약 886개)**을 받고 야후 day_gainers/losers·CORE_SCAN을 합친다. 예전엔 야후 '상위 100개'에만 의존해 컷오프가 매일 달라졌고(10/22 실측 급등 +5.72%·급락 −8.27%) **자격 통과 240건 중 161건이 수집조차 안 됐다** — 이 구멍은 메워졌으니 **후보 목록에 없는 종목을 모델이 임의로 보태지 말고, 반대로 `all[].qualified=true`인데 후보에 없는 종목은 감사 기록 대상**이다. → `out/movers.json`의 `qualified_up`/`qualified_down`(**M7·메가캡 전원 + 그 세션 실적 발표 종목 전원 + 일반 티어 |등락률| 상위 20**). 구 규칙 '일반 |7%|+ 전원 강제'는 **2026-10-23 폐기** — 전수 수집이 되자 변동 큰 날 7%+가 75건까지 나오는데 그날 개별 상위 10 컷오프는 −11.5%여서 7~11% 종목은 개별 자리에 닿지 못했다(조사 시간만 늘고 결과는 동일). **잘린 자격 종목은 `all[].qualified=true`로 남아 묶음 구성·감사 기록의 대상**이며, 상한을 되돌리려면 movers.py `GEN_CAP`만 키우면 된다.
+  - **특징주(핵심!) — 확정 규칙 (2026-07-02 사용자와 합의)**: 먼저 `python3 movers.py` 실행 — **수집은 전수**다(2026-10-23): 나스닥 스크리너로 **$200B+ 전 종목 + $10B~$200B 전 종목(약 886개)**의 **명단·시총**을 받고(등락률은 쓰지 않는다 — 아래), 야후 day_gainers/losers·CORE_SCAN을 합친다. **★ 스크리너 `pctchange`는 직전 스냅샷이라 06:40 실행 시점엔 한 세션, 주말이면 세 세션까지 뒤처진다**(2026-10-27 실측: 10/26 23:55 ET 조회에도 asof="Oct 23"). 그래서 **등락률은 전 행을 야후 일봉(spark, 호출당 20종목)으로 받아 쓰고 확인 못 한 행은 버린다.** movers.json errors에 `명단·시총만 사용 · 등락률은 야후 일봉 n/n건` 한 줄이 남는다. 예전엔 야후 '상위 100개'에만 의존해 컷오프가 매일 달라졌고(10/22 실측 급등 +5.72%·급락 −8.27%) **자격 통과 240건 중 161건이 수집조차 안 됐다** — 이 구멍은 메워졌으니 **후보 목록에 없는 종목을 모델이 임의로 보태지 말고, 반대로 `all[].qualified=true`인데 후보에 없는 종목은 감사 기록 대상**이다. → `out/movers.json`의 `qualified_up`/`qualified_down`(**M7·메가캡 전원 + 그 세션 실적 발표 종목 전원 + 일반 티어 |등락률| 상위 20**). 구 규칙 '일반 |7%|+ 전원 강제'는 **2026-10-23 폐기** — 전수 수집이 되자 변동 큰 날 7%+가 75건까지 나오는데 그날 개별 상위 10 컷오프는 −11.5%여서 7~11% 종목은 개별 자리에 닿지 못했다(조사 시간만 늘고 결과는 동일). **잘린 자격 종목은 `all[].qualified=true`로 남아 묶음 구성·감사 기록의 대상**이며, 상한을 되돌리려면 movers.py `GEN_CAP`만 키우면 된다.
       - **재료 조사 순서**: |등락률| 큰 순으로 내려가며 **개별 상위 10 자리가 확정되는 지점까지** 조사하고, 그 아래 자격 종목은 조사 대신 **감사 집계**로 처리한다. 단 **메가캡·그 세션 실적 발표 종목은 몇 건이든 전원 조사**(누락이 가장 잘 숨는 두 부류 — verify #15가 실적 쪽을 기계로 재확인).
     - **① 수집**: Yahoo 스크리너 급등/급락 상위(시총 $10B+) ∪ **CORE_SCAN 상시 감시** — 스크리너가 못 잡는 'M7 +2%대'·'메가캡 +3~4%대' 같은 작지만 자격 있는 대형주 이동을 보장 (구 watchlist.txt 폐지). **CORE_SCAN = M7 + 고정 메가캡 명단 + Nasdaq에서 매 실행 받아오는 $200B+ 전 종목(자동 갱신)** — 신규 상장·시총 성장이 자동 반영된다. (실측 2026-09-18: 고정 명단만 쓰던 시절 7/10 상장한 **SK하이닉스 ADR(SKHY, $1.33T)** 이 +4.64%·고유 재료(인텔과 미국 메모리 생산 협의)에도 누락, 같은 날 마벨·델도 누락 — $200B+ 78개 중 28개가 감시 밖이었다.) **해외 ADR(SK하이닉스·TSMC·HSBC·도요타 등)도 미국 상장이면 동일 기준으로 포함.**
     - **② 자격 (황금 등락률)**: M7 ±2% / 메가캡($200B+) ±3% / 그 외 ±4%
@@ -850,32 +850,39 @@ SECTOR_GROUPS = {
  "소프트웨어·AI": ["MSFT", "ORCL", "CRM", "NOW", "ADBE", "PLTR", "SNOW", "DDOG", "MDB", "PANW", "CRWD",
                "ZS", "NET", "HUBS", "TEAM", "WDAY", "INTU", "SAP", "ADSK", "FTNT", "OKTA", "GTLB", "S",
                "CFLT", "APP", "IT", "CTSH", "ACN", "CHKP", "GDDY", "TRU", "EFX",
-            "ROP", "TYL", "PTC", "ANSS", "MANH", "DT", "ESTC", "PCTY", "PAYC", "VEEV", "TWLO", "ZM", "DOCU", "BOX", "NTNX", "PSTG", "SMAR", "FROG", "AI", "BBAI", "SOUN"],
+            "ROP", "TYL", "PTC", "ANSS", "MANH", "DT", "ESTC", "PCTY", "PAYC", "VEEV", "TWLO", "ZM", "DOCU", "BOX", "NTNX", "PSTG", "SMAR", "FROG", "AI", "BBAI", "SOUN",
+            "SAIL", "RBRK", "TENB", "QLYS", "CYBR", "VRNS"],
  "인터넷·플랫폼": ["GOOGL", "META", "AMZN", "NFLX", "SPOT", "UBER", "ABNB", "DASH", "BKNG", "PINS", "SNAP",
                "RDDT", "SHOP", "SE", "BABA", "PDD", "JD", "MELI", "TCOM", "EBAY", "ETSY", "CPNG", "TRI",
-            "DIS", "CMCSA", "WBD", "PARA", "LYV", "MTCH", "YELP", "ZG", "TRIP", "EXPE", "MAR", "HLT", "RCL", "CCL", "NCLH", "DKNG", "FLUT"],
+            "DIS", "CMCSA", "WBD", "PARA", "LYV", "MTCH", "YELP", "ZG", "TRIP", "EXPE", "MAR", "HLT", "RCL", "CCL", "NCLH", "DKNG", "FLUT",
+            "CART", "BSP"],
  "방산": ["LMT", "RTX", "NOC", "GD", "LHX", "HII", "LDOS", "BWXT", "CW", "AVAV", "KTOS", "TXT", "RKLB",
             "SPCX", "LUNR", "ASTS", "PL", "VSAT"],
  "항공우주부품": ["HWM", "TDG", "HEI", "MOG-A", "DCO",
-            "BA", "GE", "SPR", "HXL", "WWD"],
+            "BA", "GE", "SPR", "HXL", "WWD",
+            "ERJ"],
  "항공사": ["DAL", "UAL", "AAL", "LUV", "ALK", "SKYW", "RYAAY", "CPA", "VLRS"],
  "은행": ["JPM", "BAC", "WFC", "C", "GS", "MS", "USB", "PNC", "TFC", "COF", "BK", "STT", "FITB", "MTB",
         "HBAN", "RF", "KEY", "CFG", "ZION", "ALLY", "NTRS", "HSBC", "RY", "TD", "MUFG", "SAN", "BBVA",
         "ITUB", "BAP", "BMO", "BNS", "CM",
-            "BNY", "UBS", "SMFG", "MFG", "ING", "LYG", "HDB", "IBN", "DB", "CS", "NU", "BSBR", "KB", "SHG", "WF"],
+            "BNY", "UBS", "SMFG", "MFG", "ING", "LYG", "HDB", "IBN", "DB", "CS", "NU", "BSBR", "KB", "SHG", "WF",
+            "BBD", "BBDO", "CIB"],
  "보험": ["BRK-B", "PGR", "CB", "AIG", "MET", "PRU", "ALL", "TRV", "AFL", "HIG", "GL", "L", "CINF",
         "WRB", "ACGL", "EG", "MKL", "AIZ", "UNM", "LNC",
             "MRSH", "AON", "AJG", "BRO", "RYAN", "CNA", "AFG", "ORI", "RGA", "PFG"],
  "자산운용·증권": ["BLK", "BX", "KKR", "APO", "ARES", "OWL", "TPG", "CG", "BAM", "AMP", "TROW", "BEN",
                "IVZ", "SCHW", "IBKR", "VIRT", "MKTX", "NDAQ", "CME", "ICE", "CBOE", "FRHC",
-            "BN", "MCO", "SPGI", "FI", "FIS", "GPN", "JEF", "RJF", "LPLA", "EVR", "MC", "PJT", "HLI", "STEP", "BLX"],
+            "BN", "MCO", "SPGI", "FI", "FIS", "GPN", "JEF", "RJF", "LPLA", "EVR", "MC", "PJT", "HLI", "STEP", "BLX",
+            "XP"],
  "에너지": ["XOM", "CVX", "COP", "EOG", "SLB", "PSX", "MPC", "VLO", "OXY", "HES", "DVN", "FANG", "HAL",
          "BKR", "WMB", "KMI", "OKE", "TRGP", "APA", "CTRA", "EQT", "AR", "SU", "CNQ", "CVE", "SHEL",
          "BP", "TTE", "E", "PBR", "YPF", "EC", "SSL", "VG",
-            "EQNR", "EPD", "ET", "MPLX", "PAA", "WES", "DINO", "PARR", "NFE", "FLNG", "GLNG"],
+            "EQNR", "EPD", "ET", "MPLX", "PAA", "WES", "DINO", "PARR", "NFE", "FLNG", "GLNG",
+            "LNG", "FTI", "PR", "OVV", "CHRD", "MTDR", "NOV", "WFRD", "CHX", "RRC", "SWN", "GPOR"],
  "유틸리티": ["NEE", "SO", "DUK", "AEP", "D", "EXC", "SRE", "XEL", "ED", "WEC", "ES", "AWK", "PEG",
            "EIX", "PPL", "FE", "AEE", "CMS", "DTE", "ATO", "CNP", "NI", "LNT", "EVRG", "WTRG", "AES",
-            "NGG", "PCG", "NEP", "OGE", "POR", "IDA", "BKH", "NWE", "AVA", "SWX", "SR"],
+            "NGG", "PCG", "NEP", "OGE", "POR", "IDA", "BKH", "NWE", "AVA", "SWX", "SR",
+            "SBS", "ELPC", "CIG", "EBR"],
  "제약·헬스케어": ["LLY", "JNJ", "MRK", "ABBV", "PFE", "BMY", "AMGN", "GILD", "NVO", "AZN", "NVS", "SNY",
                "GSK", "TAK", "ZTS", "VTRS", "OGN", "JAZZ", "TEVA",
             "CTLT", "PRGO", "AMRX", "HIMS"],
@@ -884,10 +891,12 @@ SECTOR_GROUPS = {
  "의료기기·서비스": ["ABT", "TMO", "DHR", "SYK", "BSX", "MDT", "ISRG", "EW", "ZBH", "BDX", "BAX", "RMD",
                 "DXCM", "PODD", "ALGN", "HOLX", "STE", "WAT", "A", "IQV", "UNH", "ELV", "CI", "CVS",
                 "HUM", "CNC", "MCK", "COR", "CAH", "HCA", "EHC",
-            "SOLV", "GEHC", "PHG", "XRAY", "NVST", "TFX", "MASI", "ICUI", "CYH", "UHS", "THC", "SEM", "ACHC"],
+            "SOLV", "GEHC", "PHG", "XRAY", "NVST", "TFX", "MASI", "ICUI", "CYH", "UHS", "THC", "SEM", "ACHC",
+            "OSCR"],
  "필수소비재": ["PG", "KO", "PEP", "CL", "KMB", "GIS", "K", "HSY", "STZ", "MDLZ", "KHC", "SYY", "MO",
             "PM", "BF-B", "BF-A", "CHD", "CLX", "TAP", "KDP", "MNST", "CELH", "BUD", "DEO", "UL", "KVUE",
-            "BTI", "KOF", "FMX", "CCEP", "SAM", "POST", "FLO", "CAG", "CPB", "SJM", "HRL", "TSN", "USFD", "PFGC"],
+            "BTI", "KOF", "FMX", "CCEP", "SAM", "POST", "FLO", "CAG", "CPB", "SJM", "HRL", "TSN", "USFD", "PFGC",
+            "ABEV"],
  "소매·유통": ["WMT", "COST", "TGT", "KR", "HD", "LOW", "TJX", "ROST", "DG", "DLTR", "BJ", "ORLY", "AZO",
             "BBY", "ULTA", "W", "CHWY", "BURL", "TSCO", "WSM", "DKS", "LULU",
             "MCD", "SBUX", "CMG", "YUM", "QSR", "DRI", "WEN", "TXRH", "EAT", "CAVA", "SG", "WSO", "QXO", "POOL", "GPC", "AAP"],
@@ -916,7 +925,8 @@ SECTOR_GROUPS = {
  "환경·위생서비스": ["WM", "RSG", "WCN", "RTO", "CWST", "VLTO", "CTAS", "ECL", "NVRI", "CLH"],
  "서버·EMS·클라우드인프라": ["SMCI2", "DELL", "HPE", "HPQ", "NTAP", "CLS", "FLEX", "SANM", "BHE", "PLXS", "CRWV", "NBIS", "APLD2", "IREN2", "DOCN", "AKAM", "FSLY"],
  "농기계·중장비": ["DE", "CAT", "AGCO", "TEX", "OSK", "ASTE", "ALG", "LNN", "CNH"],
- "통신": ["VZ", "T", "TMUS", "LUMN", "USM", "TDS", "IDT", "SATS", "VOD", "TU", "BCE", "AMX", "TEF", "TLK", "CHT", "SKM", "KT"],
+ "통신": ["VZ", "T", "TMUS", "LUMN", "USM", "TDS", "IDT", "SATS", "VOD", "TU", "BCE", "AMX", "TEF", "TLK", "CHT", "SKM", "KT",
+            "VIV", "TIMB"],
  "소비전자·완제품": ["SONY", "GPRO", "SONO", "VZIO", "KODK", "WHR", "NWL", "HAS", "MAT", "PTON", "YETI", "SN"],
  "데이터·분석서비스": ["ADP", "PAYX", "VRSK", "FICO", "NLSN", "EXLS", "G", "CSGP2", "FDS", "MORN", "TRU2"],
 }
@@ -950,6 +960,35 @@ def _num(v):
 #   자격·A급 재료(실적 상회)에도 특징주에서 빠졌다.
 #   나스닥 스크리너는 시총 구간 전체를 1회 호출로 주므로($10B~$200B 약 886종목) 컷오프 개념이 사라진다.
 #   등락률 정확도: 야후 일봉과 LMT·CSX·ADBE·KLAC·LDOS·INTU 6종목 모두 0.00%p 일치(2026-10-23 확인).
+def yahoo_session_pct(symbols, chunk=20):
+    """{심볼: (직전 완료 세션 등락률, 세션일)} — 야후 spark 일봉. spark는 **호출당 20종목 상한**(초과 시 Bad Request).
+    오늘 세션이 아직 안 끝났으면(ET 16시 전) 그 봉은 버린다."""
+    from zoneinfo import ZoneInfo
+    ET = ZoneInfo("America/New_York")
+    now_et = datetime.datetime.now(ET)
+    found = {}
+    for i in range(0, len(symbols), chunk):
+        part = [x for x in symbols[i:i + chunk] if x]
+        if not part:
+            continue
+        try:
+            d = get("https://query1.finance.yahoo.com/v8/finance/spark?symbols="
+                    + ",".join(part) + "&range=5d&interval=1d")
+        except Exception:
+            continue
+        for sym, v in (d or {}).items():
+            try:
+                bars = [(datetime.datetime.fromtimestamp(t, ET).date(), c)
+                        for t, c in zip(v["timestamp"], v["close"]) if c is not None]
+                bars = [b for b in bars if not (b[0] == now_et.date() and now_et.hour < 16)]
+                if len(bars) < 2:
+                    continue
+                found[sym] = (round((bars[-1][1] / bars[-2][1] - 1) * 100, 2), bars[-1][0])
+            except Exception:
+                continue
+        time.sleep(0.15)
+    return found
+
 def nasdaq_screen(group, min_cap_b=10.0):
     """나스닥 스크리너 시총 구간 전수 → [{symbol,name,pct,mktcap_b}]. 보통주 아닌 상품은 제외."""
     d = get(f"https://api.nasdaq.com/api/screener/stocks?tableonly=true&limit=3000&marketcap={group}")
@@ -966,7 +1005,29 @@ def nasdaq_screen(group, min_cap_b=10.0):
                     "pct": round(pct, 2), "mktcap_b": round(cap / 1e9, 1)})
     if not got:
         raise ValueError("스크리너 행 0건")
-    return got
+    # ★ 스크리너 '등락률'은 쓰지 않는다(2026-10-27 확정) — pctchange는 직전 스냅샷이라 06:40(=17:40 ET) 실행
+    #   시점엔 한 세션, 주말이면 세 세션까지 뒤처진다. 실측: 10/26 23:55 ET 조회에도 asof="Oct 23"이고
+    #   BHP +0.348%(실제 10/26은 +1.64%). 이 값을 그대로 쓰면 섹터 선정·묶음·특징주가 통째로 밀린다
+    #   (2026-10-23~10-27 클라우드 실행이 매번 이 문제를 발견해 임시 패치했다 — 근본 수정).
+    #   → 스크리너에서는 **종목 명단·시총**만 받고, **등락률은 야후 일봉**에서 받는다. 확인 못 한 행은 버린다
+    #     (틀린 수치보다 누락이 낫다). 스크리너가 최신인 날은 두 값이 일치하므로 교차검증도 된다.
+    asof = str(((d.get("data") or {}).get("asof")) or "").strip()
+    ver = yahoo_session_pct([g["symbol"] for g in got])
+    keep, gap = [], 0
+    for g in got:
+        v = ver.get(g["symbol"])
+        if v is None:
+            continue
+        if abs(v[0] - g["pct"]) > 0.3:
+            gap += 1
+        g["pct_nasdaq"], g["pct"] = g["pct"], v[0]
+        keep.append(g)
+    if not keep:
+        raise ValueError(f"야후 일봉 대조 전건 실패 (스크리너 asof={asof})")
+    sess = max(v[1] for v in ver.values())
+    errors.append(f"나스닥 스크리너({group}): 명단·시총만 사용 · 등락률은 야후 일봉 {len(keep)}/{len(got)}건 "
+                  f"(스크리너와 0.3%p+ 다른 행 {gap}건 · 세션 {sess} · 스크리너 {asof})")
+    return keep
 
 out, errors = {}, []
 try:
@@ -2222,6 +2283,11 @@ print("✅ 검증 통과 — 지수·시장지표·특징주 수치가 원본과
 # 경제 브리핑 — 게시(GitHub) + 발송(카카오). out/index.html 을 만든 뒤 실행.
 set -euo pipefail
 cd "$(dirname "$0")"
+
+# ★ 브리핑은 KST 산출물 — 컨테이너 TZ이 UTC면 verify.py의 datetime.now()가 하루 전이 되어
+#   헤더 날짜 검사(#3)·뉴스 시간창 검사(#5)가 어긋난다(2026-10-25 실측: 헤더 10/25인데 오늘=10/24로 차단).
+#   아래 TODAY·MD·WDATE가 이미 TZ=Asia/Seoul인 것과 맞춰 셸 전체를 KST로 고정한다.
+export TZ=Asia/Seoul
 
 # .env가 있으면 로드, 없으면 이미 export된 환경변수 사용(클라우드: briefing-secrets/.env를 미리 source)
 [ -f .env ] && { set -a; source .env; set +a; }

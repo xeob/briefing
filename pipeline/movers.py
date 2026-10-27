@@ -105,32 +105,39 @@ SECTOR_GROUPS = {
  "소프트웨어·AI": ["MSFT", "ORCL", "CRM", "NOW", "ADBE", "PLTR", "SNOW", "DDOG", "MDB", "PANW", "CRWD",
                "ZS", "NET", "HUBS", "TEAM", "WDAY", "INTU", "SAP", "ADSK", "FTNT", "OKTA", "GTLB", "S",
                "CFLT", "APP", "IT", "CTSH", "ACN", "CHKP", "GDDY", "TRU", "EFX",
-            "ROP", "TYL", "PTC", "ANSS", "MANH", "DT", "ESTC", "PCTY", "PAYC", "VEEV", "TWLO", "ZM", "DOCU", "BOX", "NTNX", "PSTG", "SMAR", "FROG", "AI", "BBAI", "SOUN"],
+            "ROP", "TYL", "PTC", "ANSS", "MANH", "DT", "ESTC", "PCTY", "PAYC", "VEEV", "TWLO", "ZM", "DOCU", "BOX", "NTNX", "PSTG", "SMAR", "FROG", "AI", "BBAI", "SOUN",
+            "SAIL", "RBRK", "TENB", "QLYS", "CYBR", "VRNS"],
  "인터넷·플랫폼": ["GOOGL", "META", "AMZN", "NFLX", "SPOT", "UBER", "ABNB", "DASH", "BKNG", "PINS", "SNAP",
                "RDDT", "SHOP", "SE", "BABA", "PDD", "JD", "MELI", "TCOM", "EBAY", "ETSY", "CPNG", "TRI",
-            "DIS", "CMCSA", "WBD", "PARA", "LYV", "MTCH", "YELP", "ZG", "TRIP", "EXPE", "MAR", "HLT", "RCL", "CCL", "NCLH", "DKNG", "FLUT"],
+            "DIS", "CMCSA", "WBD", "PARA", "LYV", "MTCH", "YELP", "ZG", "TRIP", "EXPE", "MAR", "HLT", "RCL", "CCL", "NCLH", "DKNG", "FLUT",
+            "CART", "BSP"],
  "방산": ["LMT", "RTX", "NOC", "GD", "LHX", "HII", "LDOS", "BWXT", "CW", "AVAV", "KTOS", "TXT", "RKLB",
             "SPCX", "LUNR", "ASTS", "PL", "VSAT"],
  "항공우주부품": ["HWM", "TDG", "HEI", "MOG-A", "DCO",
-            "BA", "GE", "SPR", "HXL", "WWD"],
+            "BA", "GE", "SPR", "HXL", "WWD",
+            "ERJ"],
  "항공사": ["DAL", "UAL", "AAL", "LUV", "ALK", "SKYW", "RYAAY", "CPA", "VLRS"],
  "은행": ["JPM", "BAC", "WFC", "C", "GS", "MS", "USB", "PNC", "TFC", "COF", "BK", "STT", "FITB", "MTB",
         "HBAN", "RF", "KEY", "CFG", "ZION", "ALLY", "NTRS", "HSBC", "RY", "TD", "MUFG", "SAN", "BBVA",
         "ITUB", "BAP", "BMO", "BNS", "CM",
-            "BNY", "UBS", "SMFG", "MFG", "ING", "LYG", "HDB", "IBN", "DB", "CS", "NU", "BSBR", "KB", "SHG", "WF"],
+            "BNY", "UBS", "SMFG", "MFG", "ING", "LYG", "HDB", "IBN", "DB", "CS", "NU", "BSBR", "KB", "SHG", "WF",
+            "BBD", "BBDO", "CIB"],
  "보험": ["BRK-B", "PGR", "CB", "AIG", "MET", "PRU", "ALL", "TRV", "AFL", "HIG", "GL", "L", "CINF",
         "WRB", "ACGL", "EG", "MKL", "AIZ", "UNM", "LNC",
             "MRSH", "AON", "AJG", "BRO", "RYAN", "CNA", "AFG", "ORI", "RGA", "PFG"],
  "자산운용·증권": ["BLK", "BX", "KKR", "APO", "ARES", "OWL", "TPG", "CG", "BAM", "AMP", "TROW", "BEN",
                "IVZ", "SCHW", "IBKR", "VIRT", "MKTX", "NDAQ", "CME", "ICE", "CBOE", "FRHC",
-            "BN", "MCO", "SPGI", "FI", "FIS", "GPN", "JEF", "RJF", "LPLA", "EVR", "MC", "PJT", "HLI", "STEP", "BLX"],
+            "BN", "MCO", "SPGI", "FI", "FIS", "GPN", "JEF", "RJF", "LPLA", "EVR", "MC", "PJT", "HLI", "STEP", "BLX",
+            "XP"],
  "에너지": ["XOM", "CVX", "COP", "EOG", "SLB", "PSX", "MPC", "VLO", "OXY", "HES", "DVN", "FANG", "HAL",
          "BKR", "WMB", "KMI", "OKE", "TRGP", "APA", "CTRA", "EQT", "AR", "SU", "CNQ", "CVE", "SHEL",
          "BP", "TTE", "E", "PBR", "YPF", "EC", "SSL", "VG",
-            "EQNR", "EPD", "ET", "MPLX", "PAA", "WES", "DINO", "PARR", "NFE", "FLNG", "GLNG"],
+            "EQNR", "EPD", "ET", "MPLX", "PAA", "WES", "DINO", "PARR", "NFE", "FLNG", "GLNG",
+            "LNG", "FTI", "PR", "OVV", "CHRD", "MTDR", "NOV", "WFRD", "CHX", "RRC", "SWN", "GPOR"],
  "유틸리티": ["NEE", "SO", "DUK", "AEP", "D", "EXC", "SRE", "XEL", "ED", "WEC", "ES", "AWK", "PEG",
            "EIX", "PPL", "FE", "AEE", "CMS", "DTE", "ATO", "CNP", "NI", "LNT", "EVRG", "WTRG", "AES",
-            "NGG", "PCG", "NEP", "OGE", "POR", "IDA", "BKH", "NWE", "AVA", "SWX", "SR"],
+            "NGG", "PCG", "NEP", "OGE", "POR", "IDA", "BKH", "NWE", "AVA", "SWX", "SR",
+            "SBS", "ELPC", "CIG", "EBR"],
  "제약·헬스케어": ["LLY", "JNJ", "MRK", "ABBV", "PFE", "BMY", "AMGN", "GILD", "NVO", "AZN", "NVS", "SNY",
                "GSK", "TAK", "ZTS", "VTRS", "OGN", "JAZZ", "TEVA",
             "CTLT", "PRGO", "AMRX", "HIMS"],
@@ -139,10 +146,12 @@ SECTOR_GROUPS = {
  "의료기기·서비스": ["ABT", "TMO", "DHR", "SYK", "BSX", "MDT", "ISRG", "EW", "ZBH", "BDX", "BAX", "RMD",
                 "DXCM", "PODD", "ALGN", "HOLX", "STE", "WAT", "A", "IQV", "UNH", "ELV", "CI", "CVS",
                 "HUM", "CNC", "MCK", "COR", "CAH", "HCA", "EHC",
-            "SOLV", "GEHC", "PHG", "XRAY", "NVST", "TFX", "MASI", "ICUI", "CYH", "UHS", "THC", "SEM", "ACHC"],
+            "SOLV", "GEHC", "PHG", "XRAY", "NVST", "TFX", "MASI", "ICUI", "CYH", "UHS", "THC", "SEM", "ACHC",
+            "OSCR"],
  "필수소비재": ["PG", "KO", "PEP", "CL", "KMB", "GIS", "K", "HSY", "STZ", "MDLZ", "KHC", "SYY", "MO",
             "PM", "BF-B", "BF-A", "CHD", "CLX", "TAP", "KDP", "MNST", "CELH", "BUD", "DEO", "UL", "KVUE",
-            "BTI", "KOF", "FMX", "CCEP", "SAM", "POST", "FLO", "CAG", "CPB", "SJM", "HRL", "TSN", "USFD", "PFGC"],
+            "BTI", "KOF", "FMX", "CCEP", "SAM", "POST", "FLO", "CAG", "CPB", "SJM", "HRL", "TSN", "USFD", "PFGC",
+            "ABEV"],
  "소매·유통": ["WMT", "COST", "TGT", "KR", "HD", "LOW", "TJX", "ROST", "DG", "DLTR", "BJ", "ORLY", "AZO",
             "BBY", "ULTA", "W", "CHWY", "BURL", "TSCO", "WSM", "DKS", "LULU",
             "MCD", "SBUX", "CMG", "YUM", "QSR", "DRI", "WEN", "TXRH", "EAT", "CAVA", "SG", "WSO", "QXO", "POOL", "GPC", "AAP"],
@@ -171,7 +180,8 @@ SECTOR_GROUPS = {
  "환경·위생서비스": ["WM", "RSG", "WCN", "RTO", "CWST", "VLTO", "CTAS", "ECL", "NVRI", "CLH"],
  "서버·EMS·클라우드인프라": ["SMCI2", "DELL", "HPE", "HPQ", "NTAP", "CLS", "FLEX", "SANM", "BHE", "PLXS", "CRWV", "NBIS", "APLD2", "IREN2", "DOCN", "AKAM", "FSLY"],
  "농기계·중장비": ["DE", "CAT", "AGCO", "TEX", "OSK", "ASTE", "ALG", "LNN", "CNH"],
- "통신": ["VZ", "T", "TMUS", "LUMN", "USM", "TDS", "IDT", "SATS", "VOD", "TU", "BCE", "AMX", "TEF", "TLK", "CHT", "SKM", "KT"],
+ "통신": ["VZ", "T", "TMUS", "LUMN", "USM", "TDS", "IDT", "SATS", "VOD", "TU", "BCE", "AMX", "TEF", "TLK", "CHT", "SKM", "KT",
+            "VIV", "TIMB"],
  "소비전자·완제품": ["SONY", "GPRO", "SONO", "VZIO", "KODK", "WHR", "NWL", "HAS", "MAT", "PTON", "YETI", "SN"],
  "데이터·분석서비스": ["ADP", "PAYX", "VRSK", "FICO", "NLSN", "EXLS", "G", "CSGP2", "FDS", "MORN", "TRU2"],
 }
@@ -205,6 +215,35 @@ def _num(v):
 #   자격·A급 재료(실적 상회)에도 특징주에서 빠졌다.
 #   나스닥 스크리너는 시총 구간 전체를 1회 호출로 주므로($10B~$200B 약 886종목) 컷오프 개념이 사라진다.
 #   등락률 정확도: 야후 일봉과 LMT·CSX·ADBE·KLAC·LDOS·INTU 6종목 모두 0.00%p 일치(2026-10-23 확인).
+def yahoo_session_pct(symbols, chunk=20):
+    """{심볼: (직전 완료 세션 등락률, 세션일)} — 야후 spark 일봉. spark는 **호출당 20종목 상한**(초과 시 Bad Request).
+    오늘 세션이 아직 안 끝났으면(ET 16시 전) 그 봉은 버린다."""
+    from zoneinfo import ZoneInfo
+    ET = ZoneInfo("America/New_York")
+    now_et = datetime.datetime.now(ET)
+    found = {}
+    for i in range(0, len(symbols), chunk):
+        part = [x for x in symbols[i:i + chunk] if x]
+        if not part:
+            continue
+        try:
+            d = get("https://query1.finance.yahoo.com/v8/finance/spark?symbols="
+                    + ",".join(part) + "&range=5d&interval=1d")
+        except Exception:
+            continue
+        for sym, v in (d or {}).items():
+            try:
+                bars = [(datetime.datetime.fromtimestamp(t, ET).date(), c)
+                        for t, c in zip(v["timestamp"], v["close"]) if c is not None]
+                bars = [b for b in bars if not (b[0] == now_et.date() and now_et.hour < 16)]
+                if len(bars) < 2:
+                    continue
+                found[sym] = (round((bars[-1][1] / bars[-2][1] - 1) * 100, 2), bars[-1][0])
+            except Exception:
+                continue
+        time.sleep(0.15)
+    return found
+
 def nasdaq_screen(group, min_cap_b=10.0):
     """나스닥 스크리너 시총 구간 전수 → [{symbol,name,pct,mktcap_b}]. 보통주 아닌 상품은 제외."""
     d = get(f"https://api.nasdaq.com/api/screener/stocks?tableonly=true&limit=3000&marketcap={group}")
@@ -221,7 +260,29 @@ def nasdaq_screen(group, min_cap_b=10.0):
                     "pct": round(pct, 2), "mktcap_b": round(cap / 1e9, 1)})
     if not got:
         raise ValueError("스크리너 행 0건")
-    return got
+    # ★ 스크리너 '등락률'은 쓰지 않는다(2026-10-27 확정) — pctchange는 직전 스냅샷이라 06:40(=17:40 ET) 실행
+    #   시점엔 한 세션, 주말이면 세 세션까지 뒤처진다. 실측: 10/26 23:55 ET 조회에도 asof="Oct 23"이고
+    #   BHP +0.348%(실제 10/26은 +1.64%). 이 값을 그대로 쓰면 섹터 선정·묶음·특징주가 통째로 밀린다
+    #   (2026-10-23~10-27 클라우드 실행이 매번 이 문제를 발견해 임시 패치했다 — 근본 수정).
+    #   → 스크리너에서는 **종목 명단·시총**만 받고, **등락률은 야후 일봉**에서 받는다. 확인 못 한 행은 버린다
+    #     (틀린 수치보다 누락이 낫다). 스크리너가 최신인 날은 두 값이 일치하므로 교차검증도 된다.
+    asof = str(((d.get("data") or {}).get("asof")) or "").strip()
+    ver = yahoo_session_pct([g["symbol"] for g in got])
+    keep, gap = [], 0
+    for g in got:
+        v = ver.get(g["symbol"])
+        if v is None:
+            continue
+        if abs(v[0] - g["pct"]) > 0.3:
+            gap += 1
+        g["pct_nasdaq"], g["pct"] = g["pct"], v[0]
+        keep.append(g)
+    if not keep:
+        raise ValueError(f"야후 일봉 대조 전건 실패 (스크리너 asof={asof})")
+    sess = max(v[1] for v in ver.values())
+    errors.append(f"나스닥 스크리너({group}): 명단·시총만 사용 · 등락률은 야후 일봉 {len(keep)}/{len(got)}건 "
+                  f"(스크리너와 0.3%p+ 다른 행 {gap}건 · 세션 {sess} · 스크리너 {asof})")
+    return keep
 
 out, errors = {}, []
 try:
