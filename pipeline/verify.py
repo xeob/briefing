@@ -135,13 +135,31 @@ for m in re.finditer(r'mv-n">(그 외[^<]*동반[^<]*)</span>', html):
 _sec_top2 = []
 if isinstance(mv.get("sectors"), dict):
     _sec_top2 = (mv["sectors"].get("strong") or [])[:2] + (mv["sectors"].get("weak") or [])[:2]
+# 업종 식별은 **라벨 문자열이 아니라 멤버 수치**로 한다(2026-10-27 수정). 지면 라벨은 읽기 좋게
+# 짜므로("전력·데이터센터 설비", "클라우드·데이터센터") 맵 라벨과 글자가 달라, 문자열 매칭으로는
+# 완화·면제 판정이 조용히 빗나간다(실측: 과거 15일 묶음 라벨 대부분이 맵 라벨과 불일치).
+_by_pct = {}
+for r in (mv.get("all") or []):
+    if isinstance(r.get("pct"), (int, float)) and r.get("sector"):
+        _by_pct.setdefault(round(r["pct"], 2), []).append(r["sector"])
+
+def _grp_sector(body):
+    """묶음행 본문의 등락률들로 멤버를 역추적해 다수 업종을 돌려준다(못 찾으면 None)."""
+    from collections import Counter
+    c = Counter()
+    for x in re.findall(r'class="(?:up|down)">([+\-−][\d.]+)%', body):
+        for lb in _by_pct.get(round(num(x), 2), []):
+            c[lb] += 1
+    return c.most_common(1)[0][0] if c else None
+
 for m in re.finditer(r'mv-n">(그 외[^<]*동반[^<]*)</span></div><div class="mv-r">(.*?)</div>', html):
     label, body = m.group(1).strip(), m.group(2)
     pcts = [abs(num(x)) for x in re.findall(r'class="(?:up|down)">([+\-−][\d.]+)%', body)]
     if not pcts:
         continue
     big = sum(1 for p in pcts if p >= 5)
-    lead = any(lb and lb in label for lb in _sec_top2)      # 섹터 1~2위 업종의 묶음인가
+    _sec = _grp_sector(body)
+    lead = (_sec in _sec_top2) if _sec else any(lb and lb in label for lb in _sec_top2)
     if lead:
         big4 = sum(1 for p in pcts if p >= 4)
         if big4 < 2:
