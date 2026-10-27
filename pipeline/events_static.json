@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-27",
+ "generated": "2026-10-28",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
@@ -162,6 +162,17 @@
    "keywords": [
     "ISM",
     "제조업"
+   ]
+  },
+  {
+   "date": "2026-11-03",
+   "time": "02:15",
+   "title": "연준 굴스비 발언",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "굴스비"
    ]
   },
   {
