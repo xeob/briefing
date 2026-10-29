@@ -1,12 +1,9 @@
 {
- "generated": "2026-10-29",
+ "generated": "2026-10-30",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
  "ff_variants": {
-  "2026-10-08|final wholesale inventories": {
-   "0.7": "m/m"
-  },
   "2026-10-14|core cpi": {
    "0.2": "m/m",
    "2.5": "y/y"
@@ -90,41 +87,6 @@
  },
  "events": [
   {
-   "date": "2026-10-29",
-   "time": "21:30",
-   "title": "PCE 물가지수",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "PCE"
-   ]
-  },
-  {
-   "date": "2026-10-29",
-   "time": "21:30",
-   "title": "GDP",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "GDP",
-    "성장률"
-   ]
-  },
-  {
-   "date": "2026-10-29",
-   "time": "21:30",
-   "title": "신규 실업수당청구",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "실업수당",
-    "신규 실업"
-   ]
-  },
-  {
    "date": "2026-10-31",
    "time": "01:00",
    "title": "연준 데일리 발언",
@@ -204,6 +166,28 @@
    "src": "static",
    "keywords": [
     "Barkin"
+   ]
+  },
+  {
+   "date": "2026-11-06",
+   "time": "10:00",
+   "title": "연준 로건 발언",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "로건"
+   ]
+  },
+  {
+   "date": "2026-11-06",
+   "time": "19:30",
+   "title": "연준 윌리엄스 발언",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "윌리엄스"
    ]
   },
   {
