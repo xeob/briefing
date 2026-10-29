@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>실적 컨퍼런스콜</title>
+<style>
+:root{
+  --bg:#f6f6f4; --card:#ffffff; --text:#1a1a19; --sub:#63625d; --muted:#9a9992;
+  --border:#e6e5e1; --up:#0a7d33; --down:#d21c1c; --accent:#2f6fd0;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#181817; --card:#242422; --text:#f0efec; --sub:#a7a6a0; --muted:#77766f;
+    --border:#38372f; --up:#3fb950; --down:#f5564a; --accent:#5a9bf0; }
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+  word-break:keep-all;-webkit-text-size-adjust:100%;}
+.wrap{max-width:520px;margin:0 auto;padding:20px 16px 24px;}
+a{color:inherit;text-decoration:none;}
+.head{padding-bottom:14px;border-bottom:1px solid var(--border);margin-bottom:18px;}
+.head-row{display:flex;justify-content:space-between;align-items:baseline;}
+.head-title{font-size:20px;font-weight:600;}
+.head-date{font-size:13px;color:var(--muted);}
+.head-sub{margin:6px 0 0;font-size:12px;color:var(--muted);}
+.card{background:var(--card);border:0.5px solid var(--border);border-radius:12px;padding:13px 15px;margin-bottom:12px;}
+.sec{display:flex;align-items:center;gap:7px;margin-bottom:11px;}
+.sec-title{font-size:13px;font-weight:600;color:var(--sub);}
+.sec-note{font-size:11px;color:var(--muted);}
+.tag{display:inline-block;font-size:11px;padding:1px 8px;border-radius:20px;}
+.s-earn{color:#c1660f;background:rgba(193,102,15,.13);}
+.s-fed{color:#7a4fd0;background:rgba(122,79,208,.14);}
+.divide{height:1px;background:var(--border);margin:12px 0;}
+.lbl{font-size:11px;color:var(--muted);margin-bottom:5px;}
+.mv{margin-bottom:13px;}
+.mv-h{display:flex;align-items:baseline;gap:8px;}
+.mv-n{font-size:14px;font-weight:600;}
+.mv-p{font-size:13px;font-weight:600;}
+.mv-r{font-size:12px;color:var(--sub);line-height:1.55;margin-top:3px;}
+.up{color:var(--up);} .down{color:var(--down);}
+.note{font-size:12px;color:var(--sub);line-height:1.7;}
+.foot{margin-top:16px;text-align:center;font-size:11px;color:var(--muted);}
+@media (max-width:390px){ .head-title{font-size:18px;} .mv-n{font-size:13px;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ===== 헤더 ===== -->
+  <div class="head">
+    <div class="head-row">
+      <div class="head-title">실적 컨퍼런스콜</div>
+      <div class="head-date">2026.10.30 (금)</div>
+    </div>
+    <p class="head-sub">간밤(미국 10/29) 실적 발표 · 컨퍼런스콜 주요 내용</p>
+  </div>
+
+  <!-- ===== M7 · 반도체 심화 ===== -->
+  <div class="card">
+    <div class="sec"><span class="sec-title">M7 · 반도체 — 심화</span><span class="sec-note">한국시간 기준</span></div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">아마존 (AMZN)</span><span class="mv-p down">시간외 −7%대</span></div>
+      <div class="mv-r">매출 $201.9B(+12%)·GAAP EPS $1.89(예상 $1.97 하회)<br>영업이익 $28.1B·영업마진 13.9% 사상 최고<br>AWS $46.0B(+39%, 5년來 최고)·영업익 $17.8B<br>북미 $112.9B(+6%)·광고 $19.6B(+11%)<br>재시 CEO "AWS 2027·2028 성장률 40% 상회 전망"<br>Q4 매출 가이던스 $240~247B(+12~16%)<br>2026 capex ~$220B·잉여현금흐름(TTM) −$42.4B</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">인텔 (INTC)</span><span class="mv-p down">시간외 −18%</span></div>
+      <div class="mv-r">매출 $16.5B(+21%)·조정 EPS $0.52(예상 $0.39 상회)<br>데이터센터·AI $7.3B(+78%) — 15년來 최고 성장<br>파운드리 $6.7B(+58%)·영업손 −$1.85B<br>클라이언트 $8.1B(−5%)·조정 총마진 44.1%<br>Q4 매출 $15.0~16.0B(QoQ 감소)·조정 총마진 38%<br>깜짝 흑자에도 약한 Q4 전망에 시간외 급락</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">모놀리식파워 (MPWR)</span></div>
+      <div class="mv-r">매출 $1,202M(+63%)·조정 EPS $8.19(예상 $7.73 상회)<br>사상 첫 분기 매출 10억달러 돌파<br>엔터프라이즈데이터 $507M(+165%)·전체 42%<br>통신 $187M(+135%)·자동차 $181M(+19%)<br>Q4 매출 $1,315~1,385M — 컨센 대폭 상회<br>자사주 $453M 매입·$500M 추가 승인</div>
+    </div>
+  </div>
+
+  <!-- ===== 주요 발언 · 특이사항 ===== -->
+  <div class="card">
+    <div class="sec"><span class="sec-title">주요 발언 · 특이사항</span><span class="sec-note">한국시간 기준</span></div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">일라이릴리 (LLY)</span></div>
+      <div class="mv-r">매출 $24.4B(+39%)·조정 EPS $7.48(예상 $6.67 상회)<br>마운자로 $10.7B(+65%)·젭바운드 $5.35B(+49%)<br>FY2026 매출 가이던스 $91~92B로 상향<br>IPR&D 일회성 충당 $4.57/주 반영·총마진 84%</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">마스터카드 (MA)</span></div>
+      <div class="mv-r">순매출 $9.81B(+14%)·조정 EPS $5.31(예상 $5.15 상회)<br>국경간 거래액 +11%·총결제액 +7%<br>부가서비스 매출 +19%·조정 영업마진 60.5%<br>분기 자사주 $3.0B·배당 $763M</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">머크 (MRK)</span></div>
+      <div class="mv-r">매출 $18.1B(+5%)·조정 EPS $2.49(GAAP $2.04)<br>키트루다 $8.6B(+6%)·가다실 $2.0B(+14%)<br>윈리베어 $694M(+93%)·웰리렉 $307M(+56%)<br>FY 매출 $66.8~67.3B·조정 EPS $2.77~2.82 상향</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">캐터필러 (CAT)</span></div>
+      <div class="mv-r">매출 $20.7B(+17%)·조정 EPS $7.20(예상 상회)<br>건설 $8.0B(+18%)·자원 $4.6B(+15%)<br>파워&에너지 $8.8B(+18%)·수주잔고 사상 최대<br>분기 영업현금흐름 $4.4B·관세 비용 일부 반영</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">셸 (SHEL)</span></div>
+      <div class="mv-r">조정이익 $10.8B·IFRS 순이익 $12.1B<br>영업현금흐름 $21.0B·잉여현금흐름 $16.3B<br>신규 자사주 $5.0B 발표·분기배당 $0.3906<br>2026 capex $23~25B·순부채 $39.7B(기어링 16.6%)</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">린데 (LIN)</span></div>
+      <div class="mv-r">매출 $9.40B(+9%)·조정 EPS $4.59(예상 $4.52 상회)<br>조정 영업마진 29.4%·GAAP EPS $3.66(−11%)<br>Q4 조정 EPS $4.40~4.50 제시<br>FY2026 조정 EPS $17.82~17.92로 상향</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">길리어드 (GILD)</span></div>
+      <div class="mv-r">총매출 $8.3B(+7%)·조정 EPS $2.55(+3%)<br>빅타비 $4.1B(+10%)·트로델비 $506M(+42%)<br>예즈투고(PrEP) $305M·전년 $39M서 급증<br>FY 제품매출 $31.0~31.3B로 상향<br>IPR&D $12.4B 충당에 연간 EPS 적자 전망</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">브리스톨마이어스 (BMY)</span></div>
+      <div class="mv-r">매출 $13.1B(+7%)·조정 EPS $1.35(−17%)<br>엘리퀴스 $4.69B(+25%)·성장품목 $7.66B(+12%)<br>옵디보 $2.37B(−6%)<br>FY 매출 $49.8~50.3B 상향·조정 EPS $6.35~6.55 하향<br>EPS 하향은 IPR&D 일회성 충당 영향</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">알트리아 (MO)</span></div>
+      <div class="mv-r">매출(소비세제외) $5.44B(+3.6%)·조정 EPS $1.52(+5%)<br>담배 출하량 −2.9%·구강담배 −4.3%<br>on! 출하 47.8M캔(+13%)<br>FY 조정 EPS $5.66~5.74로 상향·자사주 $1B 추가</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">스타벅스 (SBUX)</span></div>
+      <div class="mv-r">매출 $9.14B(−4.5%)·조정 EPS $0.80(+54%)<br>매출 감소는 중국 사업 JV 전환 영향<br>글로벌 동일점 +7.2%·美 +7.7%(턴어라운드)<br>니콜 CEO "턴어라운드가 이제 성장 계획"<br>FY27 조정 EPS $3.15~3.25·자사주 재개 예정</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">스트라이커 (SYK)</span></div>
+      <div class="mv-r">매출 $6.52B(+7.7%)·조정 EPS $3.52(예상 $3.6 하회)<br>유기적 성장 +7.7%·조정 영업마진 26.2%<br>FY 가이던스 하향: 유기적 +6.5~7.0%<br>FY 조정 EPS $14.80~14.90으로 낮춤</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">AB인베브 (BUD)</span></div>
+      <div class="mv-r">매출 $16.5B(+9%)·조정 EPS $1.21(+22%)<br>유기적 매출 +4.9%·정상화 EBITDA $5.96B(마진 36.1%)<br>미셸롭 울트라·부시 라이트 美점유율 확대<br>자사주 $6B 중 $2.6B 집행·중간배당 €0.40</div>
+    </div>
+  </div>
+
+  <!-- ===== 오늘 밤 실적 예정 ===== -->
+  <div class="card">
+    <div class="sec"><span class="sec-title">오늘 밤 실적 예정</span></div>
+    <div class="note">
+      · 엑슨모빌 (XOM) · 셰브론 (CVX) — 한국시간 밤<br>
+      · 애브비 (ABBV) · 아스트라제네카 (AZN) — 제약<br>
+      · BP · 사노피 (SNY) 등 에너지·제약 집중
+    </div>
+  </div>
+
+  <div class="foot">경제 브리핑 · 실적 컨퍼런스콜</div>
+</div>
+</body>
+</html>
