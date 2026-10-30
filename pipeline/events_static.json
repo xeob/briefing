@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-30",
+ "generated": "2026-10-31",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
@@ -88,13 +88,13 @@
  "events": [
   {
    "date": "2026-10-31",
-   "time": "01:00",
-   "title": "연준 데일리 발언",
+   "time": "07:30",
+   "title": "PCE 물가지수",
    "impact": "High",
    "cat": "지표",
    "src": "static",
    "keywords": [
-    "데일리"
+    "PCE"
    ]
   },
   {
@@ -223,6 +223,17 @@
    "keywords": [
     "기대인플레",
     "미시간"
+   ]
+  },
+  {
+   "date": "2026-11-07",
+   "time": "03:15",
+   "title": "연준 보먼 발언",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "보먼"
    ]
   },
   {
