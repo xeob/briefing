@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>실적 컨퍼런스콜</title>
+<style>
+:root{
+  --bg:#f6f6f4; --card:#ffffff; --text:#1a1a19; --sub:#63625d; --muted:#9a9992;
+  --border:#e6e5e1; --up:#0a7d33; --down:#d21c1c; --accent:#2f6fd0;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#181817; --card:#242422; --text:#f0efec; --sub:#a7a6a0; --muted:#77766f;
+    --border:#38372f; --up:#3fb950; --down:#f5564a; --accent:#5a9bf0; }
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+  word-break:keep-all;-webkit-text-size-adjust:100%;}
+.wrap{max-width:520px;margin:0 auto;padding:20px 16px 24px;}
+a{color:inherit;text-decoration:none;}
+.head{padding-bottom:14px;border-bottom:1px solid var(--border);margin-bottom:18px;}
+.head-row{display:flex;justify-content:space-between;align-items:baseline;}
+.head-title{font-size:20px;font-weight:600;}
+.head-date{font-size:13px;color:var(--muted);}
+.head-sub{margin:6px 0 0;font-size:12px;color:var(--muted);}
+.card{background:var(--card);border:0.5px solid var(--border);border-radius:12px;padding:13px 15px;margin-bottom:12px;}
+.sec{display:flex;align-items:center;gap:7px;margin-bottom:11px;}
+.sec-title{font-size:13px;font-weight:600;color:var(--sub);}
+.sec-note{font-size:11px;color:var(--muted);}
+.tag{display:inline-block;font-size:11px;padding:1px 8px;border-radius:20px;}
+.s-earn{color:#c1660f;background:rgba(193,102,15,.13);}
+.s-fed{color:#7a4fd0;background:rgba(122,79,208,.14);}
+.divide{height:1px;background:var(--border);margin:12px 0;}
+.lbl{font-size:11px;color:var(--muted);margin-bottom:5px;}
+.mv{margin-bottom:13px;}
+.mv-h{display:flex;align-items:baseline;gap:8px;}
+.mv-n{font-size:14px;font-weight:600;}
+.mv-p{font-size:13px;font-weight:600;}
+.mv-r{font-size:12px;color:var(--sub);line-height:1.55;margin-top:3px;}
+.up{color:var(--up);} .down{color:var(--down);}
+.note{font-size:12px;color:var(--sub);line-height:1.7;}
+.foot{margin-top:16px;text-align:center;font-size:11px;color:var(--muted);}
+@media (max-width:390px){ .head-title{font-size:18px;} .mv-n{font-size:13px;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ===== 헤더 ===== -->
+  <div class="head">
+    <div class="head-row">
+      <div class="head-title">실적 컨퍼런스콜</div>
+      <div class="head-date">2026.10.31 (토)</div>
+    </div>
+    <p class="head-sub">간밤(미국 10/30) 실적 발표 · 컨퍼런스콜 주요 내용</p>
+  </div>
+
+  <!-- ===== 에너지 ===== -->
+  <div class="card">
+    <div class="sec"><span class="sec-title">에너지 — 정유 마진 급등</span><span class="sec-note">한국시간 기준</span></div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">엑슨모빌 (XOM)</span></div>
+      <div class="mv-r">매출 $110.5B(+30%)·조정 EPS $4.23(예상 $4.12)<br>조정 순이익 $17.5B·GAAP EPS $3.72<br>정유부문 이익 $9.1B·업스트림 $7.3B<br>영업현금흐름 $25.7B·잉여현금흐름 $19.1B<br>주주환원 $9.4B(배당 $4.3B·자사주 $5.1B)<br>가이아나 지분영향에도 정유 호조로 상쇄</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">셰브론 (CVX)</span></div>
+      <div class="mv-r">매출 $67.8B(+36%)·조정 EPS $5.28(예상 $4.9)<br>GAAP 순이익 $9.9B·조정 순이익 $10.4B<br>다운스트림 이익 $4.9B(전년 $0.6B)·美정유 가동 최대<br>업스트림 $5.7B·생산 398만 boe/일<br>영업현금흐름 $16.0B·FCF $12.0B<br>분기배당 주당 $1.78·자사주 $2.5B 매입</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">BP (BP)</span></div>
+      <div class="mv-r">기초 대체원가이익 $8.5B(전년 $2.2B)·전분기比 +48%<br>정유마진·가스 트레이딩 호조로 급증<br>영업현금흐름 $14.8B·분기배당 주당 $0.0866<br>회계상 순이익 $4.7B(감액 $40억 등 반영)<br>자사주는 12월 전략발표서 구체화 예정</div>
+    </div>
+  </div>
+
+  <!-- ===== 제약·바이오 ===== -->
+  <div class="card">
+    <div class="sec"><span class="sec-title">제약 · 바이오</span><span class="sec-note">한국시간 기준</span></div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">애브비 (ABBV)</span></div>
+      <div class="mv-r">매출 $17.40B(+10.3%)·조정 EPS $3.82·GAAP $2.37<br>면역질환 $9.17B — 스카이리치 $5.78B·린보크 $2.71B<br>신경과학 $3.39B(+19%)·휴미라 $683M(−31%)<br>FY26 조정 EPS 가이던스 $13.95~13.99로 상향<br>분기배당 5.2% 인상 $1.73→$1.82</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">아스트라제네카 (AZN)</span></div>
+      <div class="mv-r">매출 $16.21B(+7% CER)·핵심 EPS $2.79(+19% CER)<br>보고 EPS $2.02(+23%)·9개월 매출 $46.9B<br>항암 호조 — 타그리소·임핀지 분기 사상최대<br>FY26 가이던스 재확인(매출 중후반 한자릿수↑)</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">사노피 (SNY)</span></div>
+      <div class="mv-r">매출 €14.4B(+14% CER)·사업 EPS €3.55(+20% CER)<br>듀피젠트 €5.7B(+34.8%) — 분기 €5B 재돌파<br>신약 론칭 €1.4B(+31%)·백신 €3.2B(−6.6%)<br>FY26 가이던스 상향 — 매출 13~15%·EPS 15~17%</div>
+    </div>
+  </div>
+
+  <!-- ===== 방산 ===== -->
+  <div class="card">
+    <div class="sec"><span class="sec-title">방산</span><span class="sec-note">한국시간 기준</span></div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">제너럴다이내믹스 (GD)</span></div>
+      <div class="mv-r">매출 $14.57B(+12.9%)·EPS $4.49(예상 $4.14 상회)<br>영업이익 $1.53B(+14.7%)·순이익 $1.23B(+16%)<br>수주잔고 사상최대 $220.3B·신규수주 $98.8B<br>FY26 EPS 가이던스 $17.20~17.30으로 상향</div>
+    </div>
+  </div>
+
+  <div class="foot">경제 브리핑 · 실적 컨퍼런스콜</div>
+</div>
+</body>
+</html>
