@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-31",
+ "generated": "2026-11-01",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
@@ -86,17 +86,6 @@
   }
  },
  "events": [
-  {
-   "date": "2026-10-31",
-   "time": "07:30",
-   "title": "PCE 물가지수",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "PCE"
-   ]
-  },
   {
    "date": "2026-11-03",
    "time": "01:00",
@@ -246,6 +235,18 @@
    "keywords": [
     "CPI",
     "소비자물가"
+   ]
+  },
+  {
+   "date": "2026-11-13",
+   "time": "23:30",
+   "title": "생산자물가지수(PPI)",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "PPI",
+    "생산자물가"
    ]
   }
  ]
