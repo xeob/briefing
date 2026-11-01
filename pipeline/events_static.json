@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-01",
+ "generated": "2026-11-02",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
@@ -83,12 +83,30 @@
   },
   "2026-10-30|employment cost index": {
    "0.8": "q/q"
+  },
+  "2026-11-02|construction spending": {
+   "0.3": "m/m"
+  },
+  "2026-11-03|factory orders": {
+   "1.2": "m/m"
+  },
+  "2026-11-05|prelim nonfarm productivity": {
+   "2.8": "q/q"
+  },
+  "2026-11-05|prelim unit labor costs": {
+   "0.3": "q/q"
+  },
+  "2026-11-06|average hourly earnings": {
+   "0.3": "m/m"
+  },
+  "2026-11-06|consumer credit": {
+   "12.0B": "m/m"
   }
  },
  "events": [
   {
    "date": "2026-11-03",
-   "time": "01:00",
+   "time": "00:00",
    "title": "ISM 제조업 PMI",
    "impact": "High",
    "cat": "지표",
@@ -100,7 +118,7 @@
   },
   {
    "date": "2026-11-03",
-   "time": "02:15",
+   "time": "01:15",
    "title": "연준 굴스비 발언",
    "impact": "High",
    "cat": "지표",
@@ -110,8 +128,19 @@
    ]
   },
   {
+   "date": "2026-11-03",
+   "time": "07:30",
+   "title": "PCE 물가지수",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "PCE"
+   ]
+  },
+  {
    "date": "2026-11-05",
-   "time": "01:00",
+   "time": "00:00",
    "title": "ISM 서비스업 PMI",
    "impact": "High",
    "cat": "지표",
@@ -123,7 +152,7 @@
   },
   {
    "date": "2026-11-05",
-   "time": "23:30",
+   "time": "22:30",
    "title": "신규 실업수당청구",
    "impact": "High",
    "cat": "지표",
@@ -135,7 +164,7 @@
   },
   {
    "date": "2026-11-05",
-   "time": "23:30",
+   "time": "22:30",
    "title": "고용보고서(비농업)",
    "impact": "High",
    "cat": "지표",
@@ -159,7 +188,7 @@
   },
   {
    "date": "2026-11-06",
-   "time": "10:00",
+   "time": "09:00",
    "title": "연준 로건 발언",
    "impact": "High",
    "cat": "지표",
@@ -170,7 +199,7 @@
   },
   {
    "date": "2026-11-06",
-   "time": "19:30",
+   "time": "18:30",
    "title": "연준 윌리엄스 발언",
    "impact": "High",
    "cat": "지표",
@@ -181,7 +210,7 @@
   },
   {
    "date": "2026-11-06",
-   "time": "23:30",
+   "time": "22:30",
    "title": "시간당 평균임금",
    "impact": "High",
    "cat": "지표",
@@ -193,7 +222,7 @@
   },
   {
    "date": "2026-11-06",
-   "time": "23:30",
+   "time": "22:30",
    "title": "실업률",
    "impact": "High",
    "cat": "지표",
@@ -204,7 +233,7 @@
   },
   {
    "date": "2026-11-07",
-   "time": "01:00",
+   "time": "00:00",
    "title": "미시간 기대인플레",
    "impact": "High",
    "cat": "지표",
@@ -216,7 +245,7 @@
   },
   {
    "date": "2026-11-07",
-   "time": "03:15",
+   "time": "02:15",
    "title": "연준 보먼 발언",
    "impact": "High",
    "cat": "지표",
@@ -227,7 +256,7 @@
   },
   {
    "date": "2026-11-10",
-   "time": "23:30",
+   "time": "22:30",
    "title": "소비자물가지수(CPI)",
    "impact": "High",
    "cat": "지표",
@@ -239,7 +268,7 @@
   },
   {
    "date": "2026-11-13",
-   "time": "23:30",
+   "time": "22:30",
    "title": "생산자물가지수(PPI)",
    "impact": "High",
    "cat": "지표",
