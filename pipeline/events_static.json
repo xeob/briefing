@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-02",
+ "generated": "2026-11-03",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
@@ -85,7 +85,8 @@
    "0.8": "q/q"
   },
   "2026-11-02|construction spending": {
-   "0.3": "m/m"
+   "0.3": "m/m",
+   "0.4": "m/m"
   },
   "2026-11-03|factory orders": {
    "1.2": "m/m"
@@ -104,29 +105,6 @@
   }
  },
  "events": [
-  {
-   "date": "2026-11-03",
-   "time": "00:00",
-   "title": "ISM 제조업 PMI",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "ISM",
-    "제조업"
-   ]
-  },
-  {
-   "date": "2026-11-03",
-   "time": "01:15",
-   "title": "연준 굴스비 발언",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "굴스비"
-   ]
-  },
   {
    "date": "2026-11-03",
    "time": "07:30",
