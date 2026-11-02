@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>실적 컨퍼런스콜</title>
+<style>
+:root{
+  --bg:#f6f6f4; --card:#ffffff; --text:#1a1a19; --sub:#63625d; --muted:#9a9992;
+  --border:#e6e5e1; --up:#0a7d33; --down:#d21c1c; --accent:#2f6fd0;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#181817; --card:#242422; --text:#f0efec; --sub:#a7a6a0; --muted:#77766f;
+    --border:#38372f; --up:#3fb950; --down:#f5564a; --accent:#5a9bf0; }
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+  word-break:keep-all;-webkit-text-size-adjust:100%;}
+.wrap{max-width:520px;margin:0 auto;padding:20px 16px 24px;}
+a{color:inherit;text-decoration:none;}
+.head{padding-bottom:14px;border-bottom:1px solid var(--border);margin-bottom:18px;}
+.head-row{display:flex;justify-content:space-between;align-items:baseline;}
+.head-title{font-size:20px;font-weight:600;}
+.head-date{font-size:13px;color:var(--muted);}
+.head-sub{margin:6px 0 0;font-size:12px;color:var(--muted);}
+.card{background:var(--card);border:0.5px solid var(--border);border-radius:12px;padding:13px 15px;margin-bottom:12px;}
+.sec{display:flex;align-items:center;gap:7px;margin-bottom:11px;}
+.sec-title{font-size:13px;font-weight:600;color:var(--sub);}
+.sec-note{font-size:11px;color:var(--muted);}
+.tag{display:inline-block;font-size:11px;padding:1px 8px;border-radius:20px;}
+.s-earn{color:#c1660f;background:rgba(193,102,15,.13);}
+.s-fed{color:#7a4fd0;background:rgba(122,79,208,.14);}
+.divide{height:1px;background:var(--border);margin:12px 0;}
+.lbl{font-size:11px;color:var(--muted);margin-bottom:5px;}
+.mv{margin-bottom:13px;}
+.mv-h{display:flex;align-items:baseline;gap:8px;}
+.mv-n{font-size:14px;font-weight:600;}
+.mv-p{font-size:13px;font-weight:600;}
+.mv-r{font-size:12px;color:var(--sub);line-height:1.55;margin-top:3px;}
+.up{color:var(--up);} .down{color:var(--down);}
+.note{font-size:12px;color:var(--sub);line-height:1.7;}
+.foot{margin-top:16px;text-align:center;font-size:11px;color:var(--muted);}
+@media (max-width:390px){ .head-title{font-size:18px;} .mv-n{font-size:13px;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ===== 헤더 ===== -->
+  <div class="head">
+    <div class="head-row">
+      <div class="head-title">실적 컨퍼런스콜</div>
+      <div class="head-date">2026.11.03 (화)</div>
+    </div>
+    <p class="head-sub">간밤 실적 발표 · 컨퍼런스콜 주요 내용</p>
+  </div>
+
+  <!-- ===== 종목별 컨콜 ===== -->
+  <div class="card">
+    <div class="sec"><span class="sec-title">주요 발언 · 특이사항</span><span class="sec-note">한국시간 기준</span></div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">애플 (AAPL)</span><span class="mv-p down">시간외 −2%대</span></div>
+      <div class="mv-r">매출 $114.5B(+12%)·EPS $2.10(예상 $1.98)<br>아이폰 $57.6B(+17%)·서비스 $31.6B(+10%)<br>중화권 $17.5B 반등·총마진 47.9%<br>12월분기 가이던스 매출 +7~10%(예상 11%↓)<br>총마진 45~46% 전망·메모리·칩 원가 부담<br>테누스 신임 CEO 첫 콜·배당 주당 $0.27</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">팔란티어 (PLTR)</span><span class="mv-p">시간외 등락 혼조</span></div>
+      <div class="mv-r">매출 $2.31B(+96%)·조정 EPS $0.44(예상 $0.41)<br>美상업 $984M(+148%), 정부 매출 첫 추월<br>美정부 $953M(+96%)·조정FCF $4.8~5.0B 가이던스<br>연간매출 가이던스 $8.53B로 상향(Q4 $2.65B)<br>카프 CEO: "주권적 AI" 수요 강조</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">버텍스 (VRTX)</span><span class="mv-p up">시간외 상승</span></div>
+      <div class="mv-r">매출 $3.44B(+12%)·조정 EPS $4.76(예상 $4.80)<br>GAAP EPS $2.56(크리네틱스 인수 비용 반영)<br>카스제비 $99M·저널빅스 $58M·알리프트렉 성장<br>연간매출 가이던스 $13.15~13.25B로 상향</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">메리어트 (MAR)</span></div>
+      <div class="mv-r">매출 $7.01B(+8%)·조정 EPS $3.02(예상 $2.86)<br>전세계 RevPAR +6.5%(미국·캐나다 +7.4%)<br>조정 EBITDA $1.51B(+12%)·연간 EPS +20~21%<br>연간 RevPAR +4.5~5% 상향·중동 −12%(개선세)</div>
+    </div>
+
+  </div>
+
+  <!-- ===== 오늘 밤 예정 ===== -->
+  <div class="card">
+    <div class="sec"><span class="sec-title">오늘 밤 실적 예정</span></div>
+    <div class="note">
+      · AMD · 암젠 · 아리스타 · 쇼피파이 — 한국시간 내일 새벽
+    </div>
+  </div>
+
+  <div class="foot">경제 브리핑 · 실적 컨퍼런스콜</div>
+</div>
+</body>
+</html>
