@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-03",
+ "generated": "2026-11-04",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
@@ -101,21 +101,11 @@
    "0.3": "m/m"
   },
   "2026-11-06|consumer credit": {
-   "12.0B": "m/m"
+   "12.0B": "m/m",
+   "13.4B": "m/m"
   }
  },
  "events": [
-  {
-   "date": "2026-11-03",
-   "time": "07:30",
-   "title": "PCE 물가지수",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "PCE"
-   ]
-  },
   {
    "date": "2026-11-05",
    "time": "00:00",
@@ -230,6 +220,29 @@
    "src": "static",
    "keywords": [
     "보먼"
+   ]
+  },
+  {
+   "date": "2026-11-10",
+   "time": "00:00",
+   "title": "연준 굴스비 발언",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "굴스비"
+   ]
+  },
+  {
+   "date": "2026-11-10",
+   "time": "01:00",
+   "title": "NY연은 기대인플레",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "기대인플레",
+    "연은"
    ]
   },
   {
