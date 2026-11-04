@@ -1,17 +1,9 @@
 {
- "generated": "2026-11-04",
+ "generated": "2026-11-05",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
  "ff_variants": {
-  "2026-10-14|core cpi": {
-   "0.2": "m/m",
-   "2.5": "y/y"
-  },
-  "2026-10-14|cpi": {
-   "0.6": "m/m",
-   "3.6": "y/y"
-  },
   "2026-10-15|core ppi": {
    "0.3": "m/m"
   },
@@ -106,18 +98,6 @@
   }
  },
  "events": [
-  {
-   "date": "2026-11-05",
-   "time": "00:00",
-   "title": "ISM 서비스업 PMI",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "ISM",
-    "서비스업"
-   ]
-  },
   {
    "date": "2026-11-05",
    "time": "22:30",
@@ -258,6 +238,18 @@
    ]
   },
   {
+   "date": "2026-11-12",
+   "time": "22:30",
+   "title": "신규 실업수당청구",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "실업수당",
+    "신규 실업"
+   ]
+  },
+  {
    "date": "2026-11-13",
    "time": "22:30",
    "title": "생산자물가지수(PPI)",
@@ -267,6 +259,17 @@
    "keywords": [
     "PPI",
     "생산자물가"
+   ]
+  },
+  {
+   "date": "2026-11-17",
+   "time": "22:30",
+   "title": "소매판매",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "소매판매"
    ]
   }
  ]
