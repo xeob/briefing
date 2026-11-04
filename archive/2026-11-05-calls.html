@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>실적 컨퍼런스콜</title>
+<style>
+:root{
+  --bg:#f6f6f4; --card:#ffffff; --text:#1a1a19; --sub:#63625d; --muted:#9a9992;
+  --border:#e6e5e1; --up:#0a7d33; --down:#d21c1c; --accent:#2f6fd0;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#181817; --card:#242422; --text:#f0efec; --sub:#a7a6a0; --muted:#77766f;
+    --border:#38372f; --up:#3fb950; --down:#f5564a; --accent:#5a9bf0; }
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+  word-break:keep-all;-webkit-text-size-adjust:100%;}
+.wrap{max-width:520px;margin:0 auto;padding:20px 16px 24px;}
+a{color:inherit;text-decoration:none;}
+.head{padding-bottom:14px;border-bottom:1px solid var(--border);margin-bottom:18px;}
+.head-row{display:flex;justify-content:space-between;align-items:baseline;}
+.head-title{font-size:20px;font-weight:600;}
+.head-date{font-size:13px;color:var(--muted);}
+.head-sub{margin:6px 0 0;font-size:12px;color:var(--muted);}
+.card{background:var(--card);border:0.5px solid var(--border);border-radius:12px;padding:13px 15px;margin-bottom:12px;}
+.sec{display:flex;align-items:center;gap:7px;margin-bottom:11px;}
+.sec-title{font-size:13px;font-weight:600;color:var(--sub);}
+.sec-note{font-size:11px;color:var(--muted);}
+.tag{display:inline-block;font-size:11px;padding:1px 8px;border-radius:20px;}
+.s-earn{color:#c1660f;background:rgba(193,102,15,.13);}
+.s-fed{color:#7a4fd0;background:rgba(122,79,208,.14);}
+.divide{height:1px;background:var(--border);margin:12px 0;}
+.lbl{font-size:11px;color:var(--muted);margin-bottom:5px;}
+.mv{margin-bottom:13px;}
+.mv-h{display:flex;align-items:baseline;gap:8px;}
+.mv-n{font-size:14px;font-weight:600;}
+.mv-p{font-size:13px;font-weight:600;}
+.mv-r{font-size:12px;color:var(--sub);line-height:1.55;margin-top:3px;}
+.up{color:var(--up);} .down{color:var(--down);}
+.note{font-size:12px;color:var(--sub);line-height:1.7;}
+.foot{margin-top:16px;text-align:center;font-size:11px;color:var(--muted);}
+@media (max-width:390px){ .head-title{font-size:18px;} .mv-n{font-size:13px;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ===== 헤더 ===== -->
+  <div class="head">
+    <div class="head-row">
+      <div class="head-title">실적 컨퍼런스콜</div>
+      <div class="head-date">2026.11.05 (목)</div>
+    </div>
+    <p class="head-sub">간밤 실적 발표 · 컨퍼런스콜 주요 내용</p>
+  </div>
+
+  <!-- ===== 종목별 컨콜 ===== -->
+  <div class="card">
+    <div class="sec"><span class="sec-title">주요 발언 · 특이사항</span><span class="sec-note">한국시간 기준</span></div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">퀄컴 (QCOM)</span><span class="mv-p down">시간외 −6%대</span></div>
+      <div class="mv-r">매출 $10.32B · 조정 EPS $2.17 (예상 $2.16)<br>QCT $9.0B(−8%) · 핸드셋 $5.14B(−26%)<br>자동차 $1.99B(+89%) · 첫 분기 $2B 돌파<br>IoT $1.89B(+4%) · QTL 라이선스 $1.30B(−7%)<br>FY26 매출 $43.1B(−3%)·조정 EPS $10.54(−12%)<br>1Q FY27 가이던스 매출 $10.4~11.2B<br>조정 EPS $2.15~2.35(중간값 $2.25 예상 하회)<br>핸드셋 메모리 공급난에 수요 위축 지속</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">ARM (ARM)</span><span class="mv-p down">시간외 −5%대</span></div>
+      <div class="mv-r">매출 $1.44B(+27%)·조정 EPS $0.52(예상 $0.47)<br>분기 사상 최대 매출 · 비GAAP 영업익 $638M<br>라이선스 $773M(+50%) · 로열티 $670M(+8%)<br>데이터센터 로열티 약 2배 · 피지컬AI +50%<br>로열티는 시장 예상($721M) 하회가 약점<br>3Q FY27 가이던스 매출 ~$1.54B · EPS $0.56<br>AGI CPU 누적매출 FY27~28 최대 $2B 전망<br>호실적에도 가이던스 '깜짝' 부재에 하락</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">맥도날드 (MCD)</span></div>
+      <div class="mv-r">매출 $7.16B(+1%) · 조정 EPS $3.57 (예상 $3.38)<br>GAAP EPS $3.51(+10%) · 매출은 예상 하회<br>글로벌 동일매장 +1.5%(작년 +3.6%)<br>미국 동일매장 −0.2% · 해외운영 +1.4%<br>해외라이선스 +4.2% · 9월 들어 플러스 전환<br>비용 절감·가맹 마진이 실적 견인<br>미국 방문객 감소·유럽 소비 둔화가 부담</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">노보노디스크 (NVO)</span></div>
+      <div class="mv-r">조정 EPS $0.89/ADR(예상 $0.81)·매출 +4%(CER)<br>조정 영업익 DKK 32B(+27% CER)<br>위고비 +22%(CER) · 경구 위고비 매출 DKK 5.39B<br>주사형 위고비 −2%(DKK 20.41B) · 오젬픽 −5%<br>당뇨 전체 −5% · 경구 위고비 美 최대 GLP-1 런칭<br>2026 가이던스 상향: 매출·영업익 −2~+2%(CER)<br>잉여현금흐름 가이던스 DKK 60~70B</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">우버 (UBER)</span></div>
+      <div class="mv-r">매출 $14.8B(+10%) · 총예약 $59.8B(+20%)<br>GAAP EPS $0.25 · 순이익 $5.12억<br>조정 EBITDA $2.96B(+31%) · FCF $2.54B<br>모빌리티 예약 $29.5B(+18%)<br>딜리버리 예약 $28.5B(+22%)<br>4Q 총예약 가이던스 $63.25~65.25B(+18~22%)<br>조정 EBITDA 가이던스 $3.13~3.23B</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">CVS헬스 (CVS)</span></div>
+      <div class="mv-r">매출 $108.4B(+5.4%)·조정 EPS $2.09(예상 $1.62)<br>GAAP EPS $1.68(작년 −$3.13, 영업권손상 기저)<br>2026 가이던스 상향: 조정 EPS 최소 $8.20<br>영업현금흐름 가이던스 최소 $15.5B로 상향<br>메디케어 등 헬스케어베네핏 개선이 견인<br>2027 조정 EPS 최소 $8.65 바닥 제시</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">맥케슨 (MCK)</span></div>
+      <div class="mv-r">매출 $111.0B(+8%) · 조정 EPS $11.68(+18%)<br>GAAP EPS $10.44(+$1.52)<br>북미 제약 $91.4B(+6%) · 종양·멀티 $15.0B(+24%)<br>처방테크 $1.52B(+10%) · 메디컬서지컬 $3.10B(+5%)<br>FY27 가이던스 상향: 조정 EPS $45.60~46.40<br>전년比 17~19% 성장 전망</div>
+    </div>
+
+  </div>
+
+  <!-- ===== 오늘 밤 예정 ===== -->
+  <div class="card">
+    <div class="sec"><span class="sec-title">오늘 밤 실적 예정</span></div>
+    <div class="note">
+      · 소니 (SONY) · 코노코필립스 (COP) · 몬스터비버리지 (MNST) · 파커하니핀 (PH) — 한국시간 내일 새벽
+    </div>
+  </div>
+
+  <div class="foot">경제 브리핑 · 실적 컨퍼런스콜</div>
+</div>
+</body>
+</html>
