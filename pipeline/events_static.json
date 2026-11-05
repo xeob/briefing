@@ -1,26 +1,9 @@
 {
- "generated": "2026-11-05",
+ "generated": "2026-11-06",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
  "ff_variants": {
-  "2026-10-15|core ppi": {
-   "0.3": "m/m"
-  },
-  "2026-10-15|core retail sales": {
-   "0.5": "m/m",
-   "0.6": "m/m"
-  },
-  "2026-10-15|ppi": {
-   "0.5": "m/m",
-   "0.6": "m/m"
-  },
-  "2026-10-15|retail sales": {
-   "0.3": "m/m"
-  },
-  "2026-10-15|business inventories": {
-   "0.4": "m/m"
-  },
   "2026-10-16|import prices": {
    "0.6": "m/m",
    "0.9": "m/m"
@@ -98,42 +81,6 @@
   }
  },
  "events": [
-  {
-   "date": "2026-11-05",
-   "time": "22:30",
-   "title": "신규 실업수당청구",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "실업수당",
-    "신규 실업"
-   ]
-  },
-  {
-   "date": "2026-11-05",
-   "time": "22:30",
-   "title": "고용보고서(비농업)",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "고용",
-    "NFP",
-    "비농업"
-   ]
-  },
-  {
-   "date": "2026-11-06",
-   "time": "00:10",
-   "title": "연준 Barkin 발언",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "Barkin"
-   ]
-  },
   {
    "date": "2026-11-06",
    "time": "09:00",
@@ -227,6 +174,17 @@
   },
   {
    "date": "2026-11-10",
+   "time": "18:00",
+   "title": "연준 월러 발언",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "월러"
+   ]
+  },
+  {
+   "date": "2026-11-10",
    "time": "22:30",
    "title": "소비자물가지수(CPI)",
    "impact": "High",
@@ -235,6 +193,17 @@
    "keywords": [
     "CPI",
     "소비자물가"
+   ]
+  },
+  {
+   "date": "2026-11-11",
+   "time": "03:30",
+   "title": "연준 슈미드 발언",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "슈미드"
    ]
   },
   {
