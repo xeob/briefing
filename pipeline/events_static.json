@@ -1,16 +1,9 @@
 {
- "generated": "2026-11-06",
+ "generated": "2026-11-07",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
  "ff_variants": {
-  "2026-10-16|import prices": {
-   "0.6": "m/m",
-   "0.9": "m/m"
-  },
-  "2026-10-16|industrial production": {
-   "0.4": "m/m"
-  },
   "2026-10-20|pending home sales": {
    "-0.4": "m/m",
    "-0.7": "m/m",
@@ -82,74 +75,6 @@
  },
  "events": [
   {
-   "date": "2026-11-06",
-   "time": "09:00",
-   "title": "연준 로건 발언",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "로건"
-   ]
-  },
-  {
-   "date": "2026-11-06",
-   "time": "18:30",
-   "title": "연준 윌리엄스 발언",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "윌리엄스"
-   ]
-  },
-  {
-   "date": "2026-11-06",
-   "time": "22:30",
-   "title": "시간당 평균임금",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "시간당",
-    "임금"
-   ]
-  },
-  {
-   "date": "2026-11-06",
-   "time": "22:30",
-   "title": "실업률",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "실업률"
-   ]
-  },
-  {
-   "date": "2026-11-07",
-   "time": "00:00",
-   "title": "미시간 기대인플레",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "기대인플레",
-    "미시간"
-   ]
-  },
-  {
-   "date": "2026-11-07",
-   "time": "02:15",
-   "title": "연준 보먼 발언",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "보먼"
-   ]
-  },
-  {
    "date": "2026-11-10",
    "time": "00:00",
    "title": "연준 굴스비 발언",
@@ -170,6 +95,17 @@
    "keywords": [
     "기대인플레",
     "연은"
+   ]
+  },
+  {
+   "date": "2026-11-10",
+   "time": "02:15",
+   "title": "연준 Barkin 발언",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "Barkin"
    ]
   },
   {
@@ -220,6 +156,28 @@
   },
   {
    "date": "2026-11-13",
+   "time": "03:10",
+   "title": "연준 데일리 발언",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "데일리"
+   ]
+  },
+  {
+   "date": "2026-11-13",
+   "time": "08:30",
+   "title": "연준 윌리엄스 발언",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "윌리엄스"
+   ]
+  },
+  {
+   "date": "2026-11-13",
    "time": "22:30",
    "title": "생산자물가지수(PPI)",
    "impact": "High",
@@ -228,6 +186,39 @@
    "keywords": [
     "PPI",
     "생산자물가"
+   ]
+  },
+  {
+   "date": "2026-11-14",
+   "time": "00:50",
+   "title": "연준 보먼 발언",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "보먼"
+   ]
+  },
+  {
+   "date": "2026-11-14",
+   "time": "02:00",
+   "title": "연준 데일리 발언",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "데일리"
+   ]
+  },
+  {
+   "date": "2026-11-14",
+   "time": "09:00",
+   "title": "연준 제퍼슨 발언",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "제퍼슨"
    ]
   },
   {
