@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-08",
+ "generated": "2026-11-09",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
@@ -71,6 +71,21 @@
   "2026-11-06|consumer credit": {
    "12.0B": "m/m",
    "13.4B": "m/m"
+  },
+  "2026-11-09|final wholesale inventories": {
+   "0.6": "m/m"
+  },
+  "2026-11-10|core cpi": {
+   "0.2": "m/m"
+  },
+  "2026-11-10|cpi": {
+   "0.3": "m/m"
+  },
+  "2026-11-13|core ppi": {
+   "0.3": "m/m"
+  },
+  "2026-11-13|ppi": {
+   "0.4": "m/m"
   }
  },
  "events": [
@@ -263,6 +278,18 @@
    "src": "static",
    "keywords": [
     "소매판매"
+   ]
+  },
+  {
+   "date": "2026-11-21",
+   "time": "00:00",
+   "title": "미시간 기대인플레",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "기대인플레",
+    "미시간"
    ]
   }
  ]
