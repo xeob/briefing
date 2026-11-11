@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-11",
+ "generated": "2026-11-12",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
@@ -116,6 +116,17 @@
    "src": "static",
    "keywords": [
     "데일리"
+   ]
+  },
+  {
+   "date": "2026-11-13",
+   "time": "03:30",
+   "title": "연준 슈미드 발언",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "슈미드"
    ]
   },
   {
