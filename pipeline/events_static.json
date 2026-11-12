@@ -1,13 +1,9 @@
 {
- "generated": "2026-11-12",
+ "generated": "2026-11-13",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
  "ff_variants": {
-  "2026-10-22|cb leading index": {
-   "-0.2": "m/m",
-   "-0.1": "m/m"
-  },
   "2026-10-27|core durable goods orders": {
    "0.6": "m/m"
   },
@@ -85,51 +81,6 @@
  },
  "events": [
   {
-   "date": "2026-11-12",
-   "time": "22:30",
-   "title": "신규 실업수당청구",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "실업수당",
-    "신규 실업"
-   ]
-  },
-  {
-   "date": "2026-11-13",
-   "time": "01:30",
-   "title": "연준 굴스비 발언",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "굴스비"
-   ]
-  },
-  {
-   "date": "2026-11-13",
-   "time": "03:10",
-   "title": "연준 데일리 발언",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "데일리"
-   ]
-  },
-  {
-   "date": "2026-11-13",
-   "time": "03:30",
-   "title": "연준 슈미드 발언",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "슈미드"
-   ]
-  },
-  {
    "date": "2026-11-13",
    "time": "08:30",
    "title": "연준 윌리엄스 발언",
@@ -161,6 +112,17 @@
    "src": "static",
    "keywords": [
     "콜린스"
+   ]
+  },
+  {
+   "date": "2026-11-13",
+   "time": "23:40",
+   "title": "연준 로건 발언",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "로건"
    ]
   },
   {
@@ -198,6 +160,17 @@
   },
   {
    "date": "2026-11-17",
+   "time": "02:00",
+   "title": "연준 의장 워시 발언",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "워시"
+   ]
+  },
+  {
+   "date": "2026-11-17",
    "time": "22:30",
    "title": "소매판매",
    "impact": "High",
@@ -223,6 +196,17 @@
   },
   {
    "date": "2026-11-19",
+   "time": "04:30",
+   "title": "연준 윌리엄스 발언",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "윌리엄스"
+   ]
+  },
+  {
+   "date": "2026-11-19",
    "time": "22:30",
    "title": "신규 실업수당청구",
    "impact": "High",
@@ -231,6 +215,17 @@
    "keywords": [
     "실업수당",
     "신규 실업"
+   ]
+  },
+  {
+   "date": "2026-11-20",
+   "time": "02:30",
+   "title": "연준 굴스비 발언",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "굴스비"
    ]
   },
   {
@@ -243,6 +238,29 @@
    "keywords": [
     "기대인플레",
     "미시간"
+   ]
+  },
+  {
+   "date": "2026-11-25",
+   "time": "22:30",
+   "title": "PCE 물가지수",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "PCE"
+   ]
+  },
+  {
+   "date": "2026-11-25",
+   "time": "22:30",
+   "title": "GDP",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "GDP",
+    "성장률"
    ]
   }
  ]
