@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-15",
+ "generated": "2026-11-16",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
@@ -77,6 +77,27 @@
   },
   "2026-11-13|ppi": {
    "0.4": "m/m"
+  },
+  "2026-11-17|core retail sales": {
+   "0.4": "m/m"
+  },
+  "2026-11-17|retail sales": {
+   "0.2": "m/m"
+  },
+  "2026-11-17|import prices": {
+   "0.7": "m/m"
+  },
+  "2026-11-17|industrial production": {
+   "0.1": "m/m"
+  },
+  "2026-11-17|business inventories": {
+   "0.5": "m/m"
+  },
+  "2026-11-18|pending home sales": {
+   "-2.3": "m/m"
+  },
+  "2026-11-19|cb leading index": {
+   "0.0": "m/m"
   }
  },
  "events": [
