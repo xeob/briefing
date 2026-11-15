@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>실적 컨퍼런스콜</title>
+<style>
+:root{
+  --bg:#f6f6f4; --card:#ffffff; --text:#1a1a19; --sub:#63625d; --muted:#9a9992;
+  --border:#e6e5e1; --up:#0a7d33; --down:#d21c1c; --accent:#2f6fd0;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#181817; --card:#242422; --text:#f0efec; --sub:#a7a6a0; --muted:#77766f;
+    --border:#38372f; --up:#3fb950; --down:#f5564a; --accent:#5a9bf0; }
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+  word-break:keep-all;-webkit-text-size-adjust:100%;}
+.wrap{max-width:520px;margin:0 auto;padding:20px 16px 24px;}
+a{color:inherit;text-decoration:none;}
+.head{padding-bottom:14px;border-bottom:1px solid var(--border);margin-bottom:18px;}
+.head-row{display:flex;justify-content:space-between;align-items:baseline;}
+.head-title{font-size:20px;font-weight:600;}
+.head-date{font-size:13px;color:var(--muted);}
+.head-sub{margin:6px 0 0;font-size:12px;color:var(--muted);}
+.card{background:var(--card);border:0.5px solid var(--border);border-radius:12px;padding:13px 15px;margin-bottom:12px;}
+.sec{display:flex;align-items:center;gap:7px;margin-bottom:11px;}
+.sec-title{font-size:13px;font-weight:600;color:var(--sub);}
+.sec-note{font-size:11px;color:var(--muted);}
+.tag{display:inline-block;font-size:11px;padding:1px 8px;border-radius:20px;}
+.s-earn{color:#c1660f;background:rgba(193,102,15,.13);}
+.s-fed{color:#7a4fd0;background:rgba(122,79,208,.14);}
+.divide{height:1px;background:var(--border);margin:12px 0;}
+.lbl{font-size:11px;color:var(--muted);margin-bottom:5px;}
+.mv{margin-bottom:13px;}
+.mv-h{display:flex;align-items:baseline;gap:8px;}
+.mv-n{font-size:14px;font-weight:600;}
+.mv-p{font-size:13px;font-weight:600;}
+.mv-r{font-size:12px;color:var(--sub);line-height:1.55;margin-top:3px;}
+.up{color:var(--up);} .down{color:var(--down);}
+.note{font-size:12px;color:var(--sub);line-height:1.7;}
+.foot{margin-top:16px;text-align:center;font-size:11px;color:var(--muted);}
+@media (max-width:390px){ .head-title{font-size:18px;} .mv-n{font-size:13px;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="head">
+    <div class="head-row">
+      <div class="head-title">실적 컨퍼런스콜</div>
+      <div class="head-date">2026.11.16 (월)</div>
+    </div>
+    <p class="head-sub">간밤 실적 발표 · 컨퍼런스콜 주요 내용</p>
+  </div>
+
+  <div class="card">
+    <div class="sec"><span class="sec-title">주요 발언 · 특이사항</span><span class="sec-note">일본 3대 메가뱅크 · 반기(4~9월) 결산</span></div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">미쓰비시UFJ (MUFG)</span></div>
+      <div class="mv-r">순이익 1조6,309억엔(+26%)·EPS $0.46(예상 $0.45)<br>경상이익 +29% 2조2,600억엔 — 반기 사상 최대(4년 연속)<br>순이자이익 +28.6% 1조8,500억엔, BOJ 금리인상 수혜<br>연간(27.3월) 순이익 전망 2.7조→2.8조엔 상향<br>자사주 최대 2,000억엔(0.62%)·연배당 86→100엔<br>경영진 "고객부문 호조·모건스탠리 지분법이익 기여"</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">스미토모미쓰이 (SMFG)</span></div>
+      <div class="mv-r">순이익 1조32억엔(+7.5%)·반기 첫 1조엔 돌파<br>경상이익 +9.2% 1조4,000억엔·경상수익 +11.4% 5.8조엔<br>순업무이익, 반기에 연간 초기전망의 58% 달성<br>연간 순이익 전망 1.7조→1.9조엔(전년비 +20%)<br>자사주 최대 2,200억엔(약1.1%)·전량 소각 예정</div>
+    </div>
+
+    <div class="mv" style="margin-bottom:0;">
+      <div class="mv-h"><span class="mv-n">미즈호 (MFG)</span></div>
+      <div class="mv-r">순이익 8,965억엔(+29.9%)·EPS 예상 상회<br>경상이익 +47.3% 1조2,500억엔<br>순이자이익 +18.2% 7,713억엔 — 금리상승 수혜<br>연간 순이익 전망 1.4조→1.6조엔 상향<br>경상이익 전망 1.98조→2.18조엔·신규 자사주는 없음</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="sec"><span class="sec-title">코멘트</span></div>
+    <div class="note">
+      3곳 모두 BOJ 추가 금리인상(순이자이익 확대)을 등에 업고 반기 사상 최대권 실적을 내며 연간 전망을 일제히 상향했다. MUFG·SMFG는 대규모 자사주 매입까지 더해 주주환원을 강화했다.
+    </div>
+  </div>
+
+  <div class="foot">경제 브리핑 · 실적 컨퍼런스콜</div>
+</div>
+</body>
+</html>
