@@ -1,24 +1,9 @@
 {
- "generated": "2026-11-17",
+ "generated": "2026-11-18",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
  "ff_variants": {
-  "2026-10-27|core durable goods orders": {
-   "0.6": "m/m"
-  },
-  "2026-10-27|durable goods orders": {
-   "1.8": "m/m",
-   "2.0": "m/m"
-  },
-  "2026-10-27|hpi": {
-   "0.1": "m/m",
-   "0.2": "m/m"
-  },
-  "2026-10-27|s&p/cs composite-20 hpi": {
-   "2.7": "y/y",
-   "2.6": "y/y"
-  },
   "2026-10-28|prelim wholesale inventories": {
    "0.4": "m/m",
    "0.5": "m/m"
@@ -82,47 +67,28 @@
    "0.4": "m/m"
   },
   "2026-11-17|retail sales": {
-   "0.2": "m/m"
+   "0.2": "m/m",
+   "0.1": "m/m"
   },
   "2026-11-17|import prices": {
    "0.7": "m/m"
   },
   "2026-11-17|industrial production": {
-   "0.1": "m/m"
+   "0.1": "m/m",
+   "0.0": "m/m"
   },
   "2026-11-17|business inventories": {
    "0.5": "m/m"
   },
   "2026-11-18|pending home sales": {
-   "-2.3": "m/m"
+   "-2.3": "m/m",
+   "-1.8": "m/m"
   },
   "2026-11-19|cb leading index": {
    "0.0": "m/m"
   }
  },
  "events": [
-  {
-   "date": "2026-11-17",
-   "time": "22:30",
-   "title": "소매판매",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "소매판매"
-   ]
-  },
-  {
-   "date": "2026-11-17",
-   "time": "23:10",
-   "title": "연준 월러 발언",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "월러"
-   ]
-  },
   {
    "date": "2026-11-19",
    "time": "04:00",
@@ -259,6 +225,18 @@
    "keywords": [
     "GDP",
     "성장률"
+   ]
+  },
+  {
+   "date": "2026-11-25",
+   "time": "22:30",
+   "title": "신규 실업수당청구",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "실업수당",
+    "신규 실업"
    ]
   }
  ]
