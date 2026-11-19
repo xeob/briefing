@@ -1,26 +1,9 @@
 {
- "generated": "2026-11-19",
+ "generated": "2026-11-20",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
  "ff_variants": {
-  "2026-10-29|advance gdp": {
-   "3.2": "q/q"
-  },
-  "2026-10-29|core pce price index": {
-   "0.3": "m/m"
-  },
-  "2026-10-29|advance gdp price index": {
-   "3.5": "q/q",
-   "3.3": "q/q",
-   "3.2": "q/q"
-  },
-  "2026-10-29|personal income": {
-   "0.3": "m/m"
-  },
-  "2026-10-29|personal spending": {
-   "0.6": "m/m"
-  },
   "2026-10-30|employment cost index": {
    "0.8": "q/q"
   },
@@ -86,51 +69,6 @@
   }
  },
  "events": [
-  {
-   "date": "2026-11-19",
-   "time": "22:30",
-   "title": "신규 실업수당청구",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "실업수당",
-    "신규 실업"
-   ]
-  },
-  {
-   "date": "2026-11-19",
-   "time": "23:25",
-   "title": "연준 제퍼슨 발언",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "제퍼슨"
-   ]
-  },
-  {
-   "date": "2026-11-20",
-   "time": "02:30",
-   "title": "연준 굴스비 발언",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "굴스비"
-   ]
-  },
-  {
-   "date": "2026-11-20",
-   "time": "04:00",
-   "title": "연준 Barkin 발언",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "Barkin"
-   ]
-  },
   {
    "date": "2026-11-20",
    "time": "22:25",
@@ -198,6 +136,18 @@
    "keywords": [
     "실업수당",
     "신규 실업"
+   ]
+  },
+  {
+   "date": "2026-12-02",
+   "time": "00:00",
+   "title": "ISM 제조업 PMI",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "ISM",
+    "제조업"
    ]
   }
  ]
