@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>실적 컨퍼런스콜</title>
+<style>
+:root{
+  --bg:#f6f6f4; --card:#ffffff; --text:#1a1a19; --sub:#63625d; --muted:#9a9992;
+  --border:#e6e5e1; --up:#0a7d33; --down:#d21c1c; --accent:#2f6fd0;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#181817; --card:#242422; --text:#f0efec; --sub:#a7a6a0; --muted:#77766f;
+    --border:#38372f; --up:#3fb950; --down:#f5564a; --accent:#5a9bf0; }
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+  word-break:keep-all;-webkit-text-size-adjust:100%;}
+.wrap{max-width:520px;margin:0 auto;padding:20px 16px 24px;}
+a{color:inherit;text-decoration:none;}
+.head{padding-bottom:14px;border-bottom:1px solid var(--border);margin-bottom:18px;}
+.head-row{display:flex;justify-content:space-between;align-items:baseline;}
+.head-title{font-size:20px;font-weight:600;}
+.head-date{font-size:13px;color:var(--muted);}
+.head-sub{margin:6px 0 0;font-size:12px;color:var(--muted);}
+.card{background:var(--card);border:0.5px solid var(--border);border-radius:12px;padding:13px 15px;margin-bottom:12px;}
+.sec{display:flex;align-items:center;gap:7px;margin-bottom:11px;}
+.sec-title{font-size:13px;font-weight:600;color:var(--sub);}
+.sec-note{font-size:11px;color:var(--muted);}
+.tag{display:inline-block;font-size:11px;padding:1px 8px;border-radius:20px;}
+.s-earn{color:#c1660f;background:rgba(193,102,15,.13);}
+.s-fed{color:#7a4fd0;background:rgba(122,79,208,.14);}
+.divide{height:1px;background:var(--border);margin:12px 0;}
+.lbl{font-size:11px;color:var(--muted);margin-bottom:5px;}
+.mv{margin-bottom:13px;}
+.mv-h{display:flex;align-items:baseline;gap:8px;}
+.mv-n{font-size:14px;font-weight:600;}
+.mv-p{font-size:13px;font-weight:600;}
+.mv-r{font-size:12px;color:var(--sub);line-height:1.55;margin-top:3px;}
+.up{color:var(--up);} .down{color:var(--down);}
+.note{font-size:12px;color:var(--sub);line-height:1.7;}
+.foot{margin-top:16px;text-align:center;font-size:11px;color:var(--muted);}
+@media (max-width:390px){ .head-title{font-size:18px;} .mv-n{font-size:13px;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="head">
+    <div class="head-row">
+      <div class="head-title">실적 컨퍼런스콜</div>
+      <div class="head-date">2026.11.20 (금)</div>
+    </div>
+    <p class="head-sub">간밤 실적 발표 · 컨퍼런스콜 주요 내용</p>
+  </div>
+
+  <div class="card">
+    <div class="sec"><span class="sec-title">주요 발언 · 특이사항</span><span class="sec-note">한국시간 기준</span></div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">월마트 (WMT)</span><span class="mv-p down">장중 −1.9%</span></div>
+      <div class="mv-r">매출 $188.8B(+5.2%)·조정EPS $0.65(예상 $0.64)<br>美 동일점 +2.9%(연료제외) · e커머스 +17%(美 +23%)<br>샘스클럽 매출 $25.9B(+10%) · 美 광고 +37%<br>연간 조정EPS $2.84~2.89로 상향(기존 $2.80~2.87)<br>CEO 퍼너: 관세환급으로 원가 상쇄·8천품목 가격인하<br>beat·가이던스 상향에도 밸류(선행 43배) 부담에 약세</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">알리바바 (BABA)</span><span class="mv-p up">장중 +2.8%</span></div>
+      <div class="mv-r">매출 2,715억위안(+10%)·조정EPS/ADS $1.21(예상 $1.56↓)<br>AI클라우드·컴퓨팅 610억위안(+53%, 외부고객 +64%)<br>AI제품 179억위안 · 13분기 연속 세자릿수 성장<br>조정EBITA 326억위안(+260%)·자본지출 505억위안(+60%)<br>에디 우: 클라우드 성장목표 30~45%·2028 FCF 흑자전환<br>퀵커머스 손실 내년 반감 목표 · FCF −345억위안</div>
+    </div>
+
+    <div class="mv">
+      <div class="mv-h"><span class="mv-n">핀둬둬 (PDD)</span><span class="mv-p up">+12%</span></div>
+      <div class="mv-r">매출 1,083억위안(전년比 보합, 예상 1,160억 하회)<br>조정EPS/ADS 21.04위안(≈$2.95, 예상 $2.61 상회)<br>온라인마케팅 598억(+12%) · 거래서비스 485억(−12%)<br>조정 영업익 326억위안(마진 30%) · S&M 249억(−16%)<br>경영진: 中 이커머스 경쟁 치열 "물러설 곳 없다"<br>1,000억위안 상인지원 · 글로벌 풀필먼트망 구축</div>
+    </div>
+
+  </div>
+
+  <div class="foot">경제 브리핑 · 실적 컨퍼런스콜</div>
+</div>
+</body>
+</html>
