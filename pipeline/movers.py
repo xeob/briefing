@@ -491,7 +491,9 @@ def sector_block():
     # '강세'로 실리던 문제 — 11/06 유틸리티 −0.2%·환경·위생서비스 −0.4%·주택건설 −0.7%, 11/20 보험 −0.42%,
     # 11/21 제약·헬스케어 −0.32%가 강세 칸에 올랐다. 중위 등락률 > 0 인 업종만 강세 후보.
     strong = [x["label"] for x in ok if x["excess"] > 0 and x["median"] > 0][:3]
-    weak = [x["label"] for x in sorted([x for x in ok if x["excess"] < 0], key=lambda x: x["excess"])][:3]
+    # 약세도 대칭으로 업종 자체가 내렸어야 한다(2026-11-23): 11/10 에너지·유틸리티 +0.5%·보험 +0.6%가
+    # 지수보다 덜 올랐다는 이유로 약세 칸에 실렸다. 중위 등락률 < 0 인 업종만 약세 후보.
+    weak = [x["label"] for x in sorted([x for x in ok if x["excess"] < 0 and x["median"] < 0], key=lambda x: x["excess"])][:3]
     # cand = 후보 조건(n·방향일치·초과)을 데이터로 충족한 업종 전체. 상위 3 컷에 밀려 섹터 파트에
     # 못 올라도 '진짜 함께 움직인 업종'이므로 묶음 성립 ⓐ(멤버 5개)를 면제한다 — RUN.md ④.
     # (2026-10-26 실측: 전력기기·데이터센터설비가 방향일치 96%·초과 +1.58%p인데 6위로 밀려 선정 밖,
@@ -502,7 +504,7 @@ def sector_block():
         x["pick"] = "강세" if x["label"] in strong else ("약세" if x["label"] in weak else "")
     return {"index": "S&P 500", "index_pct": index_pct, "strong": strong, "weak": weak, "cand": cand,
             "rule": f"후보 = 종목 {SEC_MIN_N}개+ · 방향일치 {SEC_BREADTH}%+ · |지수 대비 초과| {SEC_EXCESS}%p+ "
-                    "· 강세=초과 상위 3(중위 등락률 > 0인 업종만) / 약세=하위 3 · 후보 없으면 '뚜렷한 업종 없음'(억지 채움 금지) "
+                    "· 강세=초과 상위 3(중위 등락률 > 0인 업종만) / 약세=하위 3(중위 등락률 < 0인 업종만) ·후보 없으면 '뚜렷한 업종 없음'(억지 채움 금지) "
                     "· cand=후보 전체(묶음 ⓐ 면제 대상)",
             "sectors": secs}
 
