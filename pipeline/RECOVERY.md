@@ -869,11 +869,16 @@ for name, sym, fmt, csym, tol in IND:
 NF_REPO, NF_WF, NF_BUDGET_S = "xeob/briefing-secrets", "kis-night.yml", 150
 
 def gh_token():
+    """GH_PAT: 환경변수 → 로컬 .env → 클라우드 briefing-secrets/.env 순으로 찾는다.
+    클라우드 루틴은 명령마다 셸이 새로 떠서, 앞 단계에서 export한 값이 이 스크립트까지 안 올 수 있다."""
     t = os.environ.get("GH_PAT")
-    if not t and os.path.exists(".env"):
-        for line in open(".env", encoding="utf-8"):
-            if line.startswith("GH_PAT="):
-                t = line.split("=", 1)[1].strip().strip('"').strip("'")
+    for p in (".env", "../../briefing-secrets/.env", "../briefing-secrets/.env"):
+        if t:
+            break
+        if os.path.exists(p):
+            for line in open(p, encoding="utf-8"):
+                if line.startswith("GH_PAT="):
+                    t = line.split("=", 1)[1].strip().strip('"').strip("'")
     return t
 
 def gh(token, path, method="GET", body=None, out_file=None):
