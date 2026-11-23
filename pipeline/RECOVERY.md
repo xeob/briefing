@@ -154,6 +154,84 @@ D. template.html 세부규칙 전부 반영: 일정 표는 3열(구분/내용/�
 7) 보고: 게시 URL·카카오 result_code·다룬 종목 목록 + 제외 사유(2소스 미확인 등). 발송 없이 종료했다면 그 사유.
 ```
 
+### 4.6 코스피200 야간선물 중계 (KIS Open API · 2026-11-23)
+아침 브리핑의 `코스피200 야간선물` 한 줄은 한국투자증권 KIS Open API 값이다. KIS는 9443 포트라 클라우드 루틴이 직접 못 부르므로 **`briefing-secrets`의 GitHub Actions 워크플로가 대신 조회**하고, `market.py`가 그 워크플로를 실행해 결과 아티팩트를 받는다.
+1. KIS 개발자센터(apiportal.koreainvestment.com)에서 실전 앱키·앱시크릿 발급(계좌 잔고와 무관, 시세 조회 전용).
+2. `briefing-secrets` → Settings → Secrets and variables → **Actions** → 비밀값 두 개 등록: `KIS_APP_KEY`, `KIS_APP_SECRET` (따옴표·공백 없이. 채팅·파일에 값을 남기지 않는다).
+3. `briefing-secrets`에 아래 파일을 `.github/workflows/kis-night.yml`로 커밋 (비밀값은 참조만 있고 값은 없다).
+4. **GH_PAT 권한**: briefing-secrets에 대한 **Actions 읽기·쓰기**(워크플로 실행·아티팩트 다운로드)가 있어야 한다 — 매일 아침 쓰므로 회수하지 말 것. 없으면 market.json notes에 `HTTP 403/404`가 남고 줄만 빠진다(브리핑은 정상 발송).
+5. 확인: 로컬에서 `python3 market.py` → 출력에 `코스피200 야간선물: 값 (대비, %) · 기준 주간 종가 …` 한 줄이 나오면 정상.
+
+````yaml
+# 코스피200 야간선물 조회 (KIS Open API) — 경제 브리핑 중계용, 수동/API 실행 전용
+# 클라우드 루틴은 443 외 포트로 못 나가서 KIS(9443)를 여기서 대신 조회한다.
+# 결과: 아티팩트 night-futures (night.json). 비밀값: KIS_APP_KEY, KIS_APP_SECRET
+name: kis-night
+on: workflow_dispatch
+permissions: {}
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: fetch night futures
+        env:
+          KIS_APP_KEY: ${{ secrets.KIS_APP_KEY }}
+          KIS_APP_SECRET: ${{ secrets.KIS_APP_SECRET }}
+        run: |
+          python3 - <<'PY'
+          import io, json, os, sys, time, urllib.parse, urllib.request, zipfile
+          from datetime import datetime, timezone, timedelta
+          K, S = os.environ.get("KIS_APP_KEY"), os.environ.get("KIS_APP_SECRET")
+          out = {"fetched_kst": datetime.now(timezone(timedelta(hours=9))).strftime("%Y-%m-%d %H:%M:%S"), "ok": False}
+          def done():
+              json.dump(out, open("night.json", "w"), ensure_ascii=False, indent=1)
+              print(json.dumps(out, ensure_ascii=False, indent=1))
+              sys.exit(0 if out["ok"] else 1)
+          if not K or not S:
+              out["error"] = "KIS_APP_KEY/KIS_APP_SECRET 비밀값 없음"; done()
+          # 1) 최근월물 코드: KIS 지수선물 마스터에서 KOSPI200, 근월 순서 1
+          z = urllib.request.urlopen("https://new.real.download.dws.co.kr/common/master/fo_idx_code_mts.mst.zip", timeout=30).read()
+          raw = zipfile.ZipFile(io.BytesIO(z)).read("fo_idx_code_mts.mst").decode("cp949")
+          rows = [l.split("|") for l in raw.splitlines()]
+          front = next((r for r in rows if len(r) >= 9 and r[0] == "1" and r[8].strip() == "KOSPI200" and r[6] == "1"), None)
+          if not front:
+              out["error"] = "마스터에서 KOSPI200 최근월물 못 찾음"; done()
+          code = front[1]; out["code"] = code; out["contract"] = front[3].strip()
+          B = "https://openapi.koreainvestment.com:9443"
+          def call(url, data=None, headers=None):
+              req = urllib.request.Request(url, data=json.dumps(data).encode() if data else None, headers=headers or {})
+              try:
+                  return json.loads(urllib.request.urlopen(req, timeout=20).read())
+              except urllib.error.HTTPError as e:
+                  return {"_http": e.code, "_body": e.read().decode(errors="replace")[:300]}
+          # 2) 토큰
+          t = call(B + "/oauth2/tokenP", {"grant_type": "client_credentials", "appkey": K, "appsecret": S}, {"content-type": "application/json"})
+          tok = t.get("access_token")
+          if not tok:
+              out["error"] = "토큰 실패: " + str({k: v for k, v in t.items() if "token" not in k})[:300]; done()
+          # 3) 주간(F)·야간(CM) 시세
+          keys = ["futs_prpr", "futs_prdy_vrss", "prdy_vrss_sign", "futs_prdy_ctrt", "futs_prdy_clpr", "futs_oprc", "futs_hgpr", "futs_lwpr", "acml_vol"]
+          for name, mk in [("day", "F"), ("night", "CM")]:
+              h = {"content-type": "application/json; charset=utf-8", "authorization": "Bearer " + tok, "appkey": K, "appsecret": S, "tr_id": "FHMIF10000000", "custtype": "P"}
+              q = urllib.parse.urlencode({"FID_COND_MRKT_DIV_CODE": mk, "FID_INPUT_ISCD": code})
+              r = call(B + "/uapi/domestic-futureoption/v1/quotations/inquire-price?" + q, headers=h)
+              o = r.get("output1") or {}
+              out[name] = {k: o.get(k) for k in keys} if r.get("rt_cd") == "0" and o else {"error": r.get("msg1") or str(r)[:300]}
+              time.sleep(0.5)
+          out["ok"] = "error" not in out.get("night", {"error": 1})
+          done()
+          PY
+      - name: upload
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: night-futures
+          path: night.json
+          if-no-files-found: ignore
+          retention-days: 7
+````
+
 ---
 
 ## 5. 파일 복원
@@ -226,6 +304,7 @@ cd $TMP/r && git add -A && git commit -m restore && git push
   - 지수 4종(다우·나스닥·S&P·필라 반도체): 종가 + 등락폭 + 등락률
   - **수치 = 스크립트 2소스 교차검증 (방안 A, 신뢰가 생명)**: `python3 market.py` 로 `out/market.json` 생성. 지수 4종·지표 6종이 **Yahoo + CNBC 2소스 교차검증**(국채금리 3자리, 지표는 CNBC realtime 1차). **두 독립 소스가 일치하면 그게 확정값 — market.json 값을 그대로 쓴다.** 달러인덱스처럼 investing.com과 소수 둘째 자리에서 미세하게 달라도 **2소스 합의값을 유지**한다(investing.com은 Cloudflare로 스크립트 불가라 강제 참조 대상 아님). market.json의 errors·notes에 불일치·이상치가 있을 때만 웹으로 재확인. market.json 값이 상식 밖(지수 하루 ±10%)이거나 스크립트 완전 실패 시에만 웹 대체. **요약 기사 속 수치 사용 금지**(오차 실증: 7/1 SOX 기사 13,478 vs 실제 13,353).
   - **일정·발표지표 데이터 = `python3 events.py` (→ out/events.json)**: 실제 캘린더(Nasdaq 경제캘린더 + IPO + events_manual.txt)에서 수집. **모델이 날짜를 추측하지 말고 이 값을 쓴다.** 구조: `must_include`(1순위·반드시 일정 표에 포함 — 누락 시 verify.py가 게시 차단), `optional`(2순위·자리 남으면), `released`(직전 세션 발표지표: 지표명·actual·forecast), `passed`(생성 시각 기준 이미 지난 일정 — 표에서 제외됨, 시장 서술용). 미국 관련이 아닌 특수 이벤트(한국 상장 등)는 events_manual.txt에 수동 추가.
+  - **코스피200 야간선물 한 줄(`div.nf`, 지수 2×2 바로 아래 — 2026-11-23 신설)**: `out/market.json`의 `night_futures`를 **그대로** 쓴다 — 값 `val`(소수 2자리), 등락률 `pct`(소수 2자리). 색은 **국내식**(상승 `kr-up` 빨강 ▲ / 하락 `kr-down` 파랑 ▼ / 보합 무색) — 바로 위 미국 지수의 초록·빨강과 다르다. 등락률 기준은 **직전 주간장 종가 대비**(KIS 야간 시세의 전일대비 필드). **`night_futures`가 없으면(조회 실패·검증 탈락, 사유는 `notes`) 줄 전체를 삭제**하고 웹 검색·기사 수치로 채우지 않는다. 값 수집은 `market.py`가 `briefing-secrets`의 `kis-night` 워크플로(GitHub Actions — KIS Open API가 9443 포트라 루틴에서 직접 못 부름)를 실행해 받아 온다. verify #19가 대조한다.
   - 시장 지표 **6종 고정, 2행×3열 그리드(가로 스크롤 금지)**: 윗줄 美10년물·달러인덱스·원/달러 / 아랫줄 WTI·비트코인·금 (값은 out/market.json의 indicators 그대로). **칩은 2단 — 윗줄 지표명, 아랫줄 레벨 + 등락률**(2026-10-27 신설). 등락률은 `indicator_chg[name].pct`를 **전부 %로 통일**해 소수 둘째 자리(+0.13% / −0.32%), up/down 색. 기준은 **전 세션 종가 대비**이고 레벨·등락률·기준가를 **CNBC 한 소스**로 받는다 — 야후 일봉은 24시간·FX 자산에서 봉이 비어 경계가 흔들린다(실측: 원/달러 10/23 봉 없음·BTC 10/26 봉 없음). verify #2b가 레벨과 등락률을 모두 대조한다.
   - **섹터 강세/약세 — 모델이 고르지 않는다(2026-10-23 변경)**: `out/movers.json`의 `sectors.strong`/`sectors.weak`를 **그 순서대로** 쓴다. 색 태그(강세=초록 t-strong, 약세=빨강 t-weak) + 이유는 회색 노트(sector-note).
     - **집계 방식**: 업종별 **중위 등락률**과 **지수(S&P 500) 대비 초과**를 movers.py가 계산한다. 후보 = 종목 5개 이상 · **방향일치 60% 이상** · **|지수 대비 초과| 1.5%p 이상** → 강세 = 초과 상위 3 / 약세 = 하위 3. **단 강세는 중위 등락률이 플러스인 업종만, 약세는 마이너스인 업종만**(2026-11-23 변경) — 지수보다 덜 빠졌어도 하락한 업종은 강세에, 지수보다 덜 올랐어도 상승한 업종은 약세에 넣지 않는다(실측: 11/06 유틸리티 −0.2% 등 3개, 11/20 보험 −0.42%, 11/21 제약·헬스케어 −0.32%가 강세 칸에 / 11/10 에너지·유틸리티 +0.5%·보험 +0.6%가 약세 칸에 실렸다). 조건을 채우는 업종이 없으면 "뚜렷한 업종 없음". (급락일에 +1%대로 버틴 역행 업종이 상단에 올라오게 하려고 '절대 등락률'이 아니라 '지수 대비 초과'를 쓴다. 중위만 보면 소수 종목이 끌어올린 업종이 올라오므로 방향일치를 함께 본다.)
@@ -360,10 +439,12 @@ cd $TMP/r && git add -A && git commit -m restore && git push
 :root{
   --bg:#f6f6f4; --card:#ffffff; --text:#1a1a19; --sub:#63625d; --muted:#9a9992;
   --border:#e6e5e1; --up:#0a7d33; --down:#d21c1c; --accent:#2f6fd0;
+  --kr-up:#d21c1c; --kr-down:#1f5fd1; /* 국내 지수(야간선물) 전용: 상승 빨강·하락 파랑 */
 }
 @media (prefers-color-scheme: dark){
   :root{ --bg:#181817; --card:#242422; --text:#f0efec; --sub:#a7a6a0; --muted:#77766f;
-    --border:#38372f; --up:#3fb950; --down:#f5564a; --accent:#5a9bf0; }
+    --border:#38372f; --up:#3fb950; --down:#f5564a; --accent:#5a9bf0;
+    --kr-up:#f5564a; --kr-down:#5a9bf0; }
 }
 *{box-sizing:border-box;}
 body{margin:0;background:var(--bg);color:var(--text);
@@ -414,6 +495,13 @@ a{color:inherit;text-decoration:none;}
 .idx-val{font-size:17px;font-weight:600;}
 .idx-chg{font-size:12px;font-weight:600;margin-top:3px;white-space:nowrap;}
 .up{color:var(--up);} .down{color:var(--down);}
+/* 코스피200 야간선물 — 지수 2×2 아래 한 줄(2026-11-23 사용자 확정 디자인) */
+.nf{display:flex;align-items:baseline;justify-content:center;gap:44px;margin-top:10px;background:var(--bg);border:0.5px solid var(--border);border-radius:10px;padding:10px 12px;}
+.nf-name{font-size:12px;color:var(--sub);}
+.nf-r{display:flex;align-items:baseline;gap:8px;white-space:nowrap;}
+.nf-val{font-size:17px;font-weight:600;}
+.nf-chg{font-size:12px;font-weight:600;}
+.kr-up{color:var(--kr-up);} .kr-down{color:var(--kr-down);}
 .lbl{font-size:11px;color:var(--muted);margin-bottom:5px;}
 .chips{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;}
 .chip{font-size:11px;text-align:center;background:var(--bg);border:0.5px solid var(--border);padding:4px 4px 5px;border-radius:12px;line-height:1.3;}
@@ -443,6 +531,7 @@ a{color:inherit;text-decoration:none;}
   .heads{font-size:13px;}
   .idx-val{font-size:15px;}
   .idx-chg{font-size:10.5px;}
+  .nf{gap:32px;} .nf-val{font-size:15px;} .nf-chg{font-size:10.5px;}
   .tbl{font-size:11px;}
   .tbl td{padding:6px 6px 6px 0;}
   .mv-r{font-size:11.5px;}
@@ -527,6 +616,13 @@ a{color:inherit;text-decoration:none;}
       <div class="idx"><div class="idx-name">S&amp;P 500</div><div class="idx-val">0,000.00</div><div class="idx-chg up">▲ +0.00 (+0.00%)</div></div>
       <div class="idx"><div class="idx-name">필라델피아 반도체</div><div class="idx-val">0,000.00</div><div class="idx-chg up">▲ +0.00 (+0.00%)</div></div>
     </div>
+    <!-- 코스피200 야간선물(KIS 최근월물 · 야간장 종가 · 직전 주간장 종가 대비 등락률).
+         ★ 값 = out/market.json 의 night_futures 그대로: nf-val = val(소수 2자리), nf-chg = pct(소수 2자리).
+         표시 = [이름 · 값 · 등락률]만. 색은 국내식: pct>0 → class="nf-chg kr-up" "▲ +1.33%" /
+         pct<0 → class="nf-chg kr-down" "▼ −1.33%"(유니코드 마이너스) / pct=0 → class="nf-chg" "0.00%".
+         ★ 웹 검색·기사 수치·추정으로 채우지 말 것. night_futures가 없는 날(조회 실패·검증 탈락 — market.json notes에
+           사유가 남는다)은 이 줄(div.nf) 전체를 삭제한다("미확인" 표기 금지). verify #19가 값·부호·색·유무를 대조한다. -->
+    <div class="nf"><span class="nf-name">코스피200 야간선물</span><span class="nf-r"><span class="nf-val">000.00</span><span class="nf-chg kr-down">▼ −0.00%</span></span></div>
 
     <div class="divide"></div>
     <div class="lbl">시장 지표</div>
@@ -764,6 +860,104 @@ for name, sym, fmt, csym, tol in IND:
     except Exception as e:
         out["errors"].append(f"{name}({sym}): {e}")
 
+# 코스피200 야간선물 (2026-11-23) — KIS(한국투자증권) Open API는 9443 포트라 클라우드 루틴에서 직접 못 부른다.
+# 그래서 briefing-secrets의 kis-night 워크플로(GitHub Actions)를 실행해 결과(night.json 아티팩트)를 받아 온다.
+# ★ 실패해도 브리핑은 나가야 한다 → errors(=verify #4 발송 차단)가 아니라 notes에 남기고 night_futures를 비운다
+#   (템플릿 규칙: night_futures가 없으면 div.nf 줄 전체 삭제).
+# 필드 의미는 2026-11-23 20:26 야간장 실측으로 확정: 야간(CM) futs_prdy_vrss·futs_prdy_ctrt = **직전 주간장 종가 대비**
+#   (736.25 − 9.60 = 726.65 = 그날 주간 종가). 야간 쪽 futs_prdy_clpr(700.00)은 '지난밤 종가'라 쓰지 않는다.
+NF_REPO, NF_WF, NF_BUDGET_S = "xeob/briefing-secrets", "kis-night.yml", 150
+
+def gh_token():
+    t = os.environ.get("GH_PAT")
+    if not t and os.path.exists(".env"):
+        for line in open(".env", encoding="utf-8"):
+            if line.startswith("GH_PAT="):
+                t = line.split("=", 1)[1].strip().strip('"').strip("'")
+    return t
+
+def gh(token, path, method="GET", body=None, out_file=None):
+    """GitHub API 호출(curl). 토큰은 argv가 아니라 stdin 설정으로 넘긴다. (HTTP 코드, 본문) 반환."""
+    cmd = ["curl", "-s", "-m", "30", "-K", "-", "-H", "Accept: application/vnd.github+json",
+           "-w", "\n%{http_code}", "-X", method, "https://api.github.com/repos/" + NF_REPO + path]
+    if body is not None:
+        cmd += ["-H", "Content-Type: application/json", "-d", json.dumps(body)]
+    if out_file:   # 아티팩트 zip: 저장소(blob)로 리다이렉트된다. curl은 다른 호스트로 인증 헤더를 넘기지 않는다.
+        cmd[1:1] = ["-L", "-o", out_file]
+    r = subprocess.run(cmd, input='header = "Authorization: Bearer %s"\n' % token,
+                       capture_output=True, text=True)
+    text, _, code = r.stdout.rpartition("\n")
+    return int(code or 0), text
+
+def nf_validate(j):
+    """night.json → (기록, None) 또는 (None, 사유). 숫자는 KIS 값 그대로, 서로 맞는지만 검사한다."""
+    if not j.get("ok"):
+        return None, "조회 실패: %s" % (j.get("error") or (j.get("night") or {}).get("error"))
+    n, d = j.get("night") or {}, j.get("day") or {}
+    f = lambda o, k: float(str(o.get(k)).replace(",", ""))
+    try:
+        val, chg, pct, vol = f(n, "futs_prpr"), f(n, "futs_prdy_vrss"), f(n, "futs_prdy_ctrt"), f(n, "acml_vol")
+        day_close, day_prev = f(d, "futs_prpr"), f(d, "futs_prdy_clpr")
+    except Exception:
+        return None, "필드 해석 실패: %s" % str(n)[:120]
+    base = round(val - chg, 2)
+    if vol <= 0:
+        return None, "야간 거래량 0 — 막 끝난 야간장 값이 아님(초기화 상태)"
+    if base <= 0 or abs(chg / base * 100 - pct) > 0.02:
+        return None, "등락률 산술 불일치: %+.2f / %.2f ≠ %+.2f%%" % (chg, base, pct)
+    if min(abs(base - day_close), abs(base - day_prev)) > 0.005:
+        return None, "야간 기준가 %.2f가 주간 종가(%.2f/%.2f)와 다름" % (base, day_close, day_prev)
+    sign = str(n.get("prdy_vrss_sign"))   # KIS: 1 상한·2 상승·3 보합·4 하한·5 하락
+    if (chg > 0 and sign not in "12") or (chg < 0 and sign not in "45") or (chg == 0 and sign != "3"):
+        return None, "등락 부호 불일치: 대비 %+.2f · sign %s" % (chg, sign)
+    return {"val": round(val, 2), "chg": round(chg, 2), "pct": round(pct, 2), "base": base,
+            "vol": int(vol), "contract": j.get("contract"), "fetched_kst": j.get("fetched_kst"),
+            "src": "KIS Open API 야간(CM) 최근월물 · 직전 주간장 종가 대비"}, None
+
+def night_futures():
+    import tempfile, zipfile
+    token = gh_token()
+    if not token:
+        return None, "GH_PAT 없음"
+    t0 = time.time()
+    code, text = gh(token, "/actions/workflows/%s/runs?per_page=5" % NF_WF)
+    if code != 200:
+        return None, "실행 목록 조회 HTTP %d" % code
+    before = {x["id"] for x in json.loads(text)["workflow_runs"]}
+    code, _ = gh(token, "/actions/workflows/%s/dispatches" % NF_WF, "POST", {"ref": "main"})
+    if code != 204:
+        return None, "워크플로 실행 요청 HTTP %d" % code
+    run = None
+    while time.time() - t0 < NF_BUDGET_S:
+        time.sleep(5)
+        code, text = gh(token, "/actions/workflows/%s/runs?per_page=5" % NF_WF)
+        new = [x for x in json.loads(text).get("workflow_runs", []) if x["id"] not in before] if code == 200 else []
+        if new and new[0]["status"] == "completed":
+            run = new[0]
+            break
+    if not run:
+        return None, "워크플로 %d초 안에 끝나지 않음" % NF_BUDGET_S
+    code, text = gh(token, "/actions/runs/%d/artifacts" % run["id"])
+    arts = json.loads(text).get("artifacts", []) if code == 200 else []
+    if not arts:
+        return None, "결과 파일 없음(실행 결과 %s)" % run.get("conclusion")
+    zp = os.path.join(tempfile.mkdtemp(), "night.zip")
+    code, _ = gh(token, "/actions/artifacts/%d/zip" % arts[0]["id"], out_file=zp)
+    try:
+        j = json.loads(zipfile.ZipFile(zp).read("night.json"))
+    except Exception as e:
+        return None, "결과 파일 해석 실패(HTTP %d): %s" % (code, str(e)[:60])
+    return nf_validate(j)
+
+try:
+    nf, why = night_futures()
+except Exception as e:
+    nf, why = None, "예외: %s" % str(e)[:100]
+if nf:
+    out["night_futures"] = nf
+else:
+    out["notes"].append("코스피200 야간선물 미수록 — %s (브리핑에서 div.nf 줄 삭제)" % why)
+
 os.makedirs("out", exist_ok=True)
 json.dump(out, open("out/market.json", "w"), ensure_ascii=False, indent=1)
 print(f"지수 {len(out['indices'])} / 지표 {len(out['indicators'])} (오류 {len(out['errors'])}) → out/market.json")
@@ -771,6 +965,9 @@ for n, d in out["indices"].items():
     print(f"  {n}: {d['close']:,} ({d['chg']:+,.2f}, {d['pct']:+.2f}%)")
 print("  " + " · ".join(f"{n} {v} ({out['indicator_chg'].get(n, {}).get('pct', 0):+.2f}%)"
                             for n, v in out["indicators"].items()))
+if out.get("night_futures"):
+    nf = out["night_futures"]
+    print(f"  코스피200 야간선물: {nf['val']:.2f} ({nf['chg']:+.2f}, {nf['pct']:+.2f}%) · 기준 주간 종가 {nf['base']:.2f} · {nf['contract']}")
 for n in out["notes"]:
     print("  교차검증:", n)
 for e in out["errors"]:
@@ -2365,6 +2562,40 @@ for part_name, part in (("급등", seg(L_UP, L_DN)),
         if got and not want:
             issues.append(f"[특징주] {part_name} {sym} 업종 꼬리표 '{got}'는 업종 맵에 없는 종목 — 꼬리표 생략"
                           "(임의 분류 금지, 맵 보강은 movers.py SECTOR_GROUPS)")
+
+# 19) 코스피200 야간선물 줄(div.nf) ↔ market.json night_futures (2026-11-23 신설)
+#     값이 있으면 줄이 반드시 있고 값·등락률이 원본 그대로여야 하며, 색·화살표는 국내식(상승 kr-up ▲ / 하락 kr-down ▼).
+#     값이 없으면(조회 실패·검증 탈락) 줄이 있으면 안 된다 — 웹 검색·기사 수치로 채우는 날조를 막는다.
+_nf = mk.get("night_futures")
+_nfm = re.search(r'<div class="nf">(.*?)</div>', html, re.S)
+if _nf and not _nfm:
+    issues.append("[야간선물] market.json night_futures(%.2f, %+.2f%%)가 있는데 줄(div.nf)이 없음 — 지수 2×2 아래에 게재"
+                  % (_nf["val"], _nf["pct"]))
+elif _nfm and not _nf:
+    issues.append("[야간선물] 조회값이 없는 날인데 줄(div.nf)이 있음 — 줄 전체 삭제(웹 검색·추정으로 채우기 금지, 사유는 market.json notes)")
+elif _nf:
+    _b = _nfm.group(1)
+    _v = re.search(r'class="nf-val">([^<]+)<', _b)
+    _c = re.search(r'class="nf-chg([^"]*)">([^<]+)<', _b)
+    if not _v or not _c:
+        issues.append("[야간선물] 줄 형식 인식 실패 — 템플릿 형식(nf-val / nf-chg) 그대로 작성")
+    else:
+        try:
+            if abs(num(_v.group(1)) - _nf["val"]) > 0.005:
+                issues.append("[야간선물] 값 HTML %s ≠ 원본 %.2f" % (_v.group(1).strip(), _nf["val"]))
+            _txt = _c.group(2)
+            _pm = re.search(r'([+\-−]?[\d.]+)%', _txt)
+            _hp = num(_pm.group(1)) if _pm else None
+            if _hp is None or abs(_hp - _nf["pct"]) > 0.005:
+                issues.append("[야간선물] 등락률 HTML '%s' ≠ 원본 %+.2f%%" % (_txt.strip(), _nf["pct"]))
+            _cls = _c.group(1)
+            _want = ("kr-up", "▲") if _nf["pct"] > 0 else (("kr-down", "▼") if _nf["pct"] < 0 else (None, None))
+            if _want[0] and (_want[0] not in _cls or _want[1] not in _txt):
+                issues.append("[야간선물] 색·화살표 불일치 — %+.2f%%면 class %s + %s (국내식)" % (_nf["pct"], _want[0], _want[1]))
+            if not _want[0] and ("kr-" in _cls or "▲" in _txt or "▼" in _txt):
+                issues.append("[야간선물] 보합(0.00%)인데 색·화살표가 있음 — 무색, 화살표 없이")
+        except Exception:
+            issues.append("[야간선물] 수치 해석 실패: '%s'" % re.sub(r'<[^>]+>', ' ', _b).strip())
 
 # 18) 감사 대상 자동 집계(비차단 — 출력만) : '자격을 통과했는데 지면 어디에도 없는 종목'을 매일 보여준다.
 #     2026-10-26 세션 사고: 전력기기·데이터센터설비가 방향일치 96%·지수 대비 +1.58%p로 동반 상승했는데

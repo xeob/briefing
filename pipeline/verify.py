@@ -417,6 +417,40 @@ for part_name, part in (("급등", seg(L_UP, L_DN)),
             issues.append(f"[특징주] {part_name} {sym} 업종 꼬리표 '{got}'는 업종 맵에 없는 종목 — 꼬리표 생략"
                           "(임의 분류 금지, 맵 보강은 movers.py SECTOR_GROUPS)")
 
+# 19) 코스피200 야간선물 줄(div.nf) ↔ market.json night_futures (2026-11-23 신설)
+#     값이 있으면 줄이 반드시 있고 값·등락률이 원본 그대로여야 하며, 색·화살표는 국내식(상승 kr-up ▲ / 하락 kr-down ▼).
+#     값이 없으면(조회 실패·검증 탈락) 줄이 있으면 안 된다 — 웹 검색·기사 수치로 채우는 날조를 막는다.
+_nf = mk.get("night_futures")
+_nfm = re.search(r'<div class="nf">(.*?)</div>', html, re.S)
+if _nf and not _nfm:
+    issues.append("[야간선물] market.json night_futures(%.2f, %+.2f%%)가 있는데 줄(div.nf)이 없음 — 지수 2×2 아래에 게재"
+                  % (_nf["val"], _nf["pct"]))
+elif _nfm and not _nf:
+    issues.append("[야간선물] 조회값이 없는 날인데 줄(div.nf)이 있음 — 줄 전체 삭제(웹 검색·추정으로 채우기 금지, 사유는 market.json notes)")
+elif _nf:
+    _b = _nfm.group(1)
+    _v = re.search(r'class="nf-val">([^<]+)<', _b)
+    _c = re.search(r'class="nf-chg([^"]*)">([^<]+)<', _b)
+    if not _v or not _c:
+        issues.append("[야간선물] 줄 형식 인식 실패 — 템플릿 형식(nf-val / nf-chg) 그대로 작성")
+    else:
+        try:
+            if abs(num(_v.group(1)) - _nf["val"]) > 0.005:
+                issues.append("[야간선물] 값 HTML %s ≠ 원본 %.2f" % (_v.group(1).strip(), _nf["val"]))
+            _txt = _c.group(2)
+            _pm = re.search(r'([+\-−]?[\d.]+)%', _txt)
+            _hp = num(_pm.group(1)) if _pm else None
+            if _hp is None or abs(_hp - _nf["pct"]) > 0.005:
+                issues.append("[야간선물] 등락률 HTML '%s' ≠ 원본 %+.2f%%" % (_txt.strip(), _nf["pct"]))
+            _cls = _c.group(1)
+            _want = ("kr-up", "▲") if _nf["pct"] > 0 else (("kr-down", "▼") if _nf["pct"] < 0 else (None, None))
+            if _want[0] and (_want[0] not in _cls or _want[1] not in _txt):
+                issues.append("[야간선물] 색·화살표 불일치 — %+.2f%%면 class %s + %s (국내식)" % (_nf["pct"], _want[0], _want[1]))
+            if not _want[0] and ("kr-" in _cls or "▲" in _txt or "▼" in _txt):
+                issues.append("[야간선물] 보합(0.00%)인데 색·화살표가 있음 — 무색, 화살표 없이")
+        except Exception:
+            issues.append("[야간선물] 수치 해석 실패: '%s'" % re.sub(r'<[^>]+>', ' ', _b).strip())
+
 # 18) 감사 대상 자동 집계(비차단 — 출력만) : '자격을 통과했는데 지면 어디에도 없는 종목'을 매일 보여준다.
 #     2026-10-26 세션 사고: 전력기기·데이터센터설비가 방향일치 96%·지수 대비 +1.58%p로 동반 상승했는데
 #     묶음 성립 ⓐ(멤버 5개)에 1개 모자라 묶음이 안 서고, 섹터 선정도 상위 3 컷(6위)에 밀려

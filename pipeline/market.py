@@ -96,6 +96,104 @@ for name, sym, fmt, csym, tol in IND:
     except Exception as e:
         out["errors"].append(f"{name}({sym}): {e}")
 
+# 코스피200 야간선물 (2026-11-23) — KIS(한국투자증권) Open API는 9443 포트라 클라우드 루틴에서 직접 못 부른다.
+# 그래서 briefing-secrets의 kis-night 워크플로(GitHub Actions)를 실행해 결과(night.json 아티팩트)를 받아 온다.
+# ★ 실패해도 브리핑은 나가야 한다 → errors(=verify #4 발송 차단)가 아니라 notes에 남기고 night_futures를 비운다
+#   (템플릿 규칙: night_futures가 없으면 div.nf 줄 전체 삭제).
+# 필드 의미는 2026-11-23 20:26 야간장 실측으로 확정: 야간(CM) futs_prdy_vrss·futs_prdy_ctrt = **직전 주간장 종가 대비**
+#   (736.25 − 9.60 = 726.65 = 그날 주간 종가). 야간 쪽 futs_prdy_clpr(700.00)은 '지난밤 종가'라 쓰지 않는다.
+NF_REPO, NF_WF, NF_BUDGET_S = "xeob/briefing-secrets", "kis-night.yml", 150
+
+def gh_token():
+    t = os.environ.get("GH_PAT")
+    if not t and os.path.exists(".env"):
+        for line in open(".env", encoding="utf-8"):
+            if line.startswith("GH_PAT="):
+                t = line.split("=", 1)[1].strip().strip('"').strip("'")
+    return t
+
+def gh(token, path, method="GET", body=None, out_file=None):
+    """GitHub API 호출(curl). 토큰은 argv가 아니라 stdin 설정으로 넘긴다. (HTTP 코드, 본문) 반환."""
+    cmd = ["curl", "-s", "-m", "30", "-K", "-", "-H", "Accept: application/vnd.github+json",
+           "-w", "\n%{http_code}", "-X", method, "https://api.github.com/repos/" + NF_REPO + path]
+    if body is not None:
+        cmd += ["-H", "Content-Type: application/json", "-d", json.dumps(body)]
+    if out_file:   # 아티팩트 zip: 저장소(blob)로 리다이렉트된다. curl은 다른 호스트로 인증 헤더를 넘기지 않는다.
+        cmd[1:1] = ["-L", "-o", out_file]
+    r = subprocess.run(cmd, input='header = "Authorization: Bearer %s"\n' % token,
+                       capture_output=True, text=True)
+    text, _, code = r.stdout.rpartition("\n")
+    return int(code or 0), text
+
+def nf_validate(j):
+    """night.json → (기록, None) 또는 (None, 사유). 숫자는 KIS 값 그대로, 서로 맞는지만 검사한다."""
+    if not j.get("ok"):
+        return None, "조회 실패: %s" % (j.get("error") or (j.get("night") or {}).get("error"))
+    n, d = j.get("night") or {}, j.get("day") or {}
+    f = lambda o, k: float(str(o.get(k)).replace(",", ""))
+    try:
+        val, chg, pct, vol = f(n, "futs_prpr"), f(n, "futs_prdy_vrss"), f(n, "futs_prdy_ctrt"), f(n, "acml_vol")
+        day_close, day_prev = f(d, "futs_prpr"), f(d, "futs_prdy_clpr")
+    except Exception:
+        return None, "필드 해석 실패: %s" % str(n)[:120]
+    base = round(val - chg, 2)
+    if vol <= 0:
+        return None, "야간 거래량 0 — 막 끝난 야간장 값이 아님(초기화 상태)"
+    if base <= 0 or abs(chg / base * 100 - pct) > 0.02:
+        return None, "등락률 산술 불일치: %+.2f / %.2f ≠ %+.2f%%" % (chg, base, pct)
+    if min(abs(base - day_close), abs(base - day_prev)) > 0.005:
+        return None, "야간 기준가 %.2f가 주간 종가(%.2f/%.2f)와 다름" % (base, day_close, day_prev)
+    sign = str(n.get("prdy_vrss_sign"))   # KIS: 1 상한·2 상승·3 보합·4 하한·5 하락
+    if (chg > 0 and sign not in "12") or (chg < 0 and sign not in "45") or (chg == 0 and sign != "3"):
+        return None, "등락 부호 불일치: 대비 %+.2f · sign %s" % (chg, sign)
+    return {"val": round(val, 2), "chg": round(chg, 2), "pct": round(pct, 2), "base": base,
+            "vol": int(vol), "contract": j.get("contract"), "fetched_kst": j.get("fetched_kst"),
+            "src": "KIS Open API 야간(CM) 최근월물 · 직전 주간장 종가 대비"}, None
+
+def night_futures():
+    import tempfile, zipfile
+    token = gh_token()
+    if not token:
+        return None, "GH_PAT 없음"
+    t0 = time.time()
+    code, text = gh(token, "/actions/workflows/%s/runs?per_page=5" % NF_WF)
+    if code != 200:
+        return None, "실행 목록 조회 HTTP %d" % code
+    before = {x["id"] for x in json.loads(text)["workflow_runs"]}
+    code, _ = gh(token, "/actions/workflows/%s/dispatches" % NF_WF, "POST", {"ref": "main"})
+    if code != 204:
+        return None, "워크플로 실행 요청 HTTP %d" % code
+    run = None
+    while time.time() - t0 < NF_BUDGET_S:
+        time.sleep(5)
+        code, text = gh(token, "/actions/workflows/%s/runs?per_page=5" % NF_WF)
+        new = [x for x in json.loads(text).get("workflow_runs", []) if x["id"] not in before] if code == 200 else []
+        if new and new[0]["status"] == "completed":
+            run = new[0]
+            break
+    if not run:
+        return None, "워크플로 %d초 안에 끝나지 않음" % NF_BUDGET_S
+    code, text = gh(token, "/actions/runs/%d/artifacts" % run["id"])
+    arts = json.loads(text).get("artifacts", []) if code == 200 else []
+    if not arts:
+        return None, "결과 파일 없음(실행 결과 %s)" % run.get("conclusion")
+    zp = os.path.join(tempfile.mkdtemp(), "night.zip")
+    code, _ = gh(token, "/actions/artifacts/%d/zip" % arts[0]["id"], out_file=zp)
+    try:
+        j = json.loads(zipfile.ZipFile(zp).read("night.json"))
+    except Exception as e:
+        return None, "결과 파일 해석 실패(HTTP %d): %s" % (code, str(e)[:60])
+    return nf_validate(j)
+
+try:
+    nf, why = night_futures()
+except Exception as e:
+    nf, why = None, "예외: %s" % str(e)[:100]
+if nf:
+    out["night_futures"] = nf
+else:
+    out["notes"].append("코스피200 야간선물 미수록 — %s (브리핑에서 div.nf 줄 삭제)" % why)
+
 os.makedirs("out", exist_ok=True)
 json.dump(out, open("out/market.json", "w"), ensure_ascii=False, indent=1)
 print(f"지수 {len(out['indices'])} / 지표 {len(out['indicators'])} (오류 {len(out['errors'])}) → out/market.json")
@@ -103,6 +201,9 @@ for n, d in out["indices"].items():
     print(f"  {n}: {d['close']:,} ({d['chg']:+,.2f}, {d['pct']:+.2f}%)")
 print("  " + " · ".join(f"{n} {v} ({out['indicator_chg'].get(n, {}).get('pct', 0):+.2f}%)"
                             for n, v in out["indicators"].items()))
+if out.get("night_futures"):
+    nf = out["night_futures"]
+    print(f"  코스피200 야간선물: {nf['val']:.2f} ({nf['chg']:+.2f}, {nf['pct']:+.2f}%) · 기준 주간 종가 {nf['base']:.2f} · {nf['contract']}")
 for n in out["notes"]:
     print("  교차검증:", n)
 for e in out["errors"]:
