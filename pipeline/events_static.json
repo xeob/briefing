@@ -1,13 +1,9 @@
 {
- "generated": "2026-11-23",
+ "generated": "2026-11-24",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
  "ff_variants": {
-  "2026-11-02|construction spending": {
-   "0.3": "m/m",
-   "0.4": "m/m"
-  },
   "2026-11-03|factory orders": {
    "1.2": "m/m"
   },
@@ -83,7 +79,8 @@
    "0.5": "m/m"
   },
   "2026-11-25|durable goods orders": {
-   "0.5": "m/m"
+   "0.5": "m/m",
+   "0.7": "m/m"
   },
   "2026-11-25|personal income": {
    "0.4": "m/m"
@@ -96,17 +93,6 @@
   }
  },
  "events": [
-  {
-   "date": "2026-11-24",
-   "time": "06:00",
-   "title": "연준 윌리엄스 발언",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "윌리엄스"
-   ]
-  },
   {
    "date": "2026-11-25",
    "time": "22:30",
