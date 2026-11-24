@@ -1,12 +1,9 @@
 {
- "generated": "2026-11-24",
- "offset_used": 1,
+ "generated": "2026-11-25",
+ "offset_used": 0,
  "coverage_days": 13,
  "auto_refreshed": true,
  "ff_variants": {
-  "2026-11-03|factory orders": {
-   "1.2": "m/m"
-  },
   "2026-11-05|prelim nonfarm productivity": {
    "2.8": "q/q"
   },
@@ -89,7 +86,8 @@
    "0.4": "m/m"
   },
   "2026-11-27|prelim wholesale inventories": {
-   "0.7": "m/m"
+   "0.7": "m/m",
+   "0.5": "m/m"
   }
  },
  "events": [
