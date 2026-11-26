@@ -1,15 +1,9 @@
 {
- "generated": "2026-11-26",
+ "generated": "2026-11-27",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
  "ff_variants": {
-  "2026-11-05|prelim nonfarm productivity": {
-   "2.8": "q/q"
-  },
-  "2026-11-05|prelim unit labor costs": {
-   "0.3": "q/q"
-  },
   "2026-11-06|average hourly earnings": {
    "0.3": "m/m"
   },
@@ -94,6 +88,17 @@
   {
    "date": "2026-12-02",
    "time": "00:00",
+   "title": "연준 보먼 발언",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "보먼"
+   ]
+  },
+  {
+   "date": "2026-12-02",
+   "time": "00:00",
    "title": "ISM 제조업 PMI",
    "impact": "High",
    "cat": "지표",
@@ -101,6 +106,18 @@
    "keywords": [
     "ISM",
     "제조업"
+   ]
+  },
+  {
+   "date": "2026-12-03",
+   "time": "22:30",
+   "title": "신규 실업수당청구",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "실업수당",
+    "신규 실업"
    ]
   },
   {
