@@ -8,12 +8,10 @@
 :root{
   --bg:#f6f6f4; --card:#ffffff; --text:#1a1a19; --sub:#63625d; --muted:#9a9992;
   --border:#e6e5e1; --up:#0a7d33; --down:#d21c1c; --accent:#2f6fd0;
-  --kr-up:#d21c1c; --kr-down:#1f5fd1; /* 국내 지수(야간선물) 전용: 상승 빨강·하락 파랑 */
 }
 @media (prefers-color-scheme: dark){
   :root{ --bg:#181817; --card:#242422; --text:#f0efec; --sub:#a7a6a0; --muted:#77766f;
-    --border:#38372f; --up:#3fb950; --down:#f5564a; --accent:#5a9bf0;
-    --kr-up:#f5564a; --kr-down:#5a9bf0; }
+    --border:#38372f; --up:#3fb950; --down:#f5564a; --accent:#5a9bf0; }
 }
 *{box-sizing:border-box;}
 body{margin:0;background:var(--bg);color:var(--text);
@@ -70,7 +68,6 @@ a{color:inherit;text-decoration:none;}
 .nf-r{display:flex;align-items:baseline;gap:8px;white-space:nowrap;}
 .nf-val{font-size:17px;font-weight:600;}
 .nf-chg{font-size:12px;font-weight:600;}
-.kr-up{color:var(--kr-up);} .kr-down{color:var(--kr-down);}
 .lbl{font-size:11px;color:var(--muted);margin-bottom:5px;}
 .chips{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;}
 .chip{font-size:11px;text-align:center;background:var(--bg);border:0.5px solid var(--border);padding:4px 4px 5px;border-radius:12px;line-height:1.3;}
@@ -187,11 +184,11 @@ a{color:inherit;text-decoration:none;}
     </div>
     <!-- 코스피200 야간선물(KIS 최근월물 · 야간장 종가 · 직전 주간장 종가 대비 등락률).
          ★ 값 = out/market.json 의 night_futures 그대로: nf-val = val(소수 2자리), nf-chg = pct(소수 2자리).
-         표시 = [이름 · 값 · 등락률]만. 색은 국내식: pct>0 → class="nf-chg kr-up" "▲ +1.33%" /
-         pct<0 → class="nf-chg kr-down" "▼ −1.33%"(유니코드 마이너스) / pct=0 → class="nf-chg" "0.00%".
+         표시 = [이름 · 값 · 등락률]만. 색은 미국 지수와 같다: pct>0 → class="nf-chg up" "▲ +1.33%" /
+         pct<0 → class="nf-chg down" "▼ −1.33%"(유니코드 마이너스) / pct=0 → class="nf-chg" "0.00%".
          ★ 웹 검색·기사 수치·추정으로 채우지 말 것. night_futures가 없는 날(조회 실패·검증 탈락 — market.json notes에
            사유가 남는다)은 이 줄(div.nf) 전체를 삭제한다("미확인" 표기 금지). verify #19가 값·부호·색·유무를 대조한다. -->
-    <div class="nf"><span class="nf-name">코스피200 야간선물</span><span class="nf-r"><span class="nf-val">000.00</span><span class="nf-chg kr-down">▼ −0.00%</span></span></div>
+    <div class="nf"><span class="nf-name">코스피200 야간선물</span><span class="nf-r"><span class="nf-val">000.00</span><span class="nf-chg down">▼ −0.00%</span></span></div>
 
     <div class="divide"></div>
     <div class="lbl">시장 지표</div>

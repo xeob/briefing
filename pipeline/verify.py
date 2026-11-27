@@ -418,7 +418,7 @@ for part_name, part in (("급등", seg(L_UP, L_DN)),
                           "(임의 분류 금지, 맵 보강은 movers.py SECTOR_GROUPS)")
 
 # 19) 코스피200 야간선물 줄(div.nf) ↔ market.json night_futures (2026-11-23 신설)
-#     값이 있으면 줄이 반드시 있고 값·등락률이 원본 그대로여야 하며, 색·화살표는 국내식(상승 kr-up ▲ / 하락 kr-down ▼).
+#     값이 있으면 줄이 반드시 있고 값·등락률이 원본 그대로여야 하며, 색·화살표는 브리핑 공통(상승 up 초록 ▲ / 하락 down 빨강 ▼, 2026-11-27 국내식에서 변경).
 #     값이 없으면(조회 실패·검증 탈락) 줄이 있으면 안 된다 — 웹 검색·기사 수치로 채우는 날조를 막는다.
 _nf = mk.get("night_futures")
 _nfm = re.search(r'<div class="nf">(.*?)</div>', html, re.S)
@@ -442,11 +442,11 @@ elif _nf:
             _hp = num(_pm.group(1)) if _pm else None
             if _hp is None or abs(_hp - _nf["pct"]) > 0.005:
                 issues.append("[야간선물] 등락률 HTML '%s' ≠ 원본 %+.2f%%" % (_txt.strip(), _nf["pct"]))
-            _cls = _c.group(1)
-            _want = ("kr-up", "▲") if _nf["pct"] > 0 else (("kr-down", "▼") if _nf["pct"] < 0 else (None, None))
-            if _want[0] and (_want[0] not in _cls or _want[1] not in _txt):
-                issues.append("[야간선물] 색·화살표 불일치 — %+.2f%%면 class %s + %s (국내식)" % (_nf["pct"], _want[0], _want[1]))
-            if not _want[0] and ("kr-" in _cls or "▲" in _txt or "▼" in _txt):
+            _cls = _c.group(1).split()
+            _want = ("up", "▲") if _nf["pct"] > 0 else (("down", "▼") if _nf["pct"] < 0 else (None, None))
+            if _want[0] and (_want[0] not in _cls or _want[1] not in _txt or any(k.startswith("kr-") for k in _cls)):
+                issues.append("[야간선물] 색·화살표 불일치 — %+.2f%%면 class %s + %s (상승 초록·하락 빨강)" % (_nf["pct"], _want[0], _want[1]))
+            if not _want[0] and (set(_cls) & {"up", "down", "kr-up", "kr-down"} or "▲" in _txt or "▼" in _txt):
                 issues.append("[야간선물] 보합(0.00%)인데 색·화살표가 있음 — 무색, 화살표 없이")
         except Exception:
             issues.append("[야간선물] 수치 해석 실패: '%s'" % re.sub(r'<[^>]+>', ' ', _b).strip())

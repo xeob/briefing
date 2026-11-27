@@ -304,7 +304,7 @@ cd $TMP/r && git add -A && git commit -m restore && git push
   - 지수 4종(다우·나스닥·S&P·필라 반도체): 종가 + 등락폭 + 등락률
   - **수치 = 스크립트 2소스 교차검증 (방안 A, 신뢰가 생명)**: `python3 market.py` 로 `out/market.json` 생성. 지수 4종·지표 6종이 **Yahoo + CNBC 2소스 교차검증**(국채금리 3자리, 지표는 CNBC realtime 1차). **두 독립 소스가 일치하면 그게 확정값 — market.json 값을 그대로 쓴다.** 달러인덱스처럼 investing.com과 소수 둘째 자리에서 미세하게 달라도 **2소스 합의값을 유지**한다(investing.com은 Cloudflare로 스크립트 불가라 강제 참조 대상 아님). market.json의 errors·notes에 불일치·이상치가 있을 때만 웹으로 재확인. market.json 값이 상식 밖(지수 하루 ±10%)이거나 스크립트 완전 실패 시에만 웹 대체. **요약 기사 속 수치 사용 금지**(오차 실증: 7/1 SOX 기사 13,478 vs 실제 13,353).
   - **일정·발표지표 데이터 = `python3 events.py` (→ out/events.json)**: 실제 캘린더(Nasdaq 경제캘린더 + IPO + events_manual.txt)에서 수집. **모델이 날짜를 추측하지 말고 이 값을 쓴다.** 구조: `must_include`(1순위·반드시 일정 표에 포함 — 누락 시 verify.py가 게시 차단), `optional`(2순위·자리 남으면), `released`(직전 세션 발표지표: 지표명·actual·forecast), `passed`(생성 시각 기준 이미 지난 일정 — 표에서 제외됨, 시장 서술용). 미국 관련이 아닌 특수 이벤트(한국 상장 등)는 events_manual.txt에 수동 추가.
-  - **코스피200 야간선물 한 줄(`div.nf`, 지수 2×2 바로 아래 — 2026-11-23 신설)**: `out/market.json`의 `night_futures`를 **그대로** 쓴다 — 값 `val`(소수 2자리), 등락률 `pct`(소수 2자리). 색은 **국내식**(상승 `kr-up` 빨강 ▲ / 하락 `kr-down` 파랑 ▼ / 보합 무색) — 바로 위 미국 지수의 초록·빨강과 다르다. 등락률 기준은 **직전 주간장 종가 대비**(KIS 야간 시세의 전일대비 필드). **`night_futures`가 없으면(조회 실패·검증 탈락, 사유는 `notes`) 줄 전체를 삭제**하고 웹 검색·기사 수치로 채우지 않는다. 값 수집은 `market.py`가 `briefing-secrets`의 `kis-night` 워크플로(GitHub Actions — KIS Open API가 9443 포트라 루틴에서 직접 못 부름)를 실행해 받아 온다. verify #19가 대조한다.
+  - **코스피200 야간선물 한 줄(`div.nf`, 지수 2×2 바로 아래 — 2026-11-23 신설)**: `out/market.json`의 `night_futures`를 **그대로** 쓴다 — 값 `val`(소수 2자리), 등락률 `pct`(소수 2자리). 색은 **바로 위 미국 지수와 같다**(상승 `up` 초록 ▲ / 하락 `down` 빨강 ▼ / 보합 무색 — 2026-11-27 국내식 빨강·파랑에서 통일). 등락률 기준은 **직전 주간장 종가 대비**(KIS 야간 시세의 전일대비 필드). **`night_futures`가 없으면(조회 실패·검증 탈락, 사유는 `notes`) 줄 전체를 삭제**하고 웹 검색·기사 수치로 채우지 않는다. 값 수집은 `market.py`가 `briefing-secrets`의 `kis-night` 워크플로(GitHub Actions — KIS Open API가 9443 포트라 루틴에서 직접 못 부름)를 실행해 받아 온다. verify #19가 대조한다.
   - 시장 지표 **6종 고정, 2행×3열 그리드(가로 스크롤 금지)**: 윗줄 美10년물·달러인덱스·원/달러 / 아랫줄 WTI·비트코인·금 (값은 out/market.json의 indicators 그대로). **칩은 2단 — 윗줄 지표명, 아랫줄 레벨 + 등락률**(2026-10-27 신설). 등락률은 `indicator_chg[name].pct`를 **전부 %로 통일**해 소수 둘째 자리(+0.13% / −0.32%), up/down 색. 기준은 **전 세션 종가 대비**이고 레벨·등락률·기준가를 **CNBC 한 소스**로 받는다 — 야후 일봉은 24시간·FX 자산에서 봉이 비어 경계가 흔들린다(실측: 원/달러 10/23 봉 없음·BTC 10/26 봉 없음). verify #2b가 레벨과 등락률을 모두 대조한다.
   - **섹터 강세/약세 — 모델이 고르지 않는다(2026-10-23 변경)**: `out/movers.json`의 `sectors.strong`/`sectors.weak`를 **그 순서대로** 쓴다. 색 태그(강세=초록 t-strong, 약세=빨강 t-weak) + 이유는 회색 노트(sector-note).
     - **집계 방식**: 업종별 **중위 등락률**과 **지수(S&P 500) 대비 초과**를 movers.py가 계산한다. 후보 = 종목 5개 이상 · **방향일치 60% 이상** · **|지수 대비 초과| 1.5%p 이상** → 강세 = 초과 상위 3 / 약세 = 하위 3. **단 강세는 중위 등락률이 플러스인 업종만, 약세는 마이너스인 업종만**(2026-11-23 변경) — 지수보다 덜 빠졌어도 하락한 업종은 강세에, 지수보다 덜 올랐어도 상승한 업종은 약세에 넣지 않는다(실측: 11/06 유틸리티 −0.2% 등 3개, 11/20 보험 −0.42%, 11/21 제약·헬스케어 −0.32%가 강세 칸에 / 11/10 에너지·유틸리티 +0.5%·보험 +0.6%가 약세 칸에 실렸다). 조건을 채우는 업종이 없으면 "뚜렷한 업종 없음". (급락일에 +1%대로 버틴 역행 업종이 상단에 올라오게 하려고 '절대 등락률'이 아니라 '지수 대비 초과'를 쓴다. 중위만 보면 소수 종목이 끌어올린 업종이 올라오므로 방향일치를 함께 본다.)
@@ -439,12 +439,10 @@ cd $TMP/r && git add -A && git commit -m restore && git push
 :root{
   --bg:#f6f6f4; --card:#ffffff; --text:#1a1a19; --sub:#63625d; --muted:#9a9992;
   --border:#e6e5e1; --up:#0a7d33; --down:#d21c1c; --accent:#2f6fd0;
-  --kr-up:#d21c1c; --kr-down:#1f5fd1; /* 국내 지수(야간선물) 전용: 상승 빨강·하락 파랑 */
 }
 @media (prefers-color-scheme: dark){
   :root{ --bg:#181817; --card:#242422; --text:#f0efec; --sub:#a7a6a0; --muted:#77766f;
-    --border:#38372f; --up:#3fb950; --down:#f5564a; --accent:#5a9bf0;
-    --kr-up:#f5564a; --kr-down:#5a9bf0; }
+    --border:#38372f; --up:#3fb950; --down:#f5564a; --accent:#5a9bf0; }
 }
 *{box-sizing:border-box;}
 body{margin:0;background:var(--bg);color:var(--text);
@@ -501,7 +499,6 @@ a{color:inherit;text-decoration:none;}
 .nf-r{display:flex;align-items:baseline;gap:8px;white-space:nowrap;}
 .nf-val{font-size:17px;font-weight:600;}
 .nf-chg{font-size:12px;font-weight:600;}
-.kr-up{color:var(--kr-up);} .kr-down{color:var(--kr-down);}
 .lbl{font-size:11px;color:var(--muted);margin-bottom:5px;}
 .chips{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;}
 .chip{font-size:11px;text-align:center;background:var(--bg);border:0.5px solid var(--border);padding:4px 4px 5px;border-radius:12px;line-height:1.3;}
@@ -618,11 +615,11 @@ a{color:inherit;text-decoration:none;}
     </div>
     <!-- 코스피200 야간선물(KIS 최근월물 · 야간장 종가 · 직전 주간장 종가 대비 등락률).
          ★ 값 = out/market.json 의 night_futures 그대로: nf-val = val(소수 2자리), nf-chg = pct(소수 2자리).
-         표시 = [이름 · 값 · 등락률]만. 색은 국내식: pct>0 → class="nf-chg kr-up" "▲ +1.33%" /
-         pct<0 → class="nf-chg kr-down" "▼ −1.33%"(유니코드 마이너스) / pct=0 → class="nf-chg" "0.00%".
+         표시 = [이름 · 값 · 등락률]만. 색은 미국 지수와 같다: pct>0 → class="nf-chg up" "▲ +1.33%" /
+         pct<0 → class="nf-chg down" "▼ −1.33%"(유니코드 마이너스) / pct=0 → class="nf-chg" "0.00%".
          ★ 웹 검색·기사 수치·추정으로 채우지 말 것. night_futures가 없는 날(조회 실패·검증 탈락 — market.json notes에
            사유가 남는다)은 이 줄(div.nf) 전체를 삭제한다("미확인" 표기 금지). verify #19가 값·부호·색·유무를 대조한다. -->
-    <div class="nf"><span class="nf-name">코스피200 야간선물</span><span class="nf-r"><span class="nf-val">000.00</span><span class="nf-chg kr-down">▼ −0.00%</span></span></div>
+    <div class="nf"><span class="nf-name">코스피200 야간선물</span><span class="nf-r"><span class="nf-val">000.00</span><span class="nf-chg down">▼ −0.00%</span></span></div>
 
     <div class="divide"></div>
     <div class="lbl">시장 지표</div>
@@ -2569,7 +2566,7 @@ for part_name, part in (("급등", seg(L_UP, L_DN)),
                           "(임의 분류 금지, 맵 보강은 movers.py SECTOR_GROUPS)")
 
 # 19) 코스피200 야간선물 줄(div.nf) ↔ market.json night_futures (2026-11-23 신설)
-#     값이 있으면 줄이 반드시 있고 값·등락률이 원본 그대로여야 하며, 색·화살표는 국내식(상승 kr-up ▲ / 하락 kr-down ▼).
+#     값이 있으면 줄이 반드시 있고 값·등락률이 원본 그대로여야 하며, 색·화살표는 브리핑 공통(상승 up 초록 ▲ / 하락 down 빨강 ▼, 2026-11-27 국내식에서 변경).
 #     값이 없으면(조회 실패·검증 탈락) 줄이 있으면 안 된다 — 웹 검색·기사 수치로 채우는 날조를 막는다.
 _nf = mk.get("night_futures")
 _nfm = re.search(r'<div class="nf">(.*?)</div>', html, re.S)
@@ -2593,11 +2590,11 @@ elif _nf:
             _hp = num(_pm.group(1)) if _pm else None
             if _hp is None or abs(_hp - _nf["pct"]) > 0.005:
                 issues.append("[야간선물] 등락률 HTML '%s' ≠ 원본 %+.2f%%" % (_txt.strip(), _nf["pct"]))
-            _cls = _c.group(1)
-            _want = ("kr-up", "▲") if _nf["pct"] > 0 else (("kr-down", "▼") if _nf["pct"] < 0 else (None, None))
-            if _want[0] and (_want[0] not in _cls or _want[1] not in _txt):
-                issues.append("[야간선물] 색·화살표 불일치 — %+.2f%%면 class %s + %s (국내식)" % (_nf["pct"], _want[0], _want[1]))
-            if not _want[0] and ("kr-" in _cls or "▲" in _txt or "▼" in _txt):
+            _cls = _c.group(1).split()
+            _want = ("up", "▲") if _nf["pct"] > 0 else (("down", "▼") if _nf["pct"] < 0 else (None, None))
+            if _want[0] and (_want[0] not in _cls or _want[1] not in _txt or any(k.startswith("kr-") for k in _cls)):
+                issues.append("[야간선물] 색·화살표 불일치 — %+.2f%%면 class %s + %s (상승 초록·하락 빨강)" % (_nf["pct"], _want[0], _want[1]))
+            if not _want[0] and (set(_cls) & {"up", "down", "kr-up", "kr-down"} or "▲" in _txt or "▼" in _txt):
                 issues.append("[야간선물] 보합(0.00%)인데 색·화살표가 있음 — 무색, 화살표 없이")
         except Exception:
             issues.append("[야간선물] 수치 해석 실패: '%s'" % re.sub(r'<[^>]+>', ' ', _b).strip())
