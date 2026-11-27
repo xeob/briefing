@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>경제 브리핑</title>
+<style>
+:root{
+  --bg:#f6f6f4; --card:#ffffff; --text:#1a1a19; --sub:#63625d; --muted:#9a9992;
+  --border:#e6e5e1; --up:#0a7d33; --down:#d21c1c; --accent:#2f6fd0;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#181817; --card:#242422; --text:#f0efec; --sub:#a7a6a0; --muted:#77766f;
+    --border:#38372f; --up:#3fb950; --down:#f5564a; --accent:#5a9bf0; }
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+  word-break:keep-all;-webkit-text-size-adjust:100%;}
+.wrap{max-width:520px;margin:0 auto;padding:20px 16px 24px;}
+a{color:inherit;text-decoration:none;}
+
+.head{padding-bottom:14px;border-bottom:1px solid var(--border);margin-bottom:18px;}
+.head-row{display:flex;justify-content:space-between;align-items:baseline;}
+.head-title{font-size:20px;font-weight:600;}
+.head-date{font-size:13px;color:var(--muted);}
+.head-sub{margin:6px 0 0;font-size:12px;color:var(--muted);}
+
+.card{background:var(--card);border:0.5px solid var(--border);border-radius:12px;padding:13px 15px;margin-bottom:12px;}
+.sec{display:flex;align-items:center;gap:7px;margin-bottom:11px;}
+.sec-title{font-size:13px;font-weight:600;color:var(--sub);}
+.sec-note{font-size:11px;color:var(--muted);}
+
+/* 뉴스 */
+.field{margin-bottom:11px;}
+.tag{display:inline-block;font-size:11px;padding:1px 8px;border-radius:20px;}
+.t-pol{color:#d21c1c;background:rgba(210,28,28,.12);}
+.t-eco{color:#0a7d33;background:rgba(10,125,51,.13);}
+.t-wor{color:#2f6fd0;background:rgba(47,111,208,.13);}
+.t-it{color:#7a4fd0;background:rgba(122,79,208,.14);}
+.t-ind{color:#c1660f;background:rgba(193,102,15,.13);}
+.s-ind{color:#2f6fd0;background:rgba(47,111,208,.13);}
+.s-fed{color:#7a4fd0;background:rgba(122,79,208,.14);}
+.s-earn{color:#c1660f;background:rgba(193,102,15,.13);}
+.s-ipo{color:#0a7d33;background:rgba(10,125,51,.13);}
+.s-etc{color:var(--muted);background:var(--bg);}
+.heads{margin-top:5px;font-size:13.5px;line-height:1.85;}
+
+/* 키워드 (설명은 키워드 아래 줄바꿈) */
+.kw{display:flex;gap:10px;align-items:baseline;margin-bottom:9px;}
+.kw-n{font-size:13px;font-weight:600;color:var(--sub);width:13px;flex-shrink:0;}
+.kw-t{font-size:14px;font-weight:600;}
+.kw-d{font-size:12px;color:var(--muted);margin-top:2px;line-height:1.5;}
+
+/* 미국시장 */
+.sum{margin:0 0 6px;font-size:13.5px;font-weight:600;line-height:1.5;text-align:justify;text-justify:inter-ideograph;}
+.cmt{margin:0;font-size:12.5px;color:var(--sub);line-height:1.55;text-align:justify;text-justify:inter-ideograph;}
+.divide{border-top:0.5px solid var(--border);margin:11px 0;}
+.idx-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.idx{background:var(--bg);border:0.5px solid var(--border);border-radius:10px;padding:10px 12px;}
+.idx-name{font-size:12px;color:var(--sub);margin-bottom:3px;}
+.idx-val{font-size:17px;font-weight:600;}
+.idx-chg{font-size:12px;font-weight:600;margin-top:3px;white-space:nowrap;}
+.up{color:var(--up);} .down{color:var(--down);}
+/* 코스피200 야간선물 — 지수 2×2 아래 한 줄(2026-11-23 사용자 확정 디자인) */
+.nf{display:flex;align-items:baseline;justify-content:center;gap:44px;margin-top:10px;background:var(--bg);border:0.5px solid var(--border);border-radius:10px;padding:10px 12px;}
+.nf-name{font-size:12px;color:var(--sub);}
+.nf-r{display:flex;align-items:baseline;gap:8px;white-space:nowrap;}
+.nf-val{font-size:17px;font-weight:600;}
+.nf-chg{font-size:12px;font-weight:600;}
+.lbl{font-size:11px;color:var(--muted);margin-bottom:5px;}
+.chips{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;}
+.chip{font-size:11px;text-align:center;background:var(--bg);border:0.5px solid var(--border);padding:4px 4px 5px;border-radius:12px;line-height:1.3;}
+.chip .cn{display:block;font-size:10px;color:var(--muted);}
+.chip .cv{display:block;white-space:nowrap;font-weight:600;}
+.chip .cd{font-weight:400;font-size:10.5px;}
+.t-strong{color:#0a7d33;background:rgba(10,125,51,.13);}
+.t-weak{color:#d21c1c;background:rgba(210,28,28,.12);}
+.sector-names{margin-top:5px;font-size:13.5px;line-height:1.6;}
+.sector-note{font-size:12px;color:var(--muted);margin-top:2px;line-height:1.5;}
+.mv{margin-bottom:9px;}
+.mv-h{display:flex;align-items:baseline;gap:8px;}
+.mv-n{font-size:14px;font-weight:600;}
+.mv-p{font-size:13px;font-weight:600;}
+.ah-p{font-size:12.5px;font-weight:600;}
+.mv-t{font-size:11px;color:var(--muted);white-space:nowrap;}
+.mv-r{font-size:12px;color:var(--sub);line-height:1.5;}
+.sched{font-size:12.5px;color:var(--sub);line-height:1.75;}
+.tbl{width:100%;border-collapse:collapse;font-size:12.5px;}
+.tbl th{text-align:left;font-size:11px;color:var(--muted);font-weight:600;padding:2px 8px 6px 0;border-bottom:0.5px solid var(--border);}
+.tbl td{padding:7px 8px 7px 0;border-bottom:0.5px solid var(--border);}
+.tbl tr:last-child td{border-bottom:none;}
+.tbl .num{font-weight:600;}
+.foot{text-align:center;font-size:11px;color:var(--muted);margin-top:14px;}
+@media (max-width:430px){
+  .wrap{padding:16px 12px 20px;}
+  .heads{font-size:13px;}
+  .idx-val{font-size:15px;}
+  .idx-chg{font-size:10.5px;}
+  .nf{gap:32px;} .nf-val{font-size:15px;} .nf-chg{font-size:10.5px;}
+  .tbl{font-size:11px;}
+  .tbl td{padding:6px 6px 6px 0;}
+  .mv-r{font-size:11.5px;}
+  .cmt{font-size:12px;}
+  .sum{font-size:13px;}
+  .sched{font-size:12px;}
+  .kw-d{font-size:11.5px;}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="head">
+    <div class="head-row">
+      <span class="head-title">경제 브리핑</span>
+      <span class="head-date">2026.11.28 (토)</span>
+    </div>
+    <p class="head-sub">전일 15:20 ~ 당일 06:30 자료를 바탕으로 제작되었습니다.</p>
+  </div>
+
+  <div class="card">
+    <div class="sec"><span class="sec-title">주요 뉴스</span></div>
+    <div class="field"><span class="tag t-pol">정치</span>
+      <div class="heads">
+        · <a href="https://www.yna.co.kr/view/AKR20261127170400001">李대통령 "자본시장대전환위원장에 전권…직접 보고"</a><br>
+        · <a href="https://www.yna.co.kr/view/AKR20261127148351001">與, 최민희 '당원권 2년 정지' 중징계…崔 "재심 신청"</a><br>
+        · <a href="https://www.yna.co.kr/view/AKR20261127134751001">예산시한 D-5 예산소위 종료…미래기금 사업 모두 '보류'</a><br>
+        · <a href="https://www.yna.co.kr/view/AKR20261127156751004">선관위특검, 노태악 추가 압수수색…증거인멸 정황</a>
+      </div>
+    </div>
+    <div class="field"><span class="tag t-eco">경제</span>
+      <div class="heads">
+        · <a href="https://www.yna.co.kr/view/AKR20261127120451008">코스피 4.3%↑ 4,900선 회복…코스닥 8%대 급등</a><br>
+        · <a href="https://www.yna.co.kr/view/AKR20261127127600002">원/달러, 증시 반등·월말 네고에 1,337.9원 하락</a><br>
+        · <a href="https://www.yna.co.kr/view/AKR20261127153400530">국민연금 적립금 석달만에 202조원↓…3분기 수익률 13%</a><br>
+        · <a href="https://www.yna.co.kr/view/AKR20261127162500002">국내 송금업체 해킹으로 25억원 피해…금감원 점검</a><br>
+        · <a href="https://www.yna.co.kr/view/AKR20261127166200003">주유소 기름값 28주째 하락…서울 1천800원대</a>
+      </div>
+    </div>
+    <div class="field"><span class="tag t-wor">세계</span>
+      <div class="heads">
+        · <a href="https://www.yna.co.kr/view/AKR20261128004851072">뉴욕증시, AI·기술주 반등에 일제 상승…나스닥 2.3%↑</a><br>
+        · <a href="https://www.yna.co.kr/view/AKR20261128006900087">룰라, 은행가 재무장관 카드에 브라질 증시 급등</a><br>
+        · <a href="https://www.yna.co.kr/view/AKR20261128003300079">이란 혁명수비대, 美 해상봉쇄 돌파 결의</a><br>
+        · <a href="https://www.yna.co.kr/view/AKR20261128007900072">국제유가, 중동 공급차질 우려에도 하락…브렌트 1.2%↓</a><br>
+        · <a href="https://www.yna.co.kr/view/AKR20261128002351082">독일 내년 국방비 사상 최대 160조원 확정</a>
+      </div>
+    </div>
+    <div class="field"><span class="tag t-it">IT</span>
+      <div class="heads">
+        · <a href="https://www.yna.co.kr/view/AKR20261128007300091">오픈AI, 애플 상대 기밀탈취 반소 제기</a><br>
+        · <a href="https://www.yna.co.kr/view/AKR20261128002400072">'젠슨황 불륜 상대' 연계 中시설서 엔비디아 최첨단 칩 발견</a><br>
+        · <a href="https://www.yna.co.kr/view/AKR20261128000900017">인터넷우체국 해킹…개인정보 11만3천명 유출</a><br>
+        · <a href="https://www.yna.co.kr/view/AKR20261127169800371">'AI 시대' 미래준비 1위 샌프란시스코…서울 8위</a><br>
+        · <a href="https://www.yna.co.kr/view/AKR20261127156300004">김범수 'SM 시세조종' 무죄 확정…공소청 상고 포기</a>
+      </div>
+    </div>
+    <div class="field" style="margin-bottom:0;"><span class="tag t-ind">산업</span>
+      <div class="heads">
+        · <a href="https://www.yna.co.kr/view/AKR20261127165200003">SK하이닉스, 자사주 일일 매수 주문량 2배로 확대</a><br>
+        · <a href="https://www.yna.co.kr/view/AKR20261127157151003">[르포] 4억원대 전기차까지…중국차 고가·저가 양극화</a><br>
+        · <a href="https://www.yna.co.kr/view/AKR20261127145100030">무신사, 3분기 누적 수출액 작년比 4.9배…역대 최대</a><br>
+        · <a href="https://www.yna.co.kr/view/AKR20261127139500030">한화갤러리아, 종로 보령빌딩 인수 추진…250억 확약</a><br>
+        · <a href="https://www.yna.co.kr/view/AKR20261127152300030">나주 육용오리 농장 고병원성 AI 확진…이달 11번째</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="sec"><span class="sec-title">핫한 키워드 Top 3</span></div>
+    <div class="kw"><span class="kw-n">1</span><div><div class="kw-t">코스닥 8% 급등</div><div class="kw-d">반도체·AI주 반등에 매수 사이드카 발동, 700선 탈환. 코스피도 4.3% 올라 4,900선 회복</div></div></div>
+    <div class="kw"><span class="kw-n">2</span><div><div class="kw-t">젠슨 황 복귀</div><div class="kw-d">11/23 엔비디아 CEO 복귀 뒤 AI주 변동성 확대. 불륜 상대 연계 중국 시설서 최첨단 칩 발견 보도까지</div></div></div>
+    <div class="kw" style="margin-bottom:0;"><span class="kw-n">3</span><div><div class="kw-t">로봇주</div><div class="kw-d">"2040년 로봇 수요 800만대" 전망에 국내 로봇주 급등, 일부 상한가</div></div></div>
+  </div>
+
+  <div class="card">
+    <div class="sec"><span class="sec-title">미국 시장</span><span class="sec-note">전일 마감 · 11/26 추수감사절 휴장, 11/27 13:00 ET 조기 폐장</span></div>
+    <p class="sum">AI 투자 우려가 가라앉으며 3대 지수 일제 상승 — 나스닥 2.31%, 필라델피아 반도체 4.69% 급등.</p>
+    <p class="cmt">추수감사절(11/26) 휴장 뒤 열린 11/27 장은 오후 1시(ET) 조기 폐장했다. 거래량이 크게 줄어든 가운데 매도 압력이 소진돼 소폭의 매수만으로도 지수가 크게 올랐다 — UBS 제리 파울러는 "매도세가 소진되고 있다는 신호가 매우 많다"고 평가했다. 주간으로 다우와 S&amp;P 500은 5% 넘게 올라 각각 2022년 10월, 지난해 4월 이후 최대 상승률을, 나스닥은 6% 넘게 올라 지난 4월 이후 최대 상승률을 기록했다. VIX는 11.16% 내린 23.81.<br><br>주도주는 반도체였다. 베이징이 시장 지원을 시사하며 중국 CSI반도체 지수가 17.6% 사상 최대 급등한 것이 글로벌 메모리·칩 매수를 자극해, 필라델피아 반도체지수는 4.69% 올라 전주(16~20일) −17.1% 낙폭의 45%를 되찾았다. 샌디스크 +16.0%(85.4달러), 마이크론 +7.60%, SK하이닉스 ADR +7.52%, 웨스턴디지털 +7.2%. 다만 엔비디아는 동남아 수출 중단 보도에 0.88% 상승에 그쳤고, 앤트로픽은 11% 급등해 공모가(83달러)를 다시 넘어섰다. 11/25 AI 매도로 눌렸던 광통신·네트워크와 AI 인프라도 함께 반등했다.<br><br>지표 방향과 시장 반응은 엇갈렸다. 11/25 발표된 10월 PCE는 근원이 전년비 3.3%(예상 3.2%)로 예상을 웃돌아, 선물시장의 12/9 FOMC 25bp 인상 확률이 96.2%까지 올랐다 — 평상시라면 금리 인상 기대는 기술주에 악재지만, 이날은 휴장 직후의 얇은 거래와 매도 소진이 더 크게 작용해 위험자산이 반등했다. 대신 안전자산인 국채가 팔려 10년물 금리는 7bp 오른 4.93%가 됐고, 위험 선호가 돌아오자 필수소비재 같은 방어 업종만 제자리에 머물렀다. 금은 11/25 고물가 지표에 15개월 최저(3,426달러)까지 밀렸다가 달러 상승세가 멈추며 2%대 반등해, 금·은 광산주가 동반 급등했다.<br><br>반등에도 메모리 이익 지속성 논쟁은 남았다. 트렌드포스는 27일 보고서에서 범용 D램 계약가 상승 폭이 내년까지 좁아져 2028년 하락할 수 있다고 봤고, 골드만삭스는 2028년 D램·낸드 가격 20% 안팎 하락, 모건스탠리는 '이익 절벽'을 경고하며 한국 메모리 기업 목표주가를 낮췄다. 유가는 이란의 호르무즈 선박 공격과 후티의 사우디 아람코 자잔 정유시설 피격에도 하락했다(WTI 83.08달러, −0.72%) — 29일 OPEC+가 내년 1분기 산유량을 현 수준으로 유지할 전망이라는 로이터 보도가 공급 우려를 눌렀다. 브라질은 룰라 대통령이 재무장관에 브라데스쿠 이사회 의장 트라부쿠를 낙점해 헤알과 증시가 급반등, 미국에 상장된 브라질 은행 ADR이 일제히 뛰었다.</p>
+
+    <div class="divide"></div>
+    <div class="idx-grid">
+      <div class="idx"><div class="idx-name">다우</div><div class="idx-val">50,774.94</div><div class="idx-chg up">▲ +591.99 (+1.18%)</div></div>
+      <div class="idx"><div class="idx-name">나스닥</div><div class="idx-val">24,129.50</div><div class="idx-chg up">▲ +543.70 (+2.31%)</div></div>
+      <div class="idx"><div class="idx-name">S&amp;P 500</div><div class="idx-val">7,297.49</div><div class="idx-chg up">▲ +114.71 (+1.60%)</div></div>
+      <div class="idx"><div class="idx-name">필라델피아 반도체</div><div class="idx-val">9,186.71</div><div class="idx-chg up">▲ +411.85 (+4.69%)</div></div>
+    </div>
+    <div class="nf"><span class="nf-name">코스피200 야간선물</span><span class="nf-r"><span class="nf-val">760.05</span><span class="nf-chg up">▲ +0.38%</span></span></div>
+
+    <div class="divide"></div>
+    <div class="lbl">시장 지표</div>
+    <div class="chips">
+      <span class="chip"><span class="cn">美10년물</span><span class="cv">4.936% <span class="cd up">+1.82%</span></span></span><span class="chip"><span class="cn">달러인덱스</span><span class="cv">104.04 <span class="cd up">+0.36%</span></span></span><span class="chip"><span class="cn">원/달러</span><span class="cv">1,333.1 <span class="cd down">−0.74%</span></span></span>
+      <span class="chip"><span class="cn">WTI</span><span class="cv">$83.08 <span class="cd down">−0.72%</span></span></span><span class="chip"><span class="cn">BTC</span><span class="cv">$59,802 <span class="cd down">−1.15%</span></span></span><span class="chip"><span class="cn">금</span><span class="cv">$3,668.5 <span class="cd up">+3.75%</span></span></span>
+    </div>
+
+    <div class="divide"></div>
+    <div class="lbl">섹터</div>
+    <div class="field"><span class="tag t-strong">강세</span>
+      <div class="sector-names">반도체·메모리&nbsp;<span class="up">+5.89%</span> · 금속·광업&nbsp;<span class="up">+4.95%</span> · 광통신·네트워크&nbsp;<span class="up">+4.81%</span></div>
+      <div class="sector-note">중국 칩주 사상 최대 급등 · 금값 15개월 최저서 반등</div>
+    </div>
+    <div class="field" style="margin-bottom:0;"><span class="tag t-weak">약세</span>
+      <div class="sector-names">필수소비재&nbsp;<span class="down">−0.06%</span></div>
+      <div class="sector-note">위험 선호 복귀로 방어 업종에서 자금 이탈</div>
+    </div>
+
+    <div class="divide"></div>
+    <div class="lbl">특징주 · 급등</div>
+    <div class="mv"><div class="mv-h"><span class="mv-n">방코브라데스쿠 (BBDO)</span><span class="mv-t">은행</span><span class="mv-p up">+17.65%</span></div><div class="mv-r">룰라 대통령, 재무장관에 브라데스쿠 이사회 의장 트라부쿠 낙점<br>헤알 장중 3.3% 강세 · 보베스파 전날 6.1%↑ — 美 휴장분까지 반영</div></div>
+    <div class="mv"><div class="mv-h"><span class="mv-n">앤트로픽 (ANT)</span><span class="mv-p up">+10.98%</span></div><div class="mv-r">상장 첫 주 거래 마감 · 공모가 83달러 재돌파(종가 91.9달러)<br>AI 투자 수익성 우려 완화 — 데뷔일 고점 115.10달러 대비 −23%</div></div>
+    <div class="mv"><div class="mv-h"><span class="mv-n">키네틱홀딩스 (KNTK)</span><span class="mv-p up">+9.25%</span></div><div class="mv-r">블룸버그: 타가리소스와 피인수 협상 중 — 내주 발표 가능성<br>울프리서치, 투자의견 Outperform으로 상향</div></div>
+    <div class="mv"><div class="mv-h"><span class="mv-n">로켓랩 (RKLB)</span><span class="mv-t">방산</span><span class="mv-p up">+8.21%</span></div><div class="mv-r">101번째 일렉트론 발사 성공 — 신스펙티브 StriX 레이더 위성 배치<br>3분기 수주잔고 35.7억달러 · CFO "일렉트론 수요 매우 강할 것"</div></div>
+    <div class="mv"><div class="mv-h"><span class="mv-n">마이크론 (MU)</span><span class="mv-t">반도체</span><span class="mv-p up">+7.60%</span></div><div class="mv-r">메모리 급반등 — 주간 +8.8%로 전주 −23.6% 낙폭 상당 부분 회복<br>트렌드포스 "D램 계약가 상승 폭 축소·2028년 하락" 전망은 부담</div></div>
+    <div class="mv"><div class="mv-h"><span class="mv-n">SK하이닉스 ADR (SKHY)</span><span class="mv-t">반도체</span><span class="mv-p up">+7.52%</span></div><div class="mv-r">20시 +6.98% → 미장 종가 +7.52% · 한국장 마감 후 +0.50%<br>낸드·D램 동반 반등(주간 +15.4%) · 본사, 자사주 일일 매수 주문량 2배 확대</div></div>
+    <div class="mv"><div class="mv-h"><span class="mv-n">델테크놀로지스 (DELL)</span><span class="mv-t">서버·클라우드</span><span class="mv-p up">+6.70%</span></div><div class="mv-r">젠슨 황 엔비디아 CEO 복귀(11/23) 후 AI 인프라 투자 지속 전망<br>네오클라우드 코어위브·아이렌·네비우스 동반 상승</div></div>
+    <div class="mv"><div class="mv-h"><span class="mv-n">아리스타네트웍스 (ANET)</span><span class="mv-t">광통신</span><span class="mv-p up">+6.55%</span></div><div class="mv-r">11/25 AI 매도로 눌린 광통신·네트워크 장비 동반 강세<br>젠슨 황 복귀로 AI 데이터센터 투자 지속 전망 — 코히런트 +14.1%·루멘텀 +8.0%</div></div>
+    <div class="mv"><div class="mv-h"><span class="mv-n">인텔 (INTC)</span><span class="mv-t">반도체</span><span class="mv-p up">+5.38%</span></div><div class="mv-r">베이징 시장 지원 시사에 중국 CSI반도체 17.6% 사상 최대 급등<br>글로벌 칩주 매수 확산 — 25일 번스타인 투자의견 하향(매수→보유) 이후</div></div>
+    <div class="mv"><div class="mv-h"><span class="mv-n">팔란티어 (PLTR)</span><span class="mv-t">소프트웨어</span><span class="mv-p up">+5.24%</span></div><div class="mv-r">폴란드 국방부, 메이븐 스마트 시스템 5년 3억달러(12억즈워티) 계약 체결 — 코드명 '사투른'<br>5거래일 연속 상승 · 약 4개월 만의 최대 주간 상승률</div></div>
+    <div class="mv"><div class="mv-h"><span class="mv-n">테슬라 (TSLA)</span><span class="mv-t">자동차</span><span class="mv-p up">+5.22%</span></div><div class="mv-r">AI 투자 우려 완화로 나스닥 2.31% 상승 — 기술주 동반 강세<br>연휴 직후 거래량 급감 속 매도 소진(UBS)</div></div>
+    <div class="mv"><div class="mv-h"><span class="mv-n">스페이스X (SPCX)</span><span class="mv-t">방산</span><span class="mv-p up">+4.83%</span></div><div class="mv-r">FCC, 우주 데이터센터 위성 100만기 배치 권한 승인<br>머스크 연례 자녀 주식 증여 공시 — IPO가 135달러 회복 시도</div></div>
+    <div class="mv"><div class="mv-h"><span class="mv-n">에이엠디 (AMD)</span><span class="mv-t">반도체</span><span class="mv-p up">+4.56%</span></div><div class="mv-r">에르스테그룹, 투자의견 매수→보유 하향 — 밸류에이션·AI 불확실성<br>하향에도 중국 칩주 급등발 반도체 매수에 동조 상승</div></div>
+    <div class="mv"><div class="mv-h"><span class="mv-n">아마존 (AMZN)</span><span class="mv-t">플랫폼</span><span class="mv-p up">+3.96%</span></div><div class="mv-r">블랙프라이데이 쇼핑 시즌 개막<br>AI·기술주 전반 매수 복귀에 동조 — 나스닥 2.31% 상승</div></div>
+    <div class="mv"><div class="mv-h"><span class="mv-n">메타 (META)</span><span class="mv-t">플랫폼</span><span class="mv-p up">+3.13%</span></div><div class="mv-r">AI 자본지출 수익성 우려 완화 — 기술주 광범위 매수 복귀<br>5거래일 연속 하락 뒤 반등</div></div>
+    <div class="mv"><div class="mv-h"><span class="mv-n">그 외 반도체·메모리 동반 상승</span></div><div class="mv-r">샌디스크&nbsp;<span class="up">+16.0%</span> · 애스테라랩스&nbsp;<span class="up">+8.7%</span> · 크레도&nbsp;<span class="up">+8.2%</span> · 시게이트&nbsp;<span class="up">+7.9%</span> · 마벨&nbsp;<span class="up">+7.3%</span> · 웨스턴디지털&nbsp;<span class="up">+7.2%</span> · 사이타임&nbsp;<span class="up">+7.0%</span> · 타워세미컨덕터&nbsp;<span class="up">+6.7%</span> · 퀄컴&nbsp;<span class="up">+6.3%</span> · ASE테크&nbsp;<span class="up">+6.3%</span> · ARM&nbsp;<span class="up">+6.2%</span> · 온세미컨덕터&nbsp;<span class="up">+6.0%</span> · 모놀리식파워&nbsp;<span class="up">+5.9%</span> · 스카이웍스&nbsp;<span class="up">+5.7%</span> · 래티스반도체&nbsp;<span class="up">+5.5%</span> · 세레브라스&nbsp;<span class="up">+5.1%</span> · 마이크로칩&nbsp;<span class="up">+4.7%</span> · 텍사스인스트루먼트&nbsp;<span class="up">+4.3%</span> · NXP반도체&nbsp;<span class="up">+4.2%</span> · 글로벌파운드리&nbsp;<span class="up">+4.2%</span> · 브로드컴&nbsp;<span class="up">+3.8%</span> · TSMC&nbsp;<span class="up">+3.2%</span><br>중국 CSI반도체 17.6% 사상 최대 급등에 메모리·칩 동반 매수</div></div>
+    <div class="mv"><div class="mv-h"><span class="mv-n">그 외 광통신·네트워크 동반 상승</span></div><div class="mv-r">코히런트&nbsp;<span class="up">+14.1%</span> · 루멘텀&nbsp;<span class="up">+8.0%</span> · 패브리넷&nbsp;<span class="up">+6.2%</span> · 시에나&nbsp;<span class="up">+5.7%</span> · 코닝&nbsp;<span class="up">+4.8%</span> · 맥옴&nbsp;<span class="up">+4.8%</span> · 키사이트&nbsp;<span class="up">+4.1%</span> · 시스코&nbsp;<span class="up">+3.0%</span><br>엔비디아 CEO 복귀로 AI 데이터센터 투자 지속 전망 — 11/25 급락분 회복</div></div>
+    <div class="mv"><div class="mv-h"><span class="mv-n">그 외 금속·광업 동반 상승</span></div><div class="mv-r">코어마이닝&nbsp;<span class="up">+8.6%</span> · 에퀴녹스골드&nbsp;<span class="up">+8.5%</span> · 애그니코이글&nbsp;<span class="up">+7.5%</span> · 팬아메리칸실버&nbsp;<span class="up">+7.4%</span> · 킨로스골드&nbsp;<span class="up">+6.9%</span> · 휘튼프레셔스메탈스&nbsp;<span class="up">+6.9%</span> · 프랑코네바다&nbsp;<span class="up">+6.0%</span> · 알라모스골드&nbsp;<span class="up">+6.0%</span> · 뉴몬트&nbsp;<span class="up">+5.3%</span> · 앵글로골드아샨티&nbsp;<span class="up">+5.2%</span> · 로열골드&nbsp;<span class="up">+5.0%</span> · 발레&nbsp;<span class="up">+4.7%</span> · 테크리소스&nbsp;<span class="up">+4.7%</span> · 프리포트맥모란&nbsp;<span class="up">+4.6%</span> · 서던코퍼&nbsp;<span class="up">+4.3%</span> · BHP그룹&nbsp;<span class="up">+4.1%</span><br>금 현물, 11/25 고물가 지표로 15개월 최저 뒤 달러 상승세 멈추며 2%대 반등</div></div>
+    <div class="mv"><div class="mv-h"><span class="mv-n">그 외 은행 동반 상승</span></div><div class="mv-r">브라데스쿠 우선주ADR&nbsp;<span class="up">+15.2%</span> · 이타우우니방쿠&nbsp;<span class="up">+11.3%</span> · 산탄데르브라질&nbsp;<span class="up">+6.0%</span> · 산탄데르&nbsp;<span class="up">+5.1%</span> · 누홀딩스&nbsp;<span class="up">+4.5%</span><br>트라부쿠 재무장관 내정에 재정 건전성 기대 — 장기 스와프 금리 0.6%p 이상 하락</div></div>
+
+    <div class="divide"></div>
+    <div class="lbl">특징주 · 급락</div>
+    <div class="mv"><div class="mv-h"><span class="mv-n">버텍스파마슈티컬 (VRTX)</span><span class="mv-t">바이오</span><span class="mv-p down">−5.24%</span></div><div class="mv-r">FDA, IgA신증 신약 포베타시셉트 심사 기한 연장 — '중대한 보정' 분류<br>PDUFA 11/30 → 2027년 2월 28일 이내로 (JP모건 비중확대·목표가 570달러 유지)</div></div>
+
+    <div class="divide"></div>
+    <div class="lbl">발표된 지표</div>
+    <div class="sched">· 당일 발표된 주요 지표 없음</div>
+
+    <div class="divide"></div>
+    <div class="lbl">미국장 주요 일정 (한국시간)</div>
+    <table class="tbl" style="margin-bottom:8px;">
+      <tr><th>구분</th><th>내용</th><th>일시</th></tr>
+      <tr><td><span class="tag s-etc">기타</span></td><td>OPEC+ 정례회의 — 1분기 산유량 결정</td><td>11/29 (일)</td></tr>
+      <tr><td><span class="tag s-earn">실적</span></td><td>BHP그룹 (BHP)</td><td>12/1 (화)</td></tr>
+      <tr><td><span class="tag s-earn">실적</span></td><td>마벨 (MRVL) — 반도체</td><td>12/1 (화)</td></tr>
+      <tr><td><span class="tag s-ind">지표</span></td><td>ISM 제조업 PMI (11월)</td><td>12/2 (수) 00:00</td></tr>
+      <tr><td><span class="tag s-fed">연준</span></td><td>연준 보먼 발언</td><td>12/2 (수) 00:00</td></tr>
+      <tr><td><span class="tag s-earn">실적</span></td><td>세일즈포스 (CRM)</td><td>12/2 (수)</td></tr>
+      <tr><td><span class="tag s-earn">실적</span></td><td>몬트리올은행 (BMO)</td><td>12/2 (수)</td></tr>
+      <tr><td><span class="tag s-earn">실적</span></td><td>노바스코샤은행 (BNS)</td><td>12/2 (수)</td></tr>
+      <tr><td><span class="tag s-ind">지표</span></td><td>신규 실업수당청구</td><td>12/3 (목) 22:30</td></tr>
+      <tr><td><span class="tag s-earn">실적</span></td><td>캐나다왕립은행 (RY)</td><td>12/3 (목)</td></tr>
+      <tr><td><span class="tag s-earn">실적</span></td><td>토론토도미니언 (TD)</td><td>12/3 (목)</td></tr>
+      <tr><td><span class="tag s-ind">지표</span></td><td>ISM 서비스업 PMI (11월)</td><td>12/4 (금) 00:00</td></tr>
+      <tr><td><span class="tag s-ind">지표</span></td><td>고용보고서(비농업) (11월)</td><td>12/4 (금) 22:30</td></tr>
+      <tr><td><span class="tag s-ind">지표</span></td><td>실업률 (11월)</td><td>12/4 (금) 22:30</td></tr>
+      <tr><td><span class="tag s-ind">지표</span></td><td>시간당 평균임금 (11월)</td><td>12/4 (금) 22:30</td></tr>
+      <tr><td><span class="tag s-ind">지표</span></td><td>미시간 기대인플레 (12월 예비)</td><td>12/5 (토) 00:00</td></tr>
+      <tr><td><span class="tag s-fed">연준</span></td><td>FOMC 기준금리 결정</td><td>12/10 (목) 04:00</td></tr>
+      <tr><td><span class="tag s-ind">지표</span></td><td>소비자물가지수(CPI) (11월)</td><td>12/10 (목) 22:30</td></tr>
+    </table>
+    <div class="sched">
+      · 11/26 추수감사절 휴장 · 11/27 13:00 ET 조기 폐장 — 미국 지표 발표는 12/1(현지)부터<br>
+      · 10월 PCE(11/25 발표) 이후 12/9 FOMC 25bp 인상 확률 96.2%(선물시장 기준) — 12/10 CPI와 함께 주목<br>
+      · IPO: 당일 예정된 대형 IPO 없음
+    </div>
+  </div>
+
+  <div class="foot">경제 브리핑 · 매일 오전 7시</div>
+</div>
+</body>
+</html>

@@ -1,16 +1,9 @@
 {
- "generated": "2026-11-27",
+ "generated": "2026-11-28",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
  "ff_variants": {
-  "2026-11-06|average hourly earnings": {
-   "0.3": "m/m"
-  },
-  "2026-11-06|consumer credit": {
-   "12.0B": "m/m",
-   "13.4B": "m/m"
-  },
   "2026-11-09|final wholesale inventories": {
    "0.6": "m/m"
   },
@@ -178,6 +171,32 @@
    "keywords": [
     "기대인플레",
     "미시간"
+   ]
+  },
+  {
+   "date": "2026-12-10",
+   "time": "04:00",
+   "title": "FOMC",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "FOMC",
+    "의사록",
+    "연준",
+    "금리"
+   ]
+  },
+  {
+   "date": "2026-12-10",
+   "time": "22:30",
+   "title": "소비자물가지수(CPI)",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "CPI",
+    "소비자물가"
    ]
   }
  ]
