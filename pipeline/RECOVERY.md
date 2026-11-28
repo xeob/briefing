@@ -2848,31 +2848,11 @@ for e in events:
 
 ````json
 {
- "generated": "2026-11-23",
+ "generated": "2026-11-28",
  "offset_used": 1,
  "coverage_days": 13,
  "auto_refreshed": true,
  "ff_variants": {
-  "2026-11-02|construction spending": {
-   "0.3": "m/m",
-   "0.4": "m/m"
-  },
-  "2026-11-03|factory orders": {
-   "1.2": "m/m"
-  },
-  "2026-11-05|prelim nonfarm productivity": {
-   "2.8": "q/q"
-  },
-  "2026-11-05|prelim unit labor costs": {
-   "0.3": "q/q"
-  },
-  "2026-11-06|average hourly earnings": {
-   "0.3": "m/m"
-  },
-  "2026-11-06|consumer credit": {
-   "12.0B": "m/m",
-   "13.4B": "m/m"
-  },
   "2026-11-09|final wholesale inventories": {
    "0.6": "m/m"
   },
@@ -2932,7 +2912,8 @@ for e in events:
    "0.5": "m/m"
   },
   "2026-11-25|durable goods orders": {
-   "0.5": "m/m"
+   "0.5": "m/m",
+   "0.7": "m/m"
   },
   "2026-11-25|personal income": {
    "0.4": "m/m"
@@ -2941,54 +2922,20 @@ for e in events:
    "0.4": "m/m"
   },
   "2026-11-27|prelim wholesale inventories": {
-   "0.7": "m/m"
+   "0.7": "m/m",
+   "0.5": "m/m"
   }
  },
  "events": [
   {
-   "date": "2026-11-24",
-   "time": "06:00",
-   "title": "연준 윌리엄스 발언",
+   "date": "2026-12-02",
+   "time": "00:00",
+   "title": "연준 보먼 발언",
    "impact": "High",
    "cat": "지표",
    "src": "static",
    "keywords": [
-    "윌리엄스"
-   ]
-  },
-  {
-   "date": "2026-11-25",
-   "time": "22:30",
-   "title": "PCE 물가지수",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "PCE"
-   ]
-  },
-  {
-   "date": "2026-11-25",
-   "time": "22:30",
-   "title": "GDP",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "GDP",
-    "성장률"
-   ]
-  },
-  {
-   "date": "2026-11-25",
-   "time": "22:30",
-   "title": "신규 실업수당청구",
-   "impact": "High",
-   "cat": "지표",
-   "src": "static",
-   "keywords": [
-    "실업수당",
-    "신규 실업"
+    "보먼"
    ]
   },
   {
@@ -3001,6 +2948,18 @@ for e in events:
    "keywords": [
     "ISM",
     "제조업"
+   ]
+  },
+  {
+   "date": "2026-12-03",
+   "time": "22:30",
+   "title": "신규 실업수당청구",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "실업수당",
+    "신규 실업"
    ]
   },
   {
@@ -3061,6 +3020,32 @@ for e in events:
    "keywords": [
     "기대인플레",
     "미시간"
+   ]
+  },
+  {
+   "date": "2026-12-10",
+   "time": "04:00",
+   "title": "FOMC",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "FOMC",
+    "의사록",
+    "연준",
+    "금리"
+   ]
+  },
+  {
+   "date": "2026-12-10",
+   "time": "22:30",
+   "title": "소비자물가지수(CPI)",
+   "impact": "High",
+   "cat": "지표",
+   "src": "static",
+   "keywords": [
+    "CPI",
+    "소비자물가"
    ]
   }
  ]
