@@ -1,0 +1,62 @@
+{
+ "generated_kst": "2026-11-28 09:38",
+ "note": "earnings.py가 매 실행 갱신하는 실적 예고 장부 — 손으로 고치지 말 것(publish.sh가 커밋)",
+ "items": [
+  {
+   "date": "2026-12-01",
+   "symbol": "BHP",
+   "name_ko": "BHP Group Limited",
+   "cap_b": 178.5,
+   "tier": "대형주",
+   "eps_forecast": ""
+  },
+  {
+   "date": "2026-12-01",
+   "symbol": "MRVL",
+   "name_ko": "마벨",
+   "cap_b": 114.8,
+   "tier": "반도체",
+   "eps_forecast": "$0.79"
+  },
+  {
+   "date": "2026-12-02",
+   "symbol": "BMO",
+   "name_ko": "몬트리올은행",
+   "cap_b": 111.0,
+   "tier": "대형주",
+   "eps_forecast": "$2.69"
+  },
+  {
+   "date": "2026-12-02",
+   "symbol": "BNS",
+   "name_ko": "노바스코샤은행",
+   "cap_b": 103.5,
+   "tier": "대형주",
+   "eps_forecast": "$1.54"
+  },
+  {
+   "date": "2026-12-02",
+   "symbol": "CRM",
+   "name_ko": "세일즈포스",
+   "cap_b": 162.3,
+   "tier": "대형주",
+   "eps_forecast": "$2.41"
+  },
+  {
+   "date": "2026-12-03",
+   "symbol": "RY",
+   "name_ko": "캐나다왕립은행",
+   "cap_b": 261.1,
+   "tier": "메가캡",
+   "eps_forecast": "$2.94"
+  },
+  {
+   "date": "2026-12-03",
+   "symbol": "TD",
+   "name_ko": "토론토도미니언",
+   "cap_b": 189.8,
+   "tier": "대형주",
+   "eps_forecast": "$1.76"
+  }
+ ]
+}

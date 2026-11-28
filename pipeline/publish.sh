@@ -32,6 +32,8 @@ mkdir -p "$TMP/repo/archive"
 cp "$HTML" "$TMP/repo/archive/${TODAY}.html"
 # events.py가 자동 갱신한 정적 캘린더를 함께 반영(다음 실행의 클론에 최신본 전달)
 [ -f events_static.json ] && cp events_static.json "$TMP/repo/pipeline/events_static.json" 2>/dev/null || true
+# earnings.py의 실적 예고 장부 — 다음 실행이 '어제 예고했는데 오늘 캘린더에서 사라진 실적'을 되살리는 근거(2026-11-28)
+[ -f earnings_expected.json ] && cp earnings_expected.json "$TMP/repo/pipeline/earnings_expected.json" 2>/dev/null || true
 git -C "$TMP/repo" config user.email "briefing@bot"
 git -C "$TMP/repo" config user.name "briefing-bot"
 git -C "$TMP/repo" add -A

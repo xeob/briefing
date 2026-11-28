@@ -369,24 +369,28 @@ for r in rows:
 qual = sorted([r for r in rows if r["qualified"]], key=lambda x: (x["tier"], -abs(x["pct"])))
 
 def ah_roster():
-    """그 세션 실적 발표 종목(earnings.json must_cover). 파일이 없으면 earnings.py를 직접 한 번 돌린다 —
-    루틴의 스크립트 실행 순서에 의존하지 않기 위해(실적 발표 종목이야말로 시간외가 크게 움직이는 쪽이다).
-    이미 있으면 그대로 읽고, 실패하면 빈 집합(섹션은 CORE_SCAN·자격 종목만으로 돌아간다)."""
+    """(실적 로스터, 시간외 감시용 발표 종목) — earnings.json의 must_cover / must_cover ∪ ah_watch.
+    파일이 없으면 earnings.py를 직접 한 번 돌린다 — 루틴의 스크립트 실행 순서에 의존하지 않기 위해
+    (실적 발표 종목이야말로 시간외가 크게 움직이는 쪽이다). 실패하면 빈 집합(CORE_SCAN·자격 종목만으로 돈다).
+    2026-11-28: ah_watch(그 세션 발표 $10B+ 전부) 추가 — 11/24 마감 후 발표한 뉴타닉스($12.6B)·HP($28B)·
+    오토데스크·워크데이가 $100B 로스터 밖이라 시간외 조회조차 안 됐다(다음 날 정규장 NTNX −15%·HPQ +11%)."""
     for attempt in (1, 2):
         try:
             if attempt == 1 and time.time() - os.path.getmtime("out/earnings.json") > 12 * 3600:
                 raise ValueError("earnings.json 12시간 초과 — 어제 로스터일 수 있어 다시 수집")
-            return {e["symbol"] for e in json.load(open("out/earnings.json")).get("must_cover", []) if e.get("symbol")}
+            ej = json.load(open("out/earnings.json"))
+            mc = {e["symbol"] for e in ej.get("must_cover", []) if e.get("symbol")}
+            return mc, mc | {s for s in ej.get("ah_watch", []) if s}
         except Exception:
             if attempt == 2:
-                return set()
+                return set(), set()
             try:
                 import sys
                 subprocess.run([sys.executable, "earnings.py"], capture_output=True, timeout=180, check=False)
             except Exception:
-                return set()
+                return set(), set()
 
-REPORTERS = ah_roster()   # 그 세션 실적 발표 종목 — 후보 구성·시간외 감시 공통
+REPORTERS, AH_REPORTERS = ah_roster()   # 실적 로스터(후보 구성·실적 섹션 시간외 표기) / 시간외 감시용 발표 종목
 
 GEN_CAP = 20   # 일반 티어 후보 상한(방향별). 되돌리려면 이 값만 키우면 된다.
 
@@ -534,9 +538,9 @@ AH_BUDGET_S = 90        # 조회 전체 시간예산(초) — 초과분은 조�
 AH_MAX_FAIL = 0.2       # 실패율이 이보다 크면 불완전 스캔으로 보고 섹션 생략
 
 def ah_universe():
-    """감시 대상 = CORE_SCAN ∪ 그날 정규장 자격 종목 ∪ 그 세션 실적 발표 로스터.
+    """감시 대상 = CORE_SCAN ∪ 그날 정규장 자격 종목 ∪ 그 세션 실적 발표 종목($10B+ 전부, earnings.json ah_watch).
     SKHY는 전용 상시 블록이 20시→종가 괴리로 따로 다루므로 제외(중복·verify #13 충돌 방지)."""
-    u = set(CORE_SCAN) | {r["symbol"] for r in qual} | set(REPORTERS)
+    u = set(CORE_SCAN) | {r["symbol"] for r in qual} | set(AH_REPORTERS)
     return sorted(s for s in u if s and s != KR_ADR)
 
 def afterhours_block(now_et=None):

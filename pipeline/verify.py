@@ -223,14 +223,20 @@ if sm2:
 
 # 11) 실적 발표 누락 차단: earnings.json must_cover(그 세션 발표 화이트리스트)가 본문에 있는지(티커 매칭)
 #     수치 자체는 API가 T+1이라 대조 불가 — 여기서 막는 건 '누락'(리바이스 실적행 사고와 같은 계열).
+#     2026-11-28: must_cover는 나스닥 캘린더 + 야후 발표 시각(2차 소스) + 예고 장부(전날까지의 예정) 합집합이다
+#     (디어 11/25·크라우드스트라이크 11/23 누락 사고). unconfirmed 종목도 행은 필수 — 미발표면 '발표 미확인' 한 줄.
 try:
     ea = json.load(open("out/earnings.json"))
 except Exception:
     ea = None
+    # 2026-11-28: 파일이 없으면 이 검사가 통째로 건너뛰어져 '실적 없음'과 구분되지 않았다 → 차단
+    issues.append("[실적] out/earnings.json 없음·해석 실패 — python3 earnings.py 실행 후 다시 생성(실적 누락 검사 불가)")
 if ea:
+    # 2026-11-28: 대조 범위를 '실적 발표' 섹션으로 한정 — 전에는 페이지 어디든(일정 표·특징주 행) 티커만 있으면 통과했다
+    _earn = seg(L_EARN, L_SCHED)
     for e in ea.get("must_cover", []):
         sym = e.get("symbol", "")
-        if sym and f"({sym})" not in html_main:
+        if sym and f"({sym})" not in _earn:
             issues.append(f"[실적] '{e.get('name_ko', sym)} ({sym})' 누락 — {ea.get('session_et')} 세션 발표 "
                           f"{e.get('tier')} 종목은 실적 발표 섹션에 반드시 포함(earnings.json must_cover)")
 

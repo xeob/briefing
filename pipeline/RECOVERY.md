@@ -247,6 +247,7 @@ cd $TMP/r && git add -A && git commit -m restore && git push
 ```
 **C. 전손(repo+로컬 모두)**: **이 문서 부록(§8)의 소스를 파일명 그대로 저장**해 `~/Downloads/claude/briefing/`를 재구성 → B 절차로 push. (Claude에게 "부록 소스로 파일 전부 복원해줘" 지시하면 자동.)
 - events_static.json은 참고 스냅샷 — 복원 후 `python3 gen_static.py` 또는 첫 정기 실행이 자동 갱신.
+- earnings_expected.json(실적 예고 장부)은 부록에 싣지 않는다 — earnings.py가 매 실행 만들고 publish.sh가 커밋한다. 유실돼도 첫 실행이 `{"items": []}`처럼 새로 만들며, 그날 하루만 예고 대조가 빠진다(나스닥·야후 대조는 정상).
 - publish.sh는 복원 후 `chmod +x publish.sh`.
 
 ## 6. 복구 후 검증 체크리스트 (순서대로 — 모두 통과해야 완료)
@@ -364,7 +365,7 @@ cd $TMP/r && git add -A && git commit -m restore && git push
         - 사유는 **뚜렷한 재료가 있을 때만** 둘째 줄(⑦ 품질 규칙 적용). 없으면 생략 — 매일 싣는 행이라 억지 사유 금지.
       - verify #13이 **존재·파트(급등/급락)·등락률·20시·괴리 수치**를 기계 대조한다.
     - **⑨ 시간외 특징주 (2026-10-19 신설)**: 정규장 종료 후 **브리핑 제작 직전까지** 움직인 종목을 **특징주 · 급락 바로 아래 별도 섹션**으로. 데이터는 `movers.json`의 `afterhours` — **status가 `ok`이고 `rows`가 있을 때만** 섹션을 쓰고, 비면 **섹션 통째 생략**(주말·휴일 다음 브리핑은 창이 지나 대개 생략된다). 모델이 종목·수치를 직접 찾지 말 것 — rows 그대로.
-      - **자격은 정규장과 동일**(M7 ±2% / 메가캡 ±3% / 그 외 ±4%), 기준은 **정규장 공식 종가 대비**. 감시 대상 = CORE_SCAN ∪ 그날 정규장 자격 종목 ∪ 그 세션 실적 발표 로스터(`earnings.json` must_cover — 파일이 없으면 movers.py가 `earnings.py`를 직접 한 번 돌려 확보하므로 **스크립트 실행 순서와 무관**하다).
+      - **자격은 정규장과 동일**(M7 ±2% / 메가캡 ±3% / 그 외 ±4%), 기준은 **정규장 공식 종가 대비**. 감시 대상 = CORE_SCAN ∪ 그날 정규장 자격 종목 ∪ **그 세션 실적 발표 종목 시총 $10B+ 전부**(`earnings.json` must_cover ∪ `ah_watch` — 2026-11-28 확대: 11/24 마감 후 발표한 뉴타닉스·HP가 $100B 로스터 밖이라 조회조차 안 됐다. 파일이 없으면 movers.py가 `earnings.py`를 직접 한 번 돌려 확보하므로 **스크립트 실행 순서와 무관**하다).
       - **표기**: 제목 줄에 `{cut_et_hm} ET · {cut_kst_hm} KST 기준` 병기(생략 금지), 각 행은 헤더 `한글명 (TICKER)` + `시간외 {pct}`(클래스 **ah-p** — mv-p 금지), 본문은 **재료 한 줄**. **거래대금·고저폭은 쓰지 않는다**(거래대금은 나스닥 단일 소스라 필터·감사용 / 고저폭엔 허수 체결이 섞인다 — 10/15 실측 넷플릭스 고저폭 12.8%).
       - **사유를 2소스로 확인 못 하면 그 종목은 싣지 않는다** — 정규장의 "이유 미확인" 예외가 **없다**(시간외는 단발 호가가 흔하다). 묶음행 금지, SKHY 금지(⑧이 전용 행으로 다룬다).
       - 정규장 특징주에 이미 실린 종목도 시간외 자격을 갖추면 **다시 싣는다**(다른 시간대) — 사유는 시간외 재료로만, 정규장 사유 재사용 금지.
@@ -374,6 +375,8 @@ cd $TMP/r && git add -A && git commit -m restore && git push
     - 스크립트 실패 시(fallback): stockanalysis.com/markets/gainers·losers WebFetch로 대체
   - 발표된 지표: **out/events.json의 `released`에서 그 미국장 세션 날짜에 발표된 지표를 빠짐없이** (지표명·actual·forecast 값 그대로, 다른 날 금지). **포함 대상 = 등록부(events.py CANON)의 High+Medium 전부**(일정 표와 달리 여기선 Medium도 싣는다) — High: CPI·PCE·PPI·비농업고용·실업률·시간당임금·FOMC·연준의장발언·ISM제조업·ISM서비스업·소매판매·GDP·**신규실업수당**·**미시간 기대인플레(1년·5년)**·**NY연은 기대인플레** / Medium: ADP·CB소비자신뢰·미시간심리·JOLTS·내구재·연준위원발언·주택착공/건축허가·기존주택판매·신규주택판매·산업생산. **Low(공장주문·도매재고·무역수지·모기지·원유재고·GDPNow·U-6·지역연은지수 등)는 제외.** released의 해당 세션 날짜 항목은 전부 표에(매 실행 일관성). 당일 발표가 없으면 표 대신 "· 당일 발표된 주요 지표 없음" 한 줄. **표 형식**(지표/결과/예상 3열). **★ 기준(전년비/전월비) 병기 — released 각 항목의 `basis`를 지표명에 함께 적는다**: `소비자물가지수 (6월, 전년비)` · `소비자물가지수 (6월, 전월비)`. **전년비·전월비가 둘 다 오면 둘 다 개별 행으로(전년비 먼저, 헤드라인 다음 근원).** `basis`가 빈 항목(실업률·ISM·신규 실업수당 등 변형 없는 지표)은 **기준 없이 지표명만**(고유 형태 그대로 — 수준·건수·지수). **값·기준을 모델이 추측·환산하지 말 것 — released 값 그대로.** 결과 색: **예상 대비 시장에 긍정적 서프라이즈면 up(초록), 부정적이면 down(빨강), 부합·중립이면 무색** (예: 물가 예상 상회=빨강, 실업수당청구 예상 하회=초록) — **판단 기준은 지표 본래 의미(평상시 해석)**: 소매판매·고용·ISM 예상 상회=초록. 그날 시장이 반대로 받아들였어도 **색은 바꾸지 않고**, 그 사정은 해설(cmt)에서 풀어 설명한다.
   - **실적 발표(그 세션 발표 결과) — `python3 earnings.py` (→ out/earnings.json)**: 발표된 지표 아래 새 섹션. **`must_cover` 전부 개별 게재(누락 시 verify 차단)**, 없으면 섹션 통째 생략.
+    - **must_cover = 나스닥 캘린더 ∪ 야후 발표 시각(2차 소스) ∪ 예고 장부**(2026-11-28 — 디어 11/25·크라우드스트라이크 11/23을 나스닥 캘린더만 믿다 놓쳤다). 각 종목 `src`에 출처가 남고, `notes`에 추가·연기 사유가 찍힌다. **`unconfirmed:true` 종목**(예고는 있었는데 오늘 두 캘린더 어디서도 발표가 안 잡힘)도 행은 필수 — 2소스 리서치로 발표를 확인하면 정상 행, 끝내 확인 못 하면 본문 한 줄 `발표 미확인 — ○/○ 예정이었으나 발표 확인 안 됨`(수치 날조 금지).
+    - `earnings_expected.json`(예고 장부)은 earnings.py가 매번 갱신하고 publish.sh가 저장소에 커밋한다 — **손으로 고치거나 지우지 말 것.**
     - **등락률 병기(2026-10-23 신설)**: 헤더에 **그 세션 정규장 등락률**(`movers.json` `all[].pct` 그대로, up/down 색) + 업종 꼬리표. 수집 밖 종목은 헤더 수치 생략.
     - **마감 후 발표 종목은 본문 첫 줄에 `· 시간외 ±0.00%` 병기** — `afterhours.reporters[티커].pct`이고 **`confirmed:true`일 때만**(2소스 확인). 미확인·데이터 없음이면 적지 않는다.
       - **장 시작 전 발표분은 시간외를 적지 않는다**: 반응이 정규장에 이미 찍혀 시간외는 거의 0%다(실측 2026-10-22 — 장 전 발표 LMT 시간외 −0.20% / 마감 후 발표 WDC −5.71%·FIX −5.19%). 발표 시점은 `earnings.json` `must_cover[].timing`.
@@ -1350,24 +1353,28 @@ for r in rows:
 qual = sorted([r for r in rows if r["qualified"]], key=lambda x: (x["tier"], -abs(x["pct"])))
 
 def ah_roster():
-    """그 세션 실적 발표 종목(earnings.json must_cover). 파일이 없으면 earnings.py를 직접 한 번 돌린다 —
-    루틴의 스크립트 실행 순서에 의존하지 않기 위해(실적 발표 종목이야말로 시간외가 크게 움직이는 쪽이다).
-    이미 있으면 그대로 읽고, 실패하면 빈 집합(섹션은 CORE_SCAN·자격 종목만으로 돌아간다)."""
+    """(실적 로스터, 시간외 감시용 발표 종목) — earnings.json의 must_cover / must_cover ∪ ah_watch.
+    파일이 없으면 earnings.py를 직접 한 번 돌린다 — 루틴의 스크립트 실행 순서에 의존하지 않기 위해
+    (실적 발표 종목이야말로 시간외가 크게 움직이는 쪽이다). 실패하면 빈 집합(CORE_SCAN·자격 종목만으로 돈다).
+    2026-11-28: ah_watch(그 세션 발표 $10B+ 전부) 추가 — 11/24 마감 후 발표한 뉴타닉스($12.6B)·HP($28B)·
+    오토데스크·워크데이가 $100B 로스터 밖이라 시간외 조회조차 안 됐다(다음 날 정규장 NTNX −15%·HPQ +11%)."""
     for attempt in (1, 2):
         try:
             if attempt == 1 and time.time() - os.path.getmtime("out/earnings.json") > 12 * 3600:
                 raise ValueError("earnings.json 12시간 초과 — 어제 로스터일 수 있어 다시 수집")
-            return {e["symbol"] for e in json.load(open("out/earnings.json")).get("must_cover", []) if e.get("symbol")}
+            ej = json.load(open("out/earnings.json"))
+            mc = {e["symbol"] for e in ej.get("must_cover", []) if e.get("symbol")}
+            return mc, mc | {s for s in ej.get("ah_watch", []) if s}
         except Exception:
             if attempt == 2:
-                return set()
+                return set(), set()
             try:
                 import sys
                 subprocess.run([sys.executable, "earnings.py"], capture_output=True, timeout=180, check=False)
             except Exception:
-                return set()
+                return set(), set()
 
-REPORTERS = ah_roster()   # 그 세션 실적 발표 종목 — 후보 구성·시간외 감시 공통
+REPORTERS, AH_REPORTERS = ah_roster()   # 실적 로스터(후보 구성·실적 섹션 시간외 표기) / 시간외 감시용 발표 종목
 
 GEN_CAP = 20   # 일반 티어 후보 상한(방향별). 되돌리려면 이 값만 키우면 된다.
 
@@ -1515,9 +1522,9 @@ AH_BUDGET_S = 90        # 조회 전체 시간예산(초) — 초과분은 조�
 AH_MAX_FAIL = 0.2       # 실패율이 이보다 크면 불완전 스캔으로 보고 섹션 생략
 
 def ah_universe():
-    """감시 대상 = CORE_SCAN ∪ 그날 정규장 자격 종목 ∪ 그 세션 실적 발표 로스터.
+    """감시 대상 = CORE_SCAN ∪ 그날 정규장 자격 종목 ∪ 그 세션 실적 발표 종목($10B+ 전부, earnings.json ah_watch).
     SKHY는 전용 상시 블록이 20시→종가 괴리로 따로 다루므로 제외(중복·verify #13 충돌 방지)."""
-    u = set(CORE_SCAN) | {r["symbol"] for r in qual} | set(REPORTERS)
+    u = set(CORE_SCAN) | {r["symbol"] for r in qual} | set(AH_REPORTERS)
     return sorted(s for s in u if s and s != KR_ADR)
 
 def afterhours_block(now_et=None):
@@ -2371,14 +2378,20 @@ if sm2:
 
 # 11) 실적 발표 누락 차단: earnings.json must_cover(그 세션 발표 화이트리스트)가 본문에 있는지(티커 매칭)
 #     수치 자체는 API가 T+1이라 대조 불가 — 여기서 막는 건 '누락'(리바이스 실적행 사고와 같은 계열).
+#     2026-11-28: must_cover는 나스닥 캘린더 + 야후 발표 시각(2차 소스) + 예고 장부(전날까지의 예정) 합집합이다
+#     (디어 11/25·크라우드스트라이크 11/23 누락 사고). unconfirmed 종목도 행은 필수 — 미발표면 '발표 미확인' 한 줄.
 try:
     ea = json.load(open("out/earnings.json"))
 except Exception:
     ea = None
+    # 2026-11-28: 파일이 없으면 이 검사가 통째로 건너뛰어져 '실적 없음'과 구분되지 않았다 → 차단
+    issues.append("[실적] out/earnings.json 없음·해석 실패 — python3 earnings.py 실행 후 다시 생성(실적 누락 검사 불가)")
 if ea:
+    # 2026-11-28: 대조 범위를 '실적 발표' 섹션으로 한정 — 전에는 페이지 어디든(일정 표·특징주 행) 티커만 있으면 통과했다
+    _earn = seg(L_EARN, L_SCHED)
     for e in ea.get("must_cover", []):
         sym = e.get("symbol", "")
-        if sym and f"({sym})" not in html_main:
+        if sym and f"({sym})" not in _earn:
             issues.append(f"[실적] '{e.get('name_ko', sym)} ({sym})' 누락 — {ea.get('session_et')} 세션 발표 "
                           f"{e.get('tier')} 종목은 실적 발표 섹션에 반드시 포함(earnings.json must_cover)")
 
@@ -2676,6 +2689,8 @@ mkdir -p "$TMP/repo/archive"
 cp "$HTML" "$TMP/repo/archive/${TODAY}.html"
 # events.py가 자동 갱신한 정적 캘린더를 함께 반영(다음 실행의 클론에 최신본 전달)
 [ -f events_static.json ] && cp events_static.json "$TMP/repo/pipeline/events_static.json" 2>/dev/null || true
+# earnings.py의 실적 예고 장부 — 다음 실행이 '어제 예고했는데 오늘 캘린더에서 사라진 실적'을 되살리는 근거(2026-11-28)
+[ -f earnings_expected.json ] && cp earnings_expected.json "$TMP/repo/pipeline/earnings_expected.json" 2>/dev/null || true
 git -C "$TMP/repo" config user.email "briefing@bot"
 git -C "$TMP/repo" config user.name "briefing-bot"
 git -C "$TMP/repo" add -A
@@ -3044,7 +3059,9 @@ for e in events:
      ① 누가 발표했는가(로스터 — verify가 누락 차단)  ② EPS 컨센서스  ③ 시총·분기·발표시점
      실제 수치(매출·조정 EPS·가이던스·특이사항)는 모델이 2소스 웹 리서치로 채운다(RUN.md).
 
-출력: must_cover(반드시 브리핑에 실릴 종목) / deep(컨콜·특이사항 심화 대상: M7·반도체) / errors"""
+출력: must_cover(반드시 브리핑에 실릴 종목 — src: 나스닥·야후·예고, unconfirmed=발표 미확인) /
+      deep(컨콜·특이사항 심화 대상: M7·반도체) / ah_watch(시간외 감시용 이 세션 발표 $10B+) / errors / notes
+부산물: earnings_expected.json(실적 예고 장부 — publish.sh가 저장소에 커밋, 다음 실행이 대조)"""
 import json, os, subprocess, datetime
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
@@ -3061,6 +3078,9 @@ GAUGE = {"LEVI", "NKE", "LULU", "SBUX", "MCD", "FDX", "UPS", "DAL", "UAL", "CAT"
 INCLUDE_CAP_B = 100  # 실적 편입 시총 문턱(2026-08-21: 200→100. TJX $160B·로우스 $123B가 빠지던 문제 해소)
 MEGA_CAP_B = 200     # "메가캡" 라벨 기준(편입 문턱과 별개)
 UPCOMING_DAYS = 7    # 일정 표에 실을 "실적 예정" 조회 창(일). 12일로 넓히면 성수기 누적 행이 급증(실측 84행)
+AH_CAP_B = 10        # 시간외 감시용 '그 세션 실적 발표 종목' 시총 하한 — 특징주 수집 문턱($10B)과 같다
+EXPECTED_FILE = "earnings_expected.json"  # 실적 예고 장부 — publish.sh가 매일 저장소에 커밋(다음 실행이 대조)
+EXPECTED_KEEP_DAYS = 10                   # 지난 예고를 남겨 두는 기간(주말·휴일·발송 실패일을 건너도 대조 가능)
 
 KO = {"AAPL": "애플", "MSFT": "마이크로소프트", "NVDA": "엔비디아", "GOOGL": "알파벳", "GOOG": "알파벳",
       "AMZN": "아마존", "META": "메타", "TSLA": "테슬라", "AVGO": "브로드컴", "TSM": "TSMC",
@@ -3185,6 +3205,164 @@ for e in out["upcoming"]:                      # 같은 종목이 인접일에 �
     uniq.append(e)
 out["upcoming"] = sorted(uniq, key=lambda x: (x["date"], -x["cap_b"]))
 
+# ───────────────────────────────────────────────────────────────────────────────────────────────
+# 2026-11-28 보강 — 나스닥 캘린더 한 곳만 믿다가 실적 발표를 두 번 놓쳤다.
+#   · 11/26 브리핑: 디어(DE)가 11/25 개장 전 발표했는데, 06:42 조회 때 나스닥 11/25 캘린더에 없었다(전날 예고엔
+#     있었고 지금도 있다). 목록이 비자 verify #11도 대조할 게 없어 통과 → 실적 섹션 통째 누락.
+#   · 11/24 브리핑: 크라우드스트라이크(CRWD)가 예정(12/1)보다 앞당겨 11/23 개장 전 발표(즈스케일러 인수와 함께).
+#     나스닥은 나중에야 날짜를 옮겼다 → 누락.
+# 대책 ① 예고 장부: 어제까지 '이 세션에 발표 예정'이던 종목이 오늘 목록에서 사라지면 되살린다(연기 확인 시만 제외).
+#      ② 2차 소스: 야후 종목 시세의 earningsTimestamp(실제 발표 시각)로 이 세션 발표 종목을 따로 잡는다.
+#      ③ 시간외 감시 명단: 이 세션 발표 종목 중 시총 $10B+ 전부(ah_watch) — movers.py가 시간외 스캔에 쓴다.
+#      야후 실패는 notes에만 남기고(발송 차단 안 함) 나스닥·예고 장부로 계속 간다.
+from zoneinfo import ZoneInfo
+ET = ZoneInfo("America/New_York")
+out["notes"] = []
+now_et = now.astimezone(ET)
+
+
+def nasdaq_caps():
+    """나스닥 스크리너 mega·large 전수 → {티커: 시총(십억$)} (야후 조회 대상 명단)."""
+    caps = {}
+    for grp in ("mega", "large"):
+        d = curl_json(f"https://api.nasdaq.com/api/screener/stocks?tableonly=true&limit=3000&marketcap={grp}")
+        for x in (((d.get("data") or {}).get("table") or {}).get("rows") or []):
+            s = clean(x.get("symbol")).upper()
+            if s:
+                caps[s] = cap_b(x.get("marketCap"))
+    return caps
+
+
+def yahoo_earnings_ts(symbols, chunk=100):
+    """야후 시세 → {티커: (실적 발표 시각 ET, 시총 십억$, 이름)}. 쿠키+crumb 방식(curl, 임시 쿠키 파일)."""
+    import tempfile
+    got = {}
+    with tempfile.TemporaryDirectory() as td:
+        jar = os.path.join(td, "c.txt")
+        ua = ["-A", "Mozilla/5.0"]
+        subprocess.run(["curl", "-s", "-m", "12", "-c", jar, *ua, "https://fc.yahoo.com"], capture_output=True)
+        crumb = subprocess.run(["curl", "-s", "-m", "12", "-b", jar, *ua,
+                                "https://query1.finance.yahoo.com/v1/test/getcrumb"],
+                               capture_output=True, text=True).stdout.strip()
+        if not crumb or len(crumb) > 40 or "<" in crumb:
+            raise ValueError("야후 crumb 발급 실패")
+        syms = sorted({s.replace("/", "-").replace(".", "-") for s in symbols if s})
+        for i in range(0, len(syms), chunk):
+            url = ("https://query1.finance.yahoo.com/v7/finance/quote?symbols=" + ",".join(syms[i:i + chunk]) +
+                   "&fields=earningsTimestamp,marketCap,shortName&crumb=" + crumb)
+            r = subprocess.run(["curl", "-s", "-m", "15", "-b", jar, *ua, url], capture_output=True, text=True)
+            for q in (json.loads(r.stdout).get("quoteResponse") or {}).get("result") or []:
+                ts = q.get("earningsTimestamp")
+                if ts:
+                    got[q["symbol"]] = (datetime.datetime.fromtimestamp(ts, ET),
+                                        round((q.get("marketCap") or 0) / 1e9, 1), q.get("shortName") or "")
+    if not got:
+        raise ValueError("야후 실적 시각 0건")
+    return got
+
+
+def timing_of(t_et):
+    """발표 시각(ET) → 나스닥 표기와 같은 timing 문자열(verify #17이 'after' 포함 여부로 시간외 표기를 판단)."""
+    hm = t_et.hour * 60 + t_et.minute
+    return "time-pre-market" if hm < 9 * 60 + 30 else ("time-after-hours" if hm >= 16 * 60 else "time-during-market")
+
+
+def whitelisted(sym, cb):
+    return sym in M7 or sym in SEMI or sym in GAUGE or cb >= INCLUDE_CAP_B
+
+
+def make_rec(sym, cb, name, timing, src):
+    is_m7, is_semi = sym in M7, sym in SEMI
+    return {"symbol": sym, "name_ko": KO.get(sym, name), "name_en": name, "cap_b": round(cb, 1),
+            "tier": ("M7" if is_m7 else "반도체" if is_semi else "메가캡" if cb >= MEGA_CAP_B
+                     else "대형주" if cb >= INCLUDE_CAP_B else "가늠자"),
+            "eps_forecast": "", "eps_actual_gaap": "", "fiscal_q": "", "timing": timing,
+            "deep": is_m7 or is_semi, "src": src}
+
+
+mc = {e["symbol"]: e for e in out["must_cover"]}
+for e in mc.values():
+    e["src"] = ["나스닥"]
+cal_caps = {clean(r.get("symbol")).upper(): cap_b(r.get("marketCap")) for r in rows if clean(r.get("symbol"))}
+ah_watch = {s for s, cb in cal_caps.items() if cb >= AH_CAP_B}       # 나스닥 캘린더 기준 $10B+ 발표 종목
+
+# 예고 장부(어제까지의 upcoming 누적) 읽기 — 이번 실행이 덮어쓰기 전에
+try:
+    prev_items = json.load(open(EXPECTED_FILE)).get("items", [])
+except Exception:
+    prev_items = []
+    out["notes"].append(f"{EXPECTED_FILE} 없음 — 예고 대조 생략(첫 실행이거나 파일 유실)")
+
+# ② 야후 2차 소스
+ytab = {}
+try:
+    caps = nasdaq_caps()
+    universe = {s for s, cb in caps.items() if cb >= AH_CAP_B} | set(cal_caps) | M7 | SEMI | GAUGE \
+        | {i["symbol"] for i in prev_items}
+    ytab = yahoo_earnings_ts(universe)
+except Exception as ex:
+    out["notes"].append(f"야후 실적 시각 조회 실패({str(ex)[:50]}) — 나스닥 캘린더·예고 장부만으로 진행")
+
+y_session = {}                                   # 이 세션(ET 날짜)에 이미 발표한 종목
+for ysym, (t_et, ycap, yname) in ytab.items():
+    if t_et.date() == session and t_et <= now_et:
+        y_session[ysym.replace("-", ".") if ysym.replace("-", ".") in cal_caps else ysym] = (t_et, ycap, yname)
+for sym, (t_et, ycap, yname) in y_session.items():
+    cb = cal_caps.get(sym) or ycap
+    if cb >= AH_CAP_B:
+        ah_watch.add(sym)
+    if sym in mc:
+        mc[sym]["src"].append("야후")
+        if not mc[sym]["timing"] or "not-supplied" in mc[sym]["timing"]:
+            mc[sym]["timing"] = timing_of(t_et)
+    elif whitelisted(sym, cb):
+        mc[sym] = make_rec(sym, cb, yname, timing_of(t_et), ["야후"])
+        out["notes"].append(f"{sym}: 나스닥 캘린더엔 {session} 발표가 없지만 야후 발표 시각 "
+                            f"{t_et:%m/%d %H:%M} ET → 실적 대상에 추가")
+
+# ① 예고 장부 대조 — 이 세션 발표 예정이던 종목이 목록에 없으면 되살린다
+later = {e["symbol"]: e["date"] for e in out["upcoming"]}
+for it in prev_items:
+    sym = it.get("symbol")
+    if it.get("date") != session.isoformat() or not sym or sym in mc:
+        continue
+    yt = ytab.get(sym.replace(".", "-"))
+    if sym in later:
+        out["notes"].append(f"{sym}: {session} 예고였으나 {later[sym]}로 연기(나스닥) — 실적 대상 제외")
+        continue
+    if yt and yt[0].date() > session:
+        out["notes"].append(f"{sym}: {session} 예고였으나 야후 발표 예정 {yt[0]:%m/%d} — 연기로 보고 제외")
+        continue
+    rec = make_rec(sym, it.get("cap_b") or 0, it.get("name_ko") or sym, "", ["예고"])
+    rec["name_ko"] = it.get("name_ko") or KO.get(sym, sym)
+    rec["eps_forecast"] = it.get("eps_forecast", "")
+    rec["unconfirmed"] = True                    # 두 캘린더 어디서도 발표가 확인되지 않음 → 리서치로 확인
+    mc[sym] = rec
+    out["notes"].append(f"{sym}: {session} 발표 예고({it.get('date')})가 있었는데 오늘 캘린더 두 곳에서 확인 안 됨 "
+                        f"— 실적 대상에 유지(발표 여부를 2소스로 확인, 미발표면 '발표 미확인' 한 줄)")
+for sym, e in mc.items():
+    pi = next((i for i in prev_items if i.get("symbol") == sym and i.get("date") == session.isoformat()), None)
+    if pi and "예고" not in e["src"]:
+        e["src"].append("예고")
+    if pi and not e.get("eps_forecast"):
+        e["eps_forecast"] = pi.get("eps_forecast", "")   # 야후로 되살린 종목도 컨센서스는 예고 장부에서
+    if e["cap_b"] >= AH_CAP_B:
+        ah_watch.add(sym)
+
+out["must_cover"] = list(mc.values())
+out["deep"] = sorted({e["symbol"] for e in out["must_cover"] if e.get("deep")})
+out["ah_watch"] = sorted(ah_watch)               # ③ movers.py 시간외 감시 명단에 합류
+
+# 예고 장부 갱신: 앞으로의 예정 = 오늘 upcoming(나스닥이 정본), 지난 예정은 EXPECTED_KEEP_DAYS일 보존
+keep_from = (today - datetime.timedelta(days=EXPECTED_KEEP_DAYS)).isoformat()
+new_syms = {e["symbol"] for e in out["upcoming"]}
+items = [i for i in prev_items if keep_from <= i.get("date", "") < today.isoformat() and i.get("symbol") not in new_syms]
+items += [{k: e[k] for k in ("date", "symbol", "name_ko", "cap_b", "tier", "eps_forecast")} for e in out["upcoming"]]
+items.sort(key=lambda x: (x["date"], x["symbol"]))
+json.dump({"generated_kst": now.strftime("%Y-%m-%d %H:%M"),
+           "note": "earnings.py가 매 실행 갱신하는 실적 예고 장부 — 손으로 고치지 말 것(publish.sh가 커밋)",
+           "items": items}, open(EXPECTED_FILE, "w"), ensure_ascii=False, indent=1)
+
 out["must_cover"].sort(key=lambda x: (-x["cap_b"], x["symbol"]))
 os.makedirs("out", exist_ok=True)
 json.dump(out, open("out/earnings.json", "w"), ensure_ascii=False, indent=1)
@@ -3192,7 +3370,9 @@ json.dump(out, open("out/earnings.json", "w"), ensure_ascii=False, indent=1)
 print(f"세션 {session} 실적 · 대상 {len(out['must_cover'])}건 (심화 {len(out['deep'])}) → out/earnings.json")
 for e in out["must_cover"]:
     print(f"   {e['symbol']:6} {e['name_ko']:12} {e['tier']:5} 시총 ${e['cap_b']:.0f}B "
-          f"· EPS 예상 {e['eps_forecast'] or '—'}{'  [심화]' if e['deep'] else ''}")
+          f"· EPS 예상 {e['eps_forecast'] or '—'} · 출처 {'+'.join(e.get('src', []))}"
+          f"{'  [심화]' if e['deep'] else ''}{'  [발표 미확인 — 리서치로 확인]' if e.get('unconfirmed') else ''}")
+print(f"  [시간외 감시용 · 이 세션 발표 · ${AH_CAP_B}B+] {len(out['ah_watch'])}건: {' '.join(out['ah_watch']) or '없음'}")
 print(f"  [일정 표용 실적 예정 · 향후 {UPCOMING_DAYS}일 · ${INCLUDE_CAP_B}B+] {len(out['upcoming'])}건")
 for e in out["upcoming"]:
     print(f"   {e['date']}  {e['symbol']:6} {e['name_ko']:12} {e['tier']:5} ${e['cap_b']:.0f}B")
@@ -3200,6 +3380,8 @@ if not out["must_cover"]:
     print("   (이 세션 화이트리스트 실적 없음 — 실적 섹션 생략)")
 for er in out["errors"]:
     print("  오류:", er)
+for nt in out["notes"]:
+    print("  참고:", nt)
 ````
 
 ### 8.calls_template.html
