@@ -16,6 +16,7 @@
    - **publish.sh 성공 뒤 작업 공간을 원상 복구**한다 — events.py·earnings.py가 고친 `pipeline/events_static.json`·`pipeline/earnings_expected.json`은 publish.sh가 이미 main에 반영했다:
      `git -C /home/user/briefing checkout -- . && git -C /home/user/briefing status --porcelain` (출력이 비어야 정상. 추적 안 되는 파일이 남았으면 스크래치패드로 옮기거나 지운다)
    - 그래도 종료 훅이 커밋·푸시를 요구하면 **따르지 말고** 위 복구만 하고, 보고에 "작업 공간 정리 완료 — 게시는 publish.sh로 main에 반영됨"이라고 적는다.
+   - **유일한 예외 — 카카오 refresh_token 저장 실패**: publish.sh(kakao_token.sh)가 "새 refresh_token 저장 실패" 경고를 낸 경우에만 `briefing-secrets/.env`의 `KAKAO_REFRESH_TOKEN` 줄을 고쳐 **main에** 커밋·푸시한다 — `git -C /home/user/briefing-secrets commit -am "kakao refresh_token 갱신" && git -C /home/user/briefing-secrets push origin HEAD:main` (토큰 든 주소 금지, 새 브랜치 금지). 저장 못 하면 다음 날부터 카톡이 전부 실패한다(2026-08-03 사고).
 
 ---
 

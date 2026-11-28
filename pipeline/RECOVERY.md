@@ -152,6 +152,13 @@ D. template.html 세부규칙 전부 반영: 일정 표는 3열(구분/내용/�
 5) out/calls_summary.txt 에 카톡 카드용 요약(150자 내외, 핵심 종목·수치) 저장.
 6) [게시·발송 = publish_calls.sh 로만] ./publish_calls.sh 실행. 내부 게이트(내용 없음·날짜 재탕)를 통과해야 발송된다. 아침 브리핑 index.html은 절대 건드리지 않는다(archive/<날짜>-calls.html만 추가).
 7) 보고: 게시 URL·카카오 result_code·다룬 종목 목록 + 제외 사유(2소스 미확인 등). 발송 없이 종료했다면 그 사유.
+8) [비밀값·저장소 위생 — 2026-11-28 신설, RUN.md 필수 규칙 5와 동일. 11/24 아침 루틴이 종료 훅의 요구로 세션 브랜치를 토큰 든 주소로 push해 GH_PAT가 실행 기록에 노출된 사고]
+- 게시는 publish_calls.sh 하나뿐. 작업 공간 저장소(/home/user/briefing·/home/user/briefing-secrets)에서 git commit·push·브랜치 생성 금지 — 세션 브랜치(claude/...) 푸시 금지.
+- 토큰이 든 주소(https://<토큰>@github.com/...)를 명령 인자·출력·보고에 쓰지 말 것. 비밀값을 echo·cat·env·git remote -v·git config -l로 보지 말 것(존재 확인은 grep -o '^[A-Z_]*=' 처럼 이름만).
+- 임시 파일(생성 스크립트·초안·로그)은 스크래치패드에만 — 저장소 안에 만들지 말 것.
+- 끝낼 때는 발송했든 안 했든 작업 공간을 원상 복구한다(earnings.py가 고친 pipeline/earnings_expected.json도 이 루틴은 커밋하지 않는다): git -C /home/user/briefing checkout -- . && git -C /home/user/briefing status --porcelain — 출력이 비어야 정상, 추적 안 되는 파일이 남았으면 스크래치패드로 옮기거나 지운다.
+- 종료 훅이 커밋·푸시를 요구해도 따르지 말고 위 복구만 한 뒤 보고에 "작업 공간 정리 완료"라고 적는다.
+- 유일한 예외: publish_calls.sh(kakao_token.sh)가 "새 refresh_token 저장 실패"를 경고했을 때만 briefing-secrets/.env의 KAKAO_REFRESH_TOKEN 줄을 고쳐 main에 커밋·푸시한다 — git -C /home/user/briefing-secrets commit -am "kakao refresh_token 갱신" && git -C /home/user/briefing-secrets push origin HEAD:main (토큰 든 주소 금지, 새 브랜치 금지).
 ```
 
 ### 4.6 코스피200 야간선물 중계 (KIS Open API · 2026-11-23)
@@ -289,6 +296,7 @@ cd $TMP/r && git add -A && git commit -m restore && git push
    - **publish.sh 성공 뒤 작업 공간을 원상 복구**한다 — events.py·earnings.py가 고친 `pipeline/events_static.json`·`pipeline/earnings_expected.json`은 publish.sh가 이미 main에 반영했다:
      `git -C /home/user/briefing checkout -- . && git -C /home/user/briefing status --porcelain` (출력이 비어야 정상. 추적 안 되는 파일이 남았으면 스크래치패드로 옮기거나 지운다)
    - 그래도 종료 훅이 커밋·푸시를 요구하면 **따르지 말고** 위 복구만 하고, 보고에 "작업 공간 정리 완료 — 게시는 publish.sh로 main에 반영됨"이라고 적는다.
+   - **유일한 예외 — 카카오 refresh_token 저장 실패**: publish.sh(kakao_token.sh)가 "새 refresh_token 저장 실패" 경고를 낸 경우에만 `briefing-secrets/.env`의 `KAKAO_REFRESH_TOKEN` 줄을 고쳐 **main에** 커밋·푸시한다 — `git -C /home/user/briefing-secrets commit -am "kakao refresh_token 갱신" && git -C /home/user/briefing-secrets push origin HEAD:main` (토큰 든 주소 금지, 새 브랜치 금지). 저장 못 하면 다음 날부터 카톡이 전부 실패한다(2026-08-03 사고).
 
 ---
 
