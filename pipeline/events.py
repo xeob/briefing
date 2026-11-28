@@ -37,7 +37,7 @@ CANON = [
     ("RETAIL",  1, ["retail sales"], [], "소매판매", ["소매판매"], "core retail sales m/m"),
     ("GDP",     1, ["gdp"], ["gdpnow", "now"], "GDP", ["GDP", "성장률"], "advance gdp q/q"),
     ("JOBLESS", 1, ["initial jobless claims"], [], "신규 실업수당청구", ["실업수당", "신규 실업"], "unemployment claims"),
-    ("ADP",     2, ["adp employment"], ["weekly"], "ADP 고용", ["ADP"], "adp non-farm employment change"),
+    ("ADP",     2, ["adp employment", "adp nonfarm", "adp non-farm"], ["weekly"], "ADP 고용", ["ADP"], "adp non-farm employment change"),  # 나스닥 표기 "ADP Nonfarm Employment Change"(9/30 수정이 브랜치에만 있다가 11/28 반영)
     ("CONF",    2, ["consumer confidence", "cb consumer"], [], "소비자신뢰지수", ["소비자신뢰"], "cb consumer confidence"),
     ("MICH_INF",1, ["michigan 1-year inflation", "michigan 5-year inflation"], [], "미시간 기대인플레", ["기대인플레", "미시간"], "prelim uom inflation expectations"),
     ("NYFED_INF",1, ["ny fed 1-year consumer inflation", "ny fed 1-year inflation"], [], "NY연은 기대인플레", ["기대인플레", "연은"], None),
